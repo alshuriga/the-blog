@@ -1,0 +1,21 @@
+Application where you can rent a tent/infalatable castle/pit/just lay on a ground
+
+Database tables:
+
+Product: 
+    ProductId
+    Name
+    Description
+    Price
+    Address
+    Available Days
+
+Order:
+    OrderId
+    Product
+    IsTransfer
+    StartDate
+    EndDate
+    AdditionalInfo
+
+

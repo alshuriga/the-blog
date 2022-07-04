@@ -1,0 +1,11 @@
+@model IEnumerable<Post>
+
+<div>
+    @foreach (var p in Model)
+    {
+        <p>@p.Header</p>
+        <p>@p.DateTime.ToShortDateString()</p>
+        <p>@p.Text</p>
+        <p>@string.Join(", ", p.Tags.Select(t => t.Name).ToArray())</p>
+    }
+</div>
