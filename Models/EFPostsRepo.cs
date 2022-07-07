@@ -38,8 +38,9 @@ public partial class EFPostsRepo : IPostsRepo
         return await context.Posts.Include(p => p.Commentaries).Include(p => p.Tags).OrderBy(p => p.DateTime).Skip(skip).Take(take).ToListAsync();
     }
 
-    public async Task<IEnumerable<Post>> RetrieveMultiplePosts(string tagName, int skip = 0, int take = int.MaxValue)
+    public async Task<IEnumerable<Post>> RetrieveMultiplePosts(string? tagName, int skip = 0, int take = int.MaxValue)
     {
+        if(tagName == null) return Enumerable.Empty<Post>();
         Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
         if(tag is null) return Enumerable.Empty<Post>();
         return await context.Posts.Include(p => p.Commentaries).Include(p => p.Tags).Where(p => p.Tags.Contains(tag)).OrderBy(p => p.DateTime).Skip(skip).Take(take).ToListAsync();
@@ -59,5 +60,12 @@ public partial class EFPostsRepo : IPostsRepo
     public async Task<int> GetPostsCount()
     {
         return await context.Posts.CountAsync();
+    }
+
+     public async Task<int> GetPostsCount(string? tagName)
+    {
+        Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
+        if(tag is null) return 0;
+        return await context.Posts.Where(p => p.Tags.Contains(tag)).CountAsync();
     }
  }

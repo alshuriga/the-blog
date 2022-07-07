@@ -1,6 +1,7 @@
 @model PostsPageViewModel
 
-<div class="row pt-5 id=" posts row">
+
+<div class="row pt-5" id="posts row">
     @if (Model.TagName is not null)
     {
         <div class="display-4 mt-2">Posts with <strong>@Model.TagName</strong> tag</div>
@@ -8,51 +9,12 @@
     <div class="col">
         @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
         {
-            <div class="card mt-5">
-                <div class="card-body p-4">
-                    <div class="row">
-                        <div class="col">
-                            <h1 class="card-title">@p.Header</h1>
-                        </div>
-                        <div class="col">
-                            <h6 class="text-end card-subtitle text-muted mt-1">@p.DateTime.ToShortDateString()</h6>
-                        </div>
-                    </div>
-                    <p>@p.Text </p>
-                </div>
-                <div class="card-footer">
-                    <div class="row mt-2">
-                        <div class="col">
-                            <h5>
-                                @foreach (Tag t in p.Tags)
-                                {
-                                    <a asp-action="ByTag" asp-controller="Home" asp-route-tagname="@t.Name"
-                                class="btn btn-primary btn-sm text-light">@t.Name</a>
-                                }
-                            </h5>
-                        </div>
-                        <div class="col">
-                            <h5 class="float-end btn btn-sm btn-primary">Comments</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <partial name="_PostView" for="@p" />
         }
     </div>
 </div>
 <div class="row mt-4" id="pagination-row">
     <div class="col">
-        <ul class="pagination justify-content-center">
-            <li class="page-item"><a asp-action="Index" asp-controller="Home" asp-route-currentpage="1"
-                    class="page-link">First</a></li>
-            @for (int i = 1; i <= Model.PageNumber; i++)
-            {
-                string isActive = i == Model.CurrentPage ? "active" : string.Empty;
-                <li class="@($"page-item {@isActive}")"><a asp-action="Index" asp-controller="Home"
-                    asp-route-currentpage="@i" class="page-link">@i.ToString()</a></li>
-            }
-            <li class="page-item"><a asp-action="Index" asp-controller="Home" asp-route-currentpage="@Model.PageNumber"
-                    class="page-link">Last</a></li>
-        </ul>
+        <pagination pagination-data="@Model.PaginationData" current-url=""></pagination>
     </div>
 </div>

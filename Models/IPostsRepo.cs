@@ -7,7 +7,7 @@ public interface IPostsRepo
 
     Task<IEnumerable<Post>> RetrieveMultiplePosts(int skip, int take);
 
-    Task<IEnumerable<Post>> RetrieveMultiplePosts(string tagName, int skip = 0, int take = int.MaxValue);
+    Task<IEnumerable<Post>> RetrieveMultiplePosts(string? tagName, int skip = 0, int take = int.MaxValue);
 
     Task<Post?> RetrievePost(long id);
 
@@ -18,4 +18,6 @@ public interface IPostsRepo
     Task UpdatePost(Post post);
 
     Task<int> GetPostsCount();
+
+     Task<int> GetPostsCount(string? tagName);
 }

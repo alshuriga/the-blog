@@ -6,7 +6,7 @@ builder.Services.AddScoped<IPostsRepo, EFPostsRepo>();
 builder.Services.AddDbContext<MiniBlogDbContext>(opts =>
 
 {
-    opts.UseSqlServer(builder.Configuration.GetConnectionString("MiniBlogDbContext"));
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("MiniBlogDbContext"), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 });
 
 var app = builder.Build();

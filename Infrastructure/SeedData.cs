@@ -6,6 +6,7 @@ public static class SeedData
 {
     public static void EnsureSeed(this IApplicationBuilder app)
     {
+        
 
         var db = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<MiniBlogDbContext>();
 
@@ -30,5 +31,6 @@ public static class SeedData
             db.Posts?.AddRange(posts);
             db.SaveChanges();
         }
+    
     }
 }

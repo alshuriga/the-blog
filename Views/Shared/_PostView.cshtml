@@ -1,0 +1,31 @@
+ @model Post
+ 
+ <div class="card mt-5">
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="card-title">@Model.Header</h1>
+                        </div>
+                        <div class="col">
+                            <h6 class="text-end card-subtitle text-muted mt-1">@Model.DateTime.ToShortDateString()</h6>
+                        </div>
+                    </div>
+                    <p>@Model.Text </p>
+                </div>
+                <div class="card-footer">
+                    <div class="row mt-2">
+                        <div class="col">
+                            <h5>
+                                @foreach (Tag t in Model.Tags)
+                                {
+                                    <a asp-action="Index" asp-controller="Home" asp-route-tagname="@t.Name"
+                                class="btn btn-primary btn-sm text-light">@t.Name</a>
+                                }
+                            </h5>
+                        </div>
+                        <div class="col">
+                            <h5 class="float-end btn btn-sm btn-primary">Comments</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>

@@ -17,26 +17,18 @@ public class HomeController : Controller
         logger = _logger;
     }
 
-    [HttpGet("/{currentPage:int=1}")]
-    public async Task<ViewResult> Index(int currentPage)
-    {
-        int pageNumber = (await repo.GetPostsCount() / perPage) + 1;
-        int skip = currentPage <= 0 ? 0 : (currentPage -1)* perPage;
-        logger.LogDebug($"Skip = {skip.ToString()}");
-        var posts = await repo.RetrieveMultiplePosts(skip, perPage);
-        var model = new PostsPageViewModel(posts, currentPage, pageNumber);
+    [HttpGet("/{currentPage?}")]
+    [HttpGet("/tag/{tagName:alpha}/{currentPage?}")]
+    public async Task<ViewResult> Index(string? tagName, int currentPage = 1)
+    {   
+        int skip = currentPage <= 0 ? 0 : (currentPage - 1) * perPage;
+        int count = (tagName is null) ? await repo.GetPostsCount() : await repo.GetPostsCount(tagName);
+        var posts = (tagName is null) ? await repo.RetrieveMultiplePosts(skip, perPage): await repo.RetrieveMultiplePosts(tagName, skip, perPage);
+        int pageNumber = (int)Math.Ceiling(count / (float)perPage);
+        logger.LogDebug($"Page number: {pageNumber}\nCurrent page: {currentPage}, TagName: {tagName}");
+        var paginationData = new PaginationData() { CurrentPage = currentPage, PageNumber = pageNumber };
+        var model = new PostsPageViewModel(posts, paginationData, tagName);
         return View("Index", model);
     }
-
-    [HttpGet("/tag/{tagName:alpha}/{currentPage:int=1}")]
-    public async Task<IActionResult> ByTag(string? tagName, int currentPage)
-    {
-        int pageNumber = (await repo.GetPostsCount() / perPage) + 1;
-        int skip = currentPage <= 0 ? 0 : (currentPage -1)* perPage;
-        var posts = await repo.RetrieveMultiplePosts(tagName ?? string.Empty, skip, perPage);
-        var model = new PostsPageViewModel(posts, currentPage, pageNumber, tagName);
-        return View("Index", model);
-    }
-
 
 }
