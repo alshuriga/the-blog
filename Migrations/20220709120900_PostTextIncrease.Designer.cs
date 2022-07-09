@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniBlog.Models;
 
@@ -11,9 +12,10 @@ using MiniBlog.Models;
 namespace CampingAirbnb.Migrations
 {
     [DbContext(typeof(MiniBlogDbContext))]
-    partial class MiniBlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220709120900_PostTextIncrease")]
+    partial class PostTextIncrease
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +39,7 @@ namespace CampingAirbnb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("PostId")
+                    b.Property<long>("PostId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Text")
@@ -120,9 +122,13 @@ namespace CampingAirbnb.Migrations
 
             modelBuilder.Entity("MiniBlog.Models.Commentary", b =>
                 {
-                    b.HasOne("MiniBlog.Models.Post", null)
+                    b.HasOne("MiniBlog.Models.Post", "Post")
                         .WithMany("Commentaries")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("PostTag", b =>

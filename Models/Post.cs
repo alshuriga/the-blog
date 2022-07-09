@@ -12,14 +12,14 @@ public class Post
     [MaxLength(50)]
     public string Header { get; set; } = null!;
 
-    [MaxLength(250)]
+    [MaxLength(1000)]
     public string Text { get; set; } = null!;
 
     public DateTime DateTime { get; set; }
 
     public bool IsDraft { get; set; }
 
-    public List<Commentary>? Commentaries { get; set; }
+    public ICollection<Commentary> Commentaries { get; set; } = new List<Commentary>();
 
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
 

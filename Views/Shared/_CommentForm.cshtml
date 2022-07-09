@@ -1,0 +1,33 @@
+@model Commentary
+
+<form method="post" asp-action="Post" asp-controller="Home">
+    <h5>Add new comment</h5>
+    <div class="row">
+        <div class="col mt-2">
+            <div class="form-group">
+                <label class="form-label" asp-for="Username">Username</label>
+                <input name="Username" class="form-control" id="Email" />
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Username"></span></div>
+            </div>
+        </div>
+        <div class="w-100 d-md-none d-block"></div>
+        <div class="col mt-2">
+             <div class="form-group">
+                <label class="form-label" asp-for="Email">Email</label>
+                <input name="Email" class="form-control" id="Email" />
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Email"></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mt-2">
+            <div class="form-group">
+                <label class="form-label"  asp-for="Text">Commentary</label>
+                <textarea name="Text" class="form-control" id="comment"></textarea>
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Text"></span></div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Post comment</button>
+        </div>
+    </div>
+
+</form>

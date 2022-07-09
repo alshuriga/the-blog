@@ -1,17 +1,25 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Html;
 
 namespace MiniBlog.TagHelpers;
 
 public class PaginationTagHelper : TagHelper
 {
-    public string BaseUrl { get; set; } = null!;
+
+    [ViewContext]
+    [HtmlAttributeNotBound]
+    public ViewContext ViewContext { get; set; } = null!;
+    public string? ActionName { get; set; }
     public PaginationData PaginationData { get; set; } = null!;
-
-    public string? AspController { get; set; }
-    public string AspAction { get; set; } = null!;
-
+    private IUrlHelperFactory factory;
+    public PaginationTagHelper(IUrlHelperFactory _factory)
+    {
+        factory = _factory;
+    }
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         int paginationFrom = PaginationData.CurrentPage <= 1 ? 1 : PaginationData.CurrentPage - 1;
@@ -20,7 +28,6 @@ public class PaginationTagHelper : TagHelper
         string lastPageClass = PaginationData.CurrentPage >= PaginationData.PageNumber ? "disabled" : "";
         output.TagName = "ul";
         output.Attributes.SetAttribute("class", "pagination justify-content-center");    
-        if(AspController is not null)  output.Attributes.SetAttribute("asp-controller", "pagination justify-content-center");    
         var builder = new HtmlContentBuilder();
 
         builder.AppendHtml(GetTag(1, firstPageClass, "First"));
@@ -38,8 +45,10 @@ public class PaginationTagHelper : TagHelper
 
     public TagBuilder GetTag(int linkPage, string pageClass = "", string? aContent = null)
     {
+            IUrlHelper helper = factory.GetUrlHelper(ViewContext);
+            string? url = helper.ActionLink(values: new {currentPage = linkPage, tagName = ViewContext.RouteData.Values["tagName"]});
             var a = new TagBuilder("a");
-            a.Attributes.Add("href", $"{BaseUrl}/{linkPage}");
+            a.Attributes.Add("href", $"{url}");
             a.Attributes.Add("class", "page-link");
             a.InnerHtml.Append(aContent ?? linkPage.ToString());
             var li = new TagBuilder("li");

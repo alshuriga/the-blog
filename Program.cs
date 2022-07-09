@@ -1,7 +1,10 @@
 using MiniBlog.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPostsRepo, EFPostsRepo>();
 builder.Services.AddDbContext<MiniBlogDbContext>(opts =>
 

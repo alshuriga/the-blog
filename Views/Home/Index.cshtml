@@ -4,17 +4,20 @@
 <div class="row pt-5" id="posts row">
     @if (Model.TagName is not null)
     {
-        <div class="display-4 mt-2">Posts with <strong>@Model.TagName</strong> tag</div>
+        <div class="display-4 mt-2">@Model.Posts.Count() posts with <strong>@Model.TagName</strong> tag</div>
     }
     <div class="col">
         @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
         {
-            <partial name="_PostView" for="@p" />
+            await Html.RenderPartialAsync("_PostView", new PostPartialViewModel {Post = p, CommentsButton = true });
         }
     </div>
 </div>
-<div class="row mt-4" id="pagination-row">
-    <div class="col">
-        <pagination pagination-data="@Model.PaginationData" current-url=""></pagination>
+@if (Model.PaginationData != null)
+{
+    <div class="row mt-4" id="pagination-row">
+        <div class="col">
+            <pagination pagination-data="@Model.PaginationData"></pagination>
+        </div>
     </div>
-</div>
+}

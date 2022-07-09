@@ -6,13 +6,12 @@ public static class SeedData
 {
     public static void EnsureSeed(this IApplicationBuilder app)
     {
-        
+
 
         var db = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<MiniBlogDbContext>();
 
         if (db.Database.GetPendingMigrations().Any())
         {
-            Console.WriteLine("MIGRATION");
             db.Database.Migrate();
         }
 
@@ -31,6 +30,6 @@ public static class SeedData
             db.Posts?.AddRange(posts);
             db.SaveChanges();
         }
-    
+
     }
 }

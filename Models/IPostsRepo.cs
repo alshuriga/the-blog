@@ -13,6 +13,8 @@ public interface IPostsRepo
 
     Task CreatePost(Post post);
 
+    Task AddComment(Commentary commentary, long postId);
+
     Task DeletePost(long id);
 
     Task UpdatePost(Post post);
