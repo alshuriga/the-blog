@@ -66,19 +66,54 @@ public class HomeController : Controller
         return View(post);
 
     }
-    
+
     [HttpPost("/post/{postId:long}")]
     public async Task<IActionResult> Post(Commentary? comment, long postId)
     {
         logger.LogDebug($"POST method. ModelState: {ModelState.IsValid}");
-        logger.LogDebug(String.Join(",", ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).AsEnumerable())));
-        logger.LogDebug($"Comment Username: {comment?.Username}\nComment Text: {comment?.Text}\nComment Email: {comment?.Email}\nComment DateTime: {comment?.DateTime}\n");
+        logger.LogDebug("\nModelState Errors:" + String.Join("\n", ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).AsEnumerable())));
+        logger.LogDebug($"\nComment info:\nComment Username: {comment?.Username}\nComment Text: {comment?.Text}\nComment Email: {comment?.Email}\nComment DateTime: {comment?.DateTime}\n");
         if (comment != null && ModelState.IsValid)
         {
             await repo.AddComment(comment, postId);
-            RedirectToAction("Post", postId);
+            RedirectToAction(nameof(Post));
         }
         return View(nameof(Post), await repo.RetrievePost(postId));
     }
+
+    [HttpGet("post/new")]
+    public IActionResult NewPost()
+    {
+        return View();
+    }
+
+    [HttpPost("post/new")]
+    public async Task<IActionResult> NewPost(PostEditViewModel? postModel)
+    {
+        if (ModelState.IsValid && postModel != null)
+        {
+            if (postModel.Post is not null)
+            {
+                Post post = postModel.Post;
+
+                if (!String.IsNullOrWhiteSpace(postModel.TagString))
+                {
+                    foreach (string t in postModel.TagString.Split(","))
+                    {
+                        Tag? tag = await repo.CreateOrRetrieveTag(t);
+                        if(tag != null)
+                        post.Tags.Add(tag);
+                    }
+                }
+                long? id = await repo.CreatePost(post);
+                logger.LogDebug($"Post id (controller-side): {id.ToString()}");
+                if(id is null) return NotFound();
+                return RedirectToAction(nameof(Post), new {postId = id});
+                
+            }
+        }
+        return View(nameof(Post));
+    }
+
 
 }

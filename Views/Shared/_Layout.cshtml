@@ -5,14 +5,25 @@
     <title>MiniBlog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+    <script src="/lib/jquery/jquery.min.js"></script>
 </head>
 
 <body>
-    <div class="container mt-5 mb-5">
-        <div class="display-2"><a href="/" class="text-decoration-none link-dark">MiniBlog Application</a> <h5 class="text-muted fw-light mt-2">by Oleksandr Shuryha</h5></div>
+
+<div class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+    <a asp-action="Index" asp-controller="Home" class="navbar-brand">MiniBlog</a>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="NewPost" asp-controller="Home">New Post</a>
+        </li>
+    </ul>
+    </div>
+</div>
+
+    <div class="container">
         @RenderBody()
     </div>
-
 </body>
 
 </html>

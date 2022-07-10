@@ -12,14 +12,15 @@ public class Commentary
 
     [MinLength(1)]
     [MaxLength(50)]
-    [Required(ErrorMessage = "Please specify a username")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Please specify a username")]
     public string Username { get; set; } = null!;
 
-    [Required(ErrorMessage = "Please specify an email address")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Please specify an email address")]
+    [EmailAddress(ErrorMessage = "Incorrect email address")]
     public string Email { get; set; } = null!;
 
     [MaxLength(250, ErrorMessage = "Maximum message length is 250 characters")]
-    [Required(ErrorMessage = "Text field cannot be empty")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Text field cannot be empty")]
     public string Text { get; set; } = null!;
 
     [BindNever]

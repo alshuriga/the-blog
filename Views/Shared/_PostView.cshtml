@@ -7,10 +7,10 @@
                 <h1 class="card-title">@Model.Post.Header</h1>
             </div>
             <div class="col">
-                <h6 class="text-end card-subtitle text-muted mt-1">@Model.Post.DateTime.ToShortDateString()</h6>
+                 <p class="text-end font-weight-light">@Model.Post.DateTime.ToString("MMMM dd, yyyy"), @Model.Post.DateTime.ToShortTimeString()</p>
             </div>
         </div>
-        <p>@Model.Post.Text </p>
+        <div class="mt-4"><p>@Model.Post.Text </p></div>
     </div>
     <div class="card-footer">
         <div class="row mt-2">
