@@ -1,6 +1,6 @@
 namespace MiniBlog.Models;
 
-public class PostsPageViewModel 
+public class MultiplePostsPageViewModel 
 {
     public IEnumerable<Post> Posts {get; set; } = Enumerable.Empty<Post>();
     public PaginationData? PaginationData { get; set; }

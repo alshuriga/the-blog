@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniBlog.Models;
 
@@ -11,9 +12,10 @@ using MiniBlog.Models;
 namespace CampingAirbnb.Migrations
 {
     [DbContext(typeof(MiniBlogDbContext))]
-    partial class MiniBlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220710191703_PostTag")]
+    partial class PostTag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,8 +44,8 @@ namespace CampingAirbnb.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Username")
                         .IsRequired()

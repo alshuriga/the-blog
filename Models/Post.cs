@@ -7,7 +7,6 @@ namespace MiniBlog.Models;
 
 public class Post
 {
-    [BindNever]
     public long PostId { get; set; }
 
     [MaxLength(50, ErrorMessage = "Maximum text length is 50 characters")]
@@ -25,7 +24,7 @@ public class Post
 
     [BindNever]
     public ICollection<Commentary> Commentaries { get; set; } = new List<Commentary>();
-
+    
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
 

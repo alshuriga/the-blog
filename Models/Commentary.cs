@@ -19,7 +19,7 @@ public class Commentary
     [EmailAddress(ErrorMessage = "Incorrect email address")]
     public string Email { get; set; } = null!;
 
-    [MaxLength(250, ErrorMessage = "Maximum message length is 250 characters")]
+    [MaxLength(150, ErrorMessage = "Maximum message length is 150 characters")]
     [Required(AllowEmptyStrings = false, ErrorMessage = "Text field cannot be empty")]
     public string Text { get; set; } = null!;
 

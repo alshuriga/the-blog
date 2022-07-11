@@ -26,6 +26,10 @@
       "files": [
         "jquery.validate.unobtrusive.js"
       ]
+    },
+    {
+      "library": "font-awesome@6.1.1",
+      "destination": "wwwroot/lib/font-awesome"
     }
   ]
 }

@@ -11,9 +11,13 @@ public interface IPostsRepo
 
     Task<Post?> RetrievePost(long id);
 
+    Task<Post?> RetrievePost(long id, int commentsSkip, int commentsTake);
+
     Task<long?> CreatePost(Post post);
 
     Task AddComment(Commentary commentary, long postId);
+
+    Task DeleteComment(long commId);
 
     Task DeletePost(long id);
 
@@ -22,6 +26,8 @@ public interface IPostsRepo
     Task<int> GetPostsCount();
 
     Task<int> GetPostsCount(string? tagName);
+
+    Task<int> GetCommentsCount(long postId);
 
     Task<Tag?> CreateOrRetrieveTag(string TagName);
 }

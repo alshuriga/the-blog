@@ -8,6 +8,8 @@ public class MiniBlogDbContext : DbContext
 
     public DbSet<Tag> Tags => Set<Tag>();
 
+    public DbSet<Commentary> Commentaries => Set<Commentary>();
+
     public MiniBlogDbContext(DbContextOptions<MiniBlogDbContext> options) : base(options)
     {
         

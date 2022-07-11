@@ -1,16 +1,19 @@
-@model PostPartialViewModel
+@model SinglePostPartialViewModel
 
 <div class="card mt-5">
     <div class="card-body p-4">
         <div class="row">
             <div class="col">
-                <h1 class="card-title">@Model.Post.Header</h1>
+                <a asp-action="Post" asp-controller="Home" asp-route-postid="@Model.Post.PostId" class="text-black text-decoration-none"><h1 class="card-title">@Model.Post.Header</h1></a> 
             </div>
             <div class="col">
-                 <p class="text-end font-weight-light">@Model.Post.DateTime.ToString("MMMM dd, yyyy"), @Model.Post.DateTime.ToShortTimeString()</p>
+                <p class="text-end font-weight-light">@Model.Post.DateTime.ToString("MMMM dd, yyyy"),
+                    @Model.Post.DateTime.ToShortTimeString()</p>
             </div>
         </div>
-        <div class="mt-4"><p>@Model.Post.Text </p></div>
+        <div class="mt-4">
+            <p>@Model.Post.Text </p>
+        </div>
     </div>
     <div class="card-footer">
         <div class="row mt-2">
@@ -19,7 +22,7 @@
                     @foreach (Tag t in Model.Post.Tags)
                     {
                         <a asp-action="ByTag" asp-controller="Home" asp-route-tagname="@t.Name"
-                        class="btn btn-primary btn-sm text-light">@t.Name</a>
+                        class="btn btn-secondary btn-sm text-light">@t.Name</a>
                     }
                 </h5>
             </div>
@@ -27,10 +30,22 @@
                 @if (@Model.CommentsButton)
                 {
                     <a asp-action="Post" asp-controller="Home" asp-route-postid="@Model.Post.PostId">
-                        <h5 class="float-end btn btn-sm btn-primary">Comments</h5>
+                        <button class="float-end btn btn-outline-secondary">Comments (@Model.CommentCount.ToString())<i class="fa-regular fa-comment-dots ms-2"></i></button>
                     </a>
                 }
-
+                <div class="btn-group float-end">
+                    <div class="btn btn-outline-secondary dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="me-2">Options</span></div>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item"><button class="btn"><a asp-action="EditPost" asp-controller="Home"
+                                asp-route-postid="@Model.Post.PostId" class="text-black text-decoration-none">Edit</a></button></li>
+                        <li class="dropdown-item">
+                            <form method="post" asp-action="DeletePost" asp-controller="Home" asp-route-postid="@Model.Post.PostId">
+                                <button type="submit" class="btn">Delete</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

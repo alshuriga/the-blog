@@ -1,33 +1,34 @@
-@model Commentary
+@model CommentaryPartialViewModel
 @{
     await Html.RenderPartialAsync("_ClientValidationScriptsPartial");
 }
 
-<form method="post" asp-action="Post" asp-controller="Home">
+<form method="post" asp-action="AddComment" asp-controller="Home">
+    <input type="hidden" asp-for="postId" value="@Model.postId">
     <h5>Add new comment</h5>
     <div class="row">
         <div class="col mt-2">
             <div class="form-group">
-                <label class="form-label" asp-for="Username">Username</label>
-                <input asp-for="Username" class="form-control" id="Email" />
-                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Username"></span></div>
+                <label class="form-label" asp-for="@Model.Commentary.Username">Username</label>
+                <input asp-for="@Model.Commentary.Username" class="form-control" id="Email" />
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="@Model.Commentary.Username"></span></div>
             </div>
         </div>
         <div class="w-100 d-md-none d-block"></div>
         <div class="col mt-2">
              <div class="form-group">
-                <label class="form-label" asp-for="Email">Email</label>
-                <input asp-for="Email" class="form-control" id="Email" />
-                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Email"></span></div>
+                <label class="form-label" asp-for="@Model.Commentary.Email">Email</label>
+                <input asp-for="@Model.Commentary.Email" class="form-control" id="Email" />
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="@Model.Commentary.Email"></span></div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col mt-2">
             <div class="form-group">
-                <label class="form-label"  asp-for="Text">Commentary</label>
-                <textarea asp-for="Text" class="form-control" id="comment"></textarea>
-                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Text"></span></div>
+                <label class="form-label"  asp-for="@Model.Commentary.Text">Commentary</label>
+                <textarea asp-for="@Model.Commentary.Text" class="form-control" id="comment"></textarea>
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="@Model.Commentary.Text"></span></div>
             </div>
             <button type="submit" class="btn btn-primary mt-2">Post comment</button>
         </div>
