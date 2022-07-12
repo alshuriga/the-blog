@@ -14,6 +14,7 @@ builder.Services.AddDbContext<MiniBlogDbContext>(opts =>
 
 var app = builder.Build();
 
+app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();
 app.EnsureSeed();
 app.MapDefaultControllerRoute();

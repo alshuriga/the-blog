@@ -17,7 +17,6 @@ public class Post
     [Required(AllowEmptyStrings = false, ErrorMessage = "Text field cannot be empty")]
     public string Text { get; set; } = null!;
 
-    [BindNever]
     public DateTime DateTime { get; set; } = DateTime.Now;
 
     public bool IsDraft { get; set; }

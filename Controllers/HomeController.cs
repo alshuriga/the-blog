@@ -77,18 +77,23 @@ public class HomeController : Controller
 
     }
 
-    [HttpPost("/post/AddComment")]
-    public async Task<IActionResult> AddComment(CommentaryPartialViewModel model)
+    [HttpPost("/post/AddComment/{postId:long}")]
+    public async Task<IActionResult> AddComment(Commentary model, long postId)
     {
-        logger.LogDebug($"POST method. Comment adding post ID: {model.postId}");
+        logger.LogDebug($"POST method. Comment adding post ID: {postId}");
         logger.LogDebug($"POST method. ModelState: {ModelState.IsValid}");
         logger.LogDebug("\nModelState Errors:" + String.Join("\n", ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).AsEnumerable())));
-        logger.LogDebug($"\nComment info:\nComment Username: {model.Commentary?.Username}\nComment Text: {model.Commentary?.Text}\nComment Email: {model.Commentary?.Email}\nComment DateTime: {model.Commentary?.DateTime}\n");
-        if (model.Commentary != null && ModelState.IsValid)
+        logger.LogDebug($"\nComment info:\nComment Username: {model?.Username}\nComment Text: {model?.Text}\nComment Email: {model?.Email}\nComment DateTime: {model?.DateTime}\n");
+        
+        if(model == null ) throw new ArgumentNullException("Commentary model is null");
+
+        if (!ModelState.IsValid)
         {
-            await repo.AddComment(model.Commentary, model.postId);
-        }
-        return RedirectToAction(nameof(Post), routeValues: new { postId = model.postId });
+           return BadRequest();
+        } 
+        await repo.AddComment(model, postId);
+        return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
+      
     }
 
     [HttpPost("/post/delete/{postId:long}")]

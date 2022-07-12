@@ -20,7 +20,7 @@
     <div class="col">
         <div class="card border-light p-4 bg-primary bg-opacity-10">
             @{
-                await Html.RenderPartialAsync("_CommentForm", new CommentaryPartialViewModel() { Commentary = new Commentary(), postId = Model.Post.PostId});
+                await Html.RenderPartialAsync("_CommentForm", new Commentary(), new ViewDataDictionary(this.ViewData){{"postId", Model.Post.PostId}});
             }
         </div>
     </div>

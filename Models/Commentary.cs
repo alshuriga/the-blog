@@ -10,6 +10,9 @@ public class Commentary
     [BindNever]
     public long CommentaryId { get; set; }
 
+    [BindNever]
+    public Post? Post {get; set;}
+
     [MinLength(1)]
     [MaxLength(50)]
     [Required(AllowEmptyStrings = false, ErrorMessage = "Please specify a username")]
