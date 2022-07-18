@@ -21,7 +21,6 @@ public class Post
 
     public bool IsDraft { get; set; }
 
-    [BindNever]
     public ICollection<Commentary> Commentaries { get; set; } = new List<Commentary>();
     
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();

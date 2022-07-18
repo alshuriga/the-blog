@@ -12,7 +12,7 @@
     <div class="col">
         @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
         {
-            await Html.RenderPartialAsync("_PostView", new SinglePostPartialViewModel { Post = p, CommentsButton = true, CommentCount = @p.Commentaries.Count});
+            await Html.RenderPartialAsync("_PostView", new PostPartialViewModel { Post = p, CommentsButton = true, CommentCount = @p.Commentaries.Count});
         }
     </div>
 </div>

@@ -1,7 +1,7 @@
-@model Commentary
+@model CommentaryViewModel
 @{
     await Html.RenderPartialAsync("_ClientValidationScriptsPartial");
-    long postId = (long)(ViewData["postId"] ?? default(long));
+    long postId = ViewBag.PostId;
 }
 
 <form method="post" asp-action="AddComment" asp-controller="Home" asp-route-postid="@postId">

@@ -3,25 +3,22 @@
 
 <div class="row-cols-1">
     @{
-        await Html.RenderPartialAsync("_PostView", new SinglePostPartialViewModel { Post = Model.Post, CommentsButton = false});
+        await Html.RenderPartialAsync("_PostView", new PostPartialViewModel
+        {
+            Post = Model.Post,
+            CommentsButton =
+            false
+        });
     }
 </div>
 <div class="row-cols-1 pt-5">
     <h5>@(Model.CommentsCount == 0 ? "No comments. Be the first!" : $"{Model.CommentsCount} comment(s)")
     </h5>
 </div>
-
-@* <div class="row pt-4">
-    <div class="col">
-    @{await Html.RenderPartialAsync("_CommentForm", new Commentary());}
-    </div>
-    </div> *@
 <div class="row mt-4">
     <div class="col">
         <div class="card border-light p-4 bg-primary bg-opacity-10">
-            @{
-                await Html.RenderPartialAsync("_CommentForm", new Commentary(), new ViewDataDictionary(this.ViewData){{"postId", Model.Post.PostId}});
-            }
+            <vc:add-comment post-id="@Model.Post.PostId" />
         </div>
     </div>
     <div class="w-100 d-md-none d-block"></div>
@@ -35,6 +32,7 @@
                             <div class="row">
                                 <div class="col float-start">
                                     <h4>@com.Username</h4>
+                                    <h6>@Html.DisplayFor(Model => com.Email, "EmailAddress")</h6>
                                 </div>
                                 <div class="col float-end">
                                     <p class="text-end font-weight-light">@com.DateTime.ToString("MMMM dd, yyyy"),
@@ -46,16 +44,18 @@
                             @com.Text
                         </div>
                         <div class="card-footer p-0">
-                            <form method="post" asp-action="DeleteComment" asp-controller="Home" asp-route-commid="@com.CommentaryId">
+                            <form method="post" asp-action="DeleteComment" asp-controller="Home"
+                            asp-route-commid="@com.CommentaryId">
                                 <input name="returnId" type="hidden" value="@Model.Post.PostId">
-                                <button class="btn m-2 btn-sm float-end btn-secondary" type="submit"><i class="me-2 fa-solid fa-trash-can"></i>Delete</button>
+                                <button class="btn m-2 btn-sm float-end btn-secondary" type="submit"><i
+                                    class="me-2 fa-solid fa-trash-can"></i>Delete</button>
                             </form>
                         </div>
                     </div>
                 }
-                @if(Model.CommentsPaginationData != null)
+                @if (Model.CommentsPaginationData != null)
                 {
-                <pagination pagination-data="@Model.CommentsPaginationData"></pagination>
+                    <pagination pagination-data="@Model.CommentsPaginationData"></pagination>
                 }
             </div>
         </div>

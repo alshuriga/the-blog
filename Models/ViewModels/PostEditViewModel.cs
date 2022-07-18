@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace MiniBlog.Models;
 
 
-public class SinglePostEditViewModel
+public class PostEditViewModel
 {
     public Post Post {get; set; } = null!;
 

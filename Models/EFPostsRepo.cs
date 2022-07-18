@@ -4,7 +4,6 @@ namespace MiniBlog.Models;
 public partial class EFPostsRepo : IPostsRepo
 {
 
-    //POSTS
     private MiniBlogDbContext context;
 
     private ILogger<EFPostsRepo> logger;
@@ -57,10 +56,10 @@ public partial class EFPostsRepo : IPostsRepo
         return await context.Posts.Include(p => p.Commentaries.OrderByDescending(c => c.DateTime)).Include(p => p.Tags).Where(p => p.PostId == id).FirstOrDefaultAsync();
     }
 
-     public async Task<Post?> RetrievePost(long id, int commentsSkip, int commentsTake)
+    public async Task<Post?> RetrievePost(long id, int commentsSkip, int commentsTake)
     {
         Post? post = await context.Posts.Include(p => p.Tags).Where(p => p.PostId == id).FirstOrDefaultAsync();
-        if(post is null) return null;
+        if (post is null) return null;
         post.Commentaries = await context.Commentaries.Where(c => post.Commentaries.Contains(c)).OrderByDescending(c => c.DateTime).Skip(commentsSkip).Take(commentsTake).ToListAsync();
         return post;
     }
@@ -121,14 +120,14 @@ public partial class EFPostsRepo : IPostsRepo
     public async Task<int> GetCommentsCount(long postId)
     {
         Post? post = await context.Posts.Include(p => p.Commentaries).FirstOrDefaultAsync(p => p.PostId == postId);
-        if(post == null) return 0;
+        if (post == null) return 0;
         return await context.Commentaries.Where(c => post.Commentaries.Contains(c)).CountAsync();
     }
 
     public async Task DeleteComment(long commId)
     {
         Commentary? comment = await context.Commentaries.FirstOrDefaultAsync(c => c.CommentaryId == commId);
-        if(comment != null)
+        if (comment != null)
         {
             context.Remove(comment);
             await context.SaveChangesAsync();

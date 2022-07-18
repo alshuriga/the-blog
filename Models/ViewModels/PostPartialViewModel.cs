@@ -1,6 +1,6 @@
 namespace MiniBlog.Models;
 
-public class SinglePostPartialViewModel
+public class PostPartialViewModel
 {
     public Post Post { get; set; } = null!;
     public int CommentCount { get; set;}

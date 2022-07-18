@@ -1,15 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace MiniBlog.Controllers;
 
 public class HomeController : Controller
 {
-
     const int postsPerPage = 5;
     const int commentsPerPage = 5;
     private IPostsRepo repo;
-
     private ILogger logger;
 
     private IHttpContextAccessor context;
@@ -27,11 +24,8 @@ public class HomeController : Controller
     [HttpGet("/{currentPage?}")]
     public async Task<ViewResult> Index(int currentPage = 1)
     {
-        int skip = currentPage <= 0 ? 0 : (currentPage - 1) * postsPerPage;
-        int count = await repo.GetPostsCount();
-        var posts = await repo.RetrieveMultiplePosts(skip, postsPerPage);
-        int pageNumber = (int)Math.Ceiling(count / (float)postsPerPage);
-        var paginationData = new PaginationData() { CurrentPage = currentPage, PageNumber = pageNumber };
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, await repo.GetPostsCount());
+        var posts = await repo.RetrieveMultiplePosts(paginationData?.SkipNumber ?? 0, postsPerPage);
         var model = new MultiplePostsPageViewModel
         {
             Posts = posts,
@@ -43,12 +37,9 @@ public class HomeController : Controller
     [HttpGet("/tag/{tagName:alpha}/{currentPage?}")]
     public async Task<ViewResult> ByTag(string tagName, int currentPage = 1)
     {
-        int skip = currentPage <= 0 ? 0 : (currentPage - 1) * postsPerPage;
-        int count = await repo.GetPostsCount(tagName);
-        var posts = await repo.RetrieveMultiplePosts(tagName, skip, postsPerPage);
-        int pageNumber = (int)Math.Ceiling(count / (float)postsPerPage);
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, await repo.GetPostsCount());
+        var posts = await repo.RetrieveMultiplePosts(tagName, paginationData?.SkipNumber ?? 0, postsPerPage);
         string? url = linkGenerator.GetPathByAction(context.HttpContext!, "Index");
-        PaginationData? paginationData = count > postsPerPage ? new PaginationData() { CurrentPage = currentPage, PageNumber = pageNumber } : null;
         var model = new MultiplePostsPageViewModel
         {
             Posts = posts,
@@ -62,38 +53,35 @@ public class HomeController : Controller
     [HttpGet("/post/{postId:long}/{currentPage:int?}")]
     public async Task<IActionResult> Post(long postId, int currentPage = 1)
     {
-        int count = await repo.GetCommentsCount(postId);
-
-        int pageNumber = (int)Math.Ceiling((int)count / (float)commentsPerPage);
-        int skip = currentPage <= 1 ? 0 : (currentPage - 1) * commentsPerPage;
-        Post? post = await repo.RetrievePost(postId, skip, commentsPerPage);
+        int commentsCount = await repo.GetCommentsCount(postId);
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, commentsCount);
+        Post? post = await repo.RetrievePost(postId, paginationData?.SkipNumber ?? 0, commentsPerPage);
         if (post == null) return NotFound();
-
         string? url = linkGenerator.GetPathByAction(context.HttpContext!, action: nameof(Post), values: new { postId = postId });
-        PaginationData? paginationData = count > commentsPerPage ? new PaginationData() { CurrentPage = currentPage, PageNumber = pageNumber, UrlAddress = url } : null;
-        SinglePostPageViewModel model = new() { Post = post, CommentsPaginationData = paginationData, CommentsCount = count };
+        var model = new SinglePostPageViewModel()
+        {
+            Post = post,
+            CommentsPaginationData = paginationData,
+            CommentsCount = commentsCount
+        };
 
         return View(model);
 
     }
 
     [HttpPost("/post/AddComment/{postId:long}")]
-    public async Task<IActionResult> AddComment(Commentary model, long postId)
+    public async Task<IActionResult> AddComment(CommentaryViewModel model, long postId)
     {
-        logger.LogDebug($"POST method. Comment adding post ID: {postId}");
-        logger.LogDebug($"POST method. ModelState: {ModelState.IsValid}");
-        logger.LogDebug("\nModelState Errors:" + String.Join("\n", ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).AsEnumerable())));
-        logger.LogDebug($"\nComment info:\nComment Username: {model?.Username}\nComment Text: {model?.Text}\nComment Email: {model?.Email}\nComment DateTime: {model?.DateTime}\n");
-        
-        if(model == null ) throw new ArgumentNullException("Commentary model is null");
+        if (model == null) throw new ArgumentNullException("Commentary model is null");
 
+        Commentary comment = new Commentary() { Username = model.Username, Text = model.Text, Email = model.Email };
         if (!ModelState.IsValid)
         {
-           return BadRequest();
-        } 
-        await repo.AddComment(model, postId);
+            return BadRequest();
+        }
+        await repo.AddComment(comment, postId);
         return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
-      
+
     }
 
     [HttpPost("/post/delete/{postId:long}")]
@@ -116,16 +104,16 @@ public class HomeController : Controller
             Post? Post = await repo.RetrievePost(postId.GetValueOrDefault());
             if (Post is null) return NotFound();
             string tagString = String.Join(",", Post.Tags.Select(t => t.Name).AsEnumerable());
-            SinglePostEditViewModel model = new() { Post = Post, TagString = tagString };
+            PostEditViewModel model = new() { Post = Post, TagString = tagString };
             return View(model);
         }
         ViewData["title"] = "New Post";
-        SinglePostEditViewModel newModel = new() { Post = new Post() };
+        PostEditViewModel newModel = new() { Post = new Post() };
         return View(newModel);
     }
 
     [HttpPost("/post/save")]
-    public async Task<IActionResult> SavePost(SinglePostEditViewModel? postModel)
+    public async Task<IActionResult> SavePost(PostEditViewModel? postModel)
     {
         if (ModelState.IsValid && postModel != null)
         {
@@ -144,7 +132,6 @@ public class HomeController : Controller
                 }
             }
             logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
-
             long? returnId;
             if (post.PostId != 0)
             {
