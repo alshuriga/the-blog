@@ -33,22 +33,21 @@ public partial class EFPostsRepo : IPostsRepo
         }
     }
 
-    public async Task<IEnumerable<Post>> RetrieveMultiplePosts()
-    {
-        return await context.Posts.Include(p => p.Commentaries).Include(p => p.Tags).OrderByDescending(p => p.DateTime).ToListAsync();
-    }
 
-    public async Task<IEnumerable<Post>> RetrieveMultiplePosts(int skip, int take)
+    public async Task<IEnumerable<Post>> RetrieveMultiplePosts(int skip = 0, int take = int.MaxValue, string? tagName = null)
     {
-        return await context.Posts.Include(p => p.Commentaries).Include(p => p.Tags).OrderByDescending(p => p.DateTime).Skip(skip).Take(take).ToListAsync();
-    }
+        if (tagName != null)
+        {
+            tagName = tagName.Trim().ToLower();
+            Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName);
+            if (tag is null) return Enumerable.Empty<Post>();
+            return await context.Posts.Include(p => p.Tags).Where(p => p.Tags.Contains(tag)).OrderByDescending(p => p.DateTime).Skip(skip).Take(take).ToListAsync();
+        }
+        else
+        {
+            return await context.Posts.Include(p => p.Commentaries).Include(p => p.Tags).OrderByDescending(p => p.DateTime).Skip(skip).Take(take).ToListAsync();
+        }
 
-    public async Task<IEnumerable<Post>> RetrieveMultiplePosts(string? tagName, int skip = 0, int take = int.MaxValue)
-    {
-        if (tagName == null) return Enumerable.Empty<Post>();
-        Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
-        if (tag is null) return Enumerable.Empty<Post>();
-        return await context.Posts.Include(p => p.Tags).Where(p => p.Tags.Contains(tag)).OrderByDescending(p => p.DateTime).Skip(skip).Take(take).ToListAsync();
     }
 
     public async Task<Post?> RetrievePost(long id)
@@ -66,27 +65,21 @@ public partial class EFPostsRepo : IPostsRepo
 
     public async Task UpdatePost(Post post)
     {
-        Post? existing = await context.Posts.Include(t => t.Tags).FirstOrDefaultAsync(p => p.PostId == post.PostId);
+        Post? existing = await context.Posts.Include(t => t.Tags).FirstAsync(p => p.PostId == post.PostId);
+        context.Entry(existing).CurrentValues.SetValues(post);
+        existing.Tags = post.Tags;
+        await context.SaveChangesAsync();
+    }
 
-        if (existing is not null)
+    public async Task<int> GetPostsCount(string? tagName = null)
+    {
+        if (tagName != null)
         {
-            context.Entry(existing).CurrentValues.SetValues(post);
-            existing.Tags = post.Tags;
-            await context.SaveChangesAsync();
+            Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
+            if (tag is null) return 0;
+            return await context.Posts.Where(p => p.Tags.Contains(tag)).CountAsync();
         }
-
-    }
-
-    public async Task<int> GetPostsCount()
-    {
         return await context.Posts.CountAsync();
-    }
-
-    public async Task<int> GetPostsCount(string? tagName)
-    {
-        Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name == tagName);
-        if (tag is null) return 0;
-        return await context.Posts.Where(p => p.Tags.Contains(tag)).CountAsync();
     }
 
     public async Task AddComment(Commentary? commentary, long postId)

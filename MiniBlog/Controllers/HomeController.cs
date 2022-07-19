@@ -21,31 +21,20 @@ public class HomeController : Controller
         linkGenerator = _linkGenerator;
     }
 
-    [HttpGet("/{currentPage?}")]
-    public async Task<ViewResult> Index(int currentPage = 1)
+    [HttpGet("/{currentPage:int?}")]
+    [HttpGet("/tag/{tagName:alpha}/{currentPage:int?}")]
+    public async Task<IActionResult> Index(int currentPage = 1, string? tagName = null)
     {
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, await repo.GetPostsCount());
-        var posts = await repo.RetrieveMultiplePosts(paginationData?.SkipNumber ?? 0, postsPerPage);
-        var model = new MultiplePostsPageViewModel
-        {
-            Posts = posts,
-            PaginationData = paginationData
-        };
-        return View("Index", model);
-    }
+        var posts = tagName is null ? 
+            await repo.RetrieveMultiplePosts(paginationData?.SkipNumber ?? 0, postsPerPage)
+            : await repo.RetrieveMultiplePosts(paginationData?.SkipNumber ?? 0, postsPerPage, tagName);
 
-    [HttpGet("/tag/{tagName:alpha}/{currentPage?}")]
-    public async Task<ViewResult> ByTag(string tagName, int currentPage = 1)
-    {
-        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, await repo.GetPostsCount());
-        var posts = await repo.RetrieveMultiplePosts(tagName, paginationData?.SkipNumber ?? 0, postsPerPage);
-        string? url = linkGenerator.GetPathByAction(context.HttpContext!, "Index");
         var model = new MultiplePostsPageViewModel
         {
             Posts = posts,
             PaginationData = paginationData,
-            TagName = tagName,
-            Url = url
+            TagName = tagName
         };
         return View("Index", model);
     }
@@ -57,7 +46,6 @@ public class HomeController : Controller
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, commentsCount);
         Post? post = await repo.RetrievePost(postId, paginationData?.SkipNumber ?? 0, commentsPerPage);
         if (post == null) return NotFound();
-        string? url = linkGenerator.GetPathByAction(context.HttpContext!, action: nameof(Post), values: new { postId = postId });
         var model = new SinglePostPageViewModel()
         {
             Post = post,
@@ -72,8 +60,6 @@ public class HomeController : Controller
     [HttpPost("/post/AddComment/{postId:long}")]
     public async Task<IActionResult> AddComment(CommentaryViewModel model, long postId)
     {
-        if (model == null) throw new ArgumentNullException("Commentary model is null");
-
         Commentary comment = new Commentary() { Username = model.Username, Text = model.Text, Email = model.Email };
         if (!ModelState.IsValid)
         {
@@ -98,12 +84,13 @@ public class HomeController : Controller
     [HttpGet("/post/edit/{postId:long}")]
     public async Task<IActionResult> EditPost(long? postId)
     {
-        if (postId is not null)
+        if (postId != null )
         {
             ViewData["title"] = "Edit Post";
-            Post? Post = await repo.RetrievePost(postId.GetValueOrDefault());
+            Post? Post = await repo.RetrievePost(postId ?? 0);
             if (Post is null) return NotFound();
             string tagString = String.Join(",", Post.Tags.Select(t => t.Name).AsEnumerable());
+            Post.Tags.Clear();
             PostEditViewModel model = new() { Post = Post, TagString = tagString };
             return View(model);
         }
@@ -113,7 +100,7 @@ public class HomeController : Controller
     }
 
     [HttpPost("/post/save")]
-    public async Task<IActionResult> SavePost(PostEditViewModel? postModel)
+    public async Task<IActionResult> CreateOrUpdatePost(PostEditViewModel? postModel)
     {
         if (ModelState.IsValid && postModel != null)
         {
@@ -127,7 +114,6 @@ public class HomeController : Controller
                     if (tag != null)
                     {
                         post.Tags.Add(tag);
-                        logger.LogDebug($"Post does not contain {tag.Name} tag.. ");
                     }
                 }
             }

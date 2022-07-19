@@ -4,7 +4,7 @@
 }
 <div class="row pt-5"> 
     <p class="display-6">@ViewData["title"]</p>
-<form method="post" asp-action="SavePost" asp-controller="Home">
+<form method="post" asp-action="CreateOrUpdatePost" asp-controller="Home">
     @Html.HiddenFor( p => p.Post.PostId)
     @Html.HiddenFor( p => p.Post.DateTime)
     <div class="row mt-3">
