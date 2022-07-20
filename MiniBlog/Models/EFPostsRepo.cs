@@ -34,32 +34,24 @@ public partial class EFPostsRepo : IPostsRepo
     }
 
 
-    public async Task<IEnumerable<Post>> RetrieveMultiplePosts(int skip = 0, int take = int.MaxValue, string? tagName = null)
+    public async Task<IEnumerable<Post>> RetrieveMultiplePosts(PaginateParams paginateParams, string? tagName = null)
     {
+        IQueryable<Post> query = context.Posts.Include(p => p.Tags).OrderByDescending(p => p.DateTime);
         if (tagName != null)
         {
             tagName = tagName.Trim().ToLower();
             Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName);
             if (tag is null) return Enumerable.Empty<Post>();
-            return await context.Posts.Include(p => p.Tags).Where(p => p.Tags.Contains(tag)).OrderByDescending(p => p.DateTime).Skip(skip).Take(take).ToListAsync();
+            query = query.Where(p => p.Tags.Contains(tag));
         }
-        else
-        {
-            return await context.Posts.Include(p => p.Commentaries).Include(p => p.Tags).OrderByDescending(p => p.DateTime).Skip(skip).Take(take).ToListAsync();
-        }
-
+        return await query.Skip(paginateParams.Skip).Take(paginateParams.Take).ToListAsync();
     }
 
-    public async Task<Post?> RetrievePost(long id)
+    public async Task<Post?> RetrievePost(long postId, PaginateParams postParams)
     {
-        return await context.Posts.Include(p => p.Commentaries.OrderByDescending(c => c.DateTime)).Include(p => p.Tags).Where(p => p.PostId == id).FirstOrDefaultAsync();
-    }
-
-    public async Task<Post?> RetrievePost(long id, int commentsSkip, int commentsTake)
-    {
-        Post? post = await context.Posts.Include(p => p.Tags).Where(p => p.PostId == id).FirstOrDefaultAsync();
+        Post? post = await context.Posts.Include(p => p.Tags).Where(p => p.PostId == postId).FirstOrDefaultAsync();
         if (post is null) return null;
-        post.Commentaries = await context.Commentaries.Where(c => post.Commentaries.Contains(c)).OrderByDescending(c => c.DateTime).Skip(commentsSkip).Take(commentsTake).ToListAsync();
+        post.Commentaries = await context.Commentaries.Where(c => post.Commentaries.Contains(c)).OrderByDescending(c => c.DateTime).Skip(postParams.Skip).Take(postParams.Take).ToListAsync();
         return post;
     }
 

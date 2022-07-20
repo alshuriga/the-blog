@@ -3,11 +3,9 @@ namespace MiniBlog.Models;
 public interface IPostsRepo
 {
     //POSTS
-    Task<IEnumerable<Post>> RetrieveMultiplePosts(int skip = 0, int take = int.MaxValue, string? tagName = null);
+    Task<IEnumerable<Post>> RetrieveMultiplePosts(PaginateParams paginateParams, string? tagName = null);
 
-    Task<Post?> RetrievePost(long id);
-
-    Task<Post?> RetrievePost(long id, int commentsSkip, int commentsTake);
+    Task<Post?> RetrievePost(long postId, PaginateParams paginateParams);
 
     Task<long?> CreatePost(Post post);
 

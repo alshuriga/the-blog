@@ -26,9 +26,8 @@ public class HomeController : Controller
     public async Task<IActionResult> Index(int currentPage = 1, string? tagName = null)
     {
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, await repo.GetPostsCount());
-        var posts = tagName is null ? 
-            await repo.RetrieveMultiplePosts(paginationData?.SkipNumber ?? 0, postsPerPage)
-            : await repo.RetrieveMultiplePosts(paginationData?.SkipNumber ?? 0, postsPerPage, tagName);
+        PaginateParams paginateParams = new(paginationData?.SkipNumber ?? 0, postsPerPage);
+        var posts = tagName is null ? await repo.RetrieveMultiplePosts(paginateParams): await repo.RetrieveMultiplePosts(paginateParams, tagName);
 
         var model = new MultiplePostsPageViewModel
         {
@@ -43,8 +42,9 @@ public class HomeController : Controller
     public async Task<IActionResult> Post(long postId, int currentPage = 1)
     {
         int commentsCount = await repo.GetCommentsCount(postId);
-        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, commentsCount);
-        Post? post = await repo.RetrievePost(postId, paginationData?.SkipNumber ?? 0, commentsPerPage);
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, commentsPerPage, commentsCount);
+        PaginateParams postParams = new(paginationData?.SkipNumber ?? 0, commentsPerPage);
+        Post? post = await repo.RetrievePost(postId, postParams);
         if (post == null) return NotFound();
         var model = new SinglePostPageViewModel()
         {
@@ -84,10 +84,10 @@ public class HomeController : Controller
     [HttpGet("/post/edit/{postId:long}")]
     public async Task<IActionResult> EditPost(long? postId)
     {
-        if (postId != null )
+        if (postId != null)
         {
             ViewData["title"] = "Edit Post";
-            Post? Post = await repo.RetrievePost(postId ?? 0);
+            Post? Post = await repo.RetrievePost(postId ?? 0, new PaginateParams());
             if (Post is null) return NotFound();
             string tagString = String.Join(",", Post.Tags.Select(t => t.Name).AsEnumerable());
             Post.Tags.Clear();

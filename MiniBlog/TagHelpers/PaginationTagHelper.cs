@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Html;
 
 namespace MiniBlog.TagHelpers;
 
@@ -27,19 +26,15 @@ public class PaginationTagHelper : TagHelper
         string lastPageClass = PaginationData.CurrentPage >= PaginationData.PageNumber ? "disabled" : "";
         output.TagName = "ul";
         output.Attributes.SetAttribute("class", "pagination justify-content-center");
-        var builder = new HtmlContentBuilder();
-
-        if (PaginationData.PageNumber > 1) builder.AppendHtml(GetTag(1, firstPageClass, "First"));
+        if (PaginationData.PageNumber > 1) output.Content.AppendHtml(GetTag(1, firstPageClass, "First"));
 
         for (int i = paginationFrom; i <= paginationTo; i++)
         {
             string isActive = i == PaginationData.CurrentPage ? "active" : "";
-            builder.AppendHtml(GetTag(i, isActive));
+            output.Content.AppendHtml(GetTag(i, isActive));
         }
 
-        builder.AppendHtml(GetTag(PaginationData.PageNumber, lastPageClass, "Last"));
-
-        output.Content.SetHtmlContent(builder);
+        output.Content.AppendHtml(GetTag(PaginationData.PageNumber, lastPageClass, "Last"));
     }
 
     private TagBuilder GetTag(int linkPage, string pageClass = "", string? aContent = null)
