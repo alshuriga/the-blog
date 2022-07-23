@@ -2,17 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MiniBlog.Controllers;
 
+[AutoValidateAntiforgeryToken]
 public class HomeController : Controller
 {
-    const int postsPerPage = 5;
-    const int commentsPerPage = 5;
+    //services
     private IPostsRepo repo;
     private ILogger logger;
-
     private IHttpContextAccessor context;
-
     private LinkGenerator linkGenerator;
 
+    //constants
+    const int postsPerPage = 5;
+    const int commentsPerPage = 5;
+
+    
     public HomeController(IPostsRepo _repo, ILogger<HomeController> _logger, IHttpContextAccessor _context, LinkGenerator _linkGenerator)
     {
         repo = _repo;
@@ -46,6 +49,7 @@ public class HomeController : Controller
         PaginateParams postParams = new(paginationData?.SkipNumber ?? 0, commentsPerPage);
         Post? post = await repo.RetrievePost(postId, postParams);
         if (post == null) return NotFound();
+        TempData["postId"] = postId.ToString();
         var model = new SinglePostPageViewModel()
         {
             Post = post,
@@ -57,17 +61,20 @@ public class HomeController : Controller
 
     }
 
-    [HttpPost("/post/AddComment/{postId:long}")]
-    public async Task<IActionResult> AddComment(CommentaryViewModel model, long postId)
-    {
-        Commentary comment = new Commentary() { Username = model.Username, Text = model.Text, Email = model.Email };
-        if (!ModelState.IsValid)
+  
+    [HttpPost("/post/AddComment")]
+    public async Task<IActionResult> AddComment(CommentaryViewModel commentary)
+    {   
+        long postId;
+        if(TempData["postId"] == null || !long.TryParse((string?)TempData["postId"], out postId)) return BadRequest();
+        Commentary comment = new Commentary() { Username = commentary.Username, Text = commentary.Text, Email = commentary.Email };
+        if (ModelState.IsValid)
         {
-            return BadRequest();
+            await repo.AddComment(comment, postId);
+            return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
         }
-        await repo.AddComment(comment, postId);
-        return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
-
+        return View();
+       
     }
 
     [HttpPost("/post/delete/{postId:long}")]

@@ -6,8 +6,7 @@
         await Html.RenderPartialAsync("_PostView", new PostPartialViewModel
         {
             Post = Model.Post,
-            CommentsButton =
-            false
+            CommentsButton = false
         });
     }
 </div>
@@ -18,7 +17,7 @@
 <div class="row mt-4">
     <div class="col">
         <div class="card border-light p-4 bg-primary bg-opacity-10">
-            <vc:add-comment post-id="@Model.Post.PostId" />
+          <vc:add-comment post-id="@Model.Post.PostId"/>
         </div>
     </div>
     <div class="w-100 d-md-none d-block"></div>
