@@ -36,7 +36,7 @@ public partial class EFPostsRepo : IPostsRepo
 
     public async Task<IEnumerable<Post>> RetrieveMultiplePosts(PaginateParams paginateParams, string? tagName = null)
     {
-        IQueryable<Post> query = context.Posts.Include(p => p.Tags).OrderByDescending(p => p.DateTime);
+        IQueryable<Post> query = context.Posts.Include(p => p.Tags).Include(p => p.Commentaries).OrderByDescending(p => p.DateTime);
         if (tagName != null)
         {
             tagName = tagName.Trim().ToLower();
@@ -47,11 +47,11 @@ public partial class EFPostsRepo : IPostsRepo
         return await query.Skip(paginateParams.Skip).Take(paginateParams.Take).ToListAsync();
     }
 
-    public async Task<Post?> RetrievePost(long postId, PaginateParams postParams)
+    public async Task<Post?> RetrievePost(long postId, PaginateParams commentsParams)
     {
         Post? post = await context.Posts.Include(p => p.Tags).Where(p => p.PostId == postId).FirstOrDefaultAsync();
         if (post is null) return null;
-        post.Commentaries = await context.Commentaries.Where(c => post.Commentaries.Contains(c)).OrderByDescending(c => c.DateTime).Skip(postParams.Skip).Take(postParams.Take).ToListAsync();
+        post.Commentaries = await context.Commentaries.Where(c => post.Commentaries.Contains(c)).OrderByDescending(c => c.DateTime).Skip(commentsParams.Skip).Take(commentsParams.Take).ToListAsync();
         return post;
     }
 

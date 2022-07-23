@@ -49,6 +49,7 @@ public class HomeController : Controller
         PaginateParams postParams = new(paginationData?.SkipNumber ?? 0, commentsPerPage);
         Post? post = await repo.RetrievePost(postId, postParams);
         if (post == null) return NotFound();
+        logger.LogDebug($"Comments: {post.Commentaries.Any()}");
         TempData["postId"] = postId.ToString();
         var model = new SinglePostPageViewModel()
         {
@@ -56,9 +57,8 @@ public class HomeController : Controller
             CommentsPaginationData = paginationData,
             CommentsCount = commentsCount
         };
-
+        logger.LogDebug($"Comments in model: {String.Join(", ", model.Post.Commentaries.Select(c => c.CommentaryId))}");
         return View(model);
-
     }
 
   
@@ -71,10 +71,8 @@ public class HomeController : Controller
         if (ModelState.IsValid)
         {
             await repo.AddComment(comment, postId);
-            return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
         }
-        return View();
-       
+        return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
     }
 
     [HttpPost("/post/delete/{postId:long}")]

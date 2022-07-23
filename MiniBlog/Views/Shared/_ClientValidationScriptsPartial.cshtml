@@ -1,2 +1,21 @@
+
 <script src="/lib/jquery/jquery.validate.js"></script>
 <script src="/lib/jquery/jquery.validate.unobtrusive.js"></script>
+
+<script type="text/javascript">
+window.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("input.input-validation-error").forEach((elem) => { elem.classList.add("is-invalid"); });
+});
+
+$.validator.setDefaults({
+    errorClass: "",
+    validClass: "",
+    highlight: function (element, errorClass, validClass) {
+        $(element).addClass("is-invalid").removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element).addClass("is-valid").removeClass("is-invalid");
+    }
+})
+</script>
+
