@@ -21,7 +21,7 @@
                 <h5>
                     @foreach (Tag t in Model.Post.Tags)
                     {
-                        <a asp-action="ByTag" asp-controller="Home" asp-route-tagname="@t.Name"
+                        <a asp-action="Index" asp-controller="Home" asp-route-tagname="@t.Name"
                         class="btn btn-secondary btn-sm text-light mb-2 mb-md-0">@t.Name</a>
                     }
                 </h5>

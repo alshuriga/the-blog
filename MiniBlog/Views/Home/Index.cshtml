@@ -1,9 +1,9 @@
 @model MultiplePostsPageViewModel
 
 <div class="row" id="posts row">
-    @if (Model.TagName is not null)
+    @if (Model.TagName != null && Model.PostsCount != null)
     {
-        <div class="display-6 mt-2">@Model.Posts.Count() posts with <strong>@Model.TagName</strong> tag</div>
+        <div class="display-6 mt-2">@Model.PostsCount post(s) with <strong>@Model.TagName</strong> tag</div>
     }
     else
     {

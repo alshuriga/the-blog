@@ -28,15 +28,17 @@ public class HomeController : Controller
     [HttpGet("/tag/{tagName:alpha}/{currentPage:int?}")]
     public async Task<IActionResult> Index(int currentPage = 1, string? tagName = null)
     {
-        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, await repo.GetPostsCount());
+        int postsCount = tagName == null ? await repo.GetPostsCount() : await repo.GetPostsCount(tagName);
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, postsCount);
         PaginateParams paginateParams = new(paginationData?.SkipNumber ?? 0, postsPerPage);
-        var posts = tagName is null ? await repo.RetrieveMultiplePosts(paginateParams): await repo.RetrieveMultiplePosts(paginateParams, tagName);
+        var posts = tagName is null ? await repo.RetrievePostsRange(paginateParams): await repo.RetrievePostsRange(paginateParams, tagName);
 
         var model = new MultiplePostsPageViewModel
         {
             Posts = posts,
             PaginationData = paginationData,
-            TagName = tagName
+            TagName = tagName,
+            PostsCount = postsCount
         };
         return View("Index", model);
     }
@@ -44,7 +46,7 @@ public class HomeController : Controller
     [HttpGet("/post/{postId:long}/{currentPage:int?}")]
     public async Task<IActionResult> Post(long postId, int currentPage = 1)
     {
-        int commentsCount = await repo.GetCommentsCount(postId);
+        int commentsCount = await repo.GetCommentariesCount(postId);
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, commentsPerPage, commentsCount);
         PaginateParams postParams = new(paginationData?.SkipNumber ?? 0, commentsPerPage);
         Post? post = await repo.RetrievePost(postId, postParams);
@@ -70,7 +72,7 @@ public class HomeController : Controller
         Commentary comment = new Commentary() { Username = commentary.Username, Text = commentary.Text, Email = commentary.Email };
         if (ModelState.IsValid)
         {
-            await repo.AddComment(comment, postId);
+            await repo.CreateComment(comment, postId);
         }
         return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
     }
@@ -95,7 +97,6 @@ public class HomeController : Controller
             Post? Post = await repo.RetrievePost(postId ?? 0, new PaginateParams());
             if (Post is null) return NotFound();
             string tagString = String.Join(",", Post.Tags.Select(t => t.Name).AsEnumerable());
-            Post.Tags.Clear();
             PostEditViewModel model = new() { Post = Post, TagString = tagString };
             return View(model);
         }
@@ -110,16 +111,16 @@ public class HomeController : Controller
         if (ModelState.IsValid && postModel != null)
         {
             Post post = postModel.Post;
+            post.Tags.Clear();
             logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
             if (!String.IsNullOrWhiteSpace(postModel.TagString))
             {
                 foreach (string t in postModel.TagString.Split(",", StringSplitOptions.RemoveEmptyEntries))
                 {
-                    Tag? tag = await repo.CreateOrRetrieveTag(t);
-                    if (tag != null)
-                    {
-                        post.Tags.Add(tag);
-                    }
+                    string tagName = t.Trim();
+                    await repo.CreateTagIfNotExist(new Tag { Name = tagName});
+                    Tag? tag = await repo.RetrieveTagByName(tagName);
+                    post.Tags.Add(tag!);
                 }
             }
             logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
