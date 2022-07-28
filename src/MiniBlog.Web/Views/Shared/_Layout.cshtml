@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MiniBlog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"></link>
+    <script src="/lib/jquery/jquery.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+<div class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+    <a href="/" class="navbar-brand"><i class="fa-solid fa-book me-2"></i>MiniBlog</a>
+    <ul class="navbar-nav me-auto">
+        <li class="nav-item ms-1">
+            <a class="nav-link" asp-action="EditPost" asp-controller="Home">New Post</a>
+        </li>
+    </ul>
+    </div>  
+</div>
+
+    <div class="container my-5">
+        @RenderBody()
+    </div>
+</body>
+
+</html>

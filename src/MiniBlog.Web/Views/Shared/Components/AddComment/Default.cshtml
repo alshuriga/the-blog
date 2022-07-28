@@ -1,0 +1,37 @@
+@model CommentaryViewModel
+@{
+   await Html.RenderPartialAsync("_ClientValidationScriptsPartial");
+}
+
+<form method="post" asp-action="AddComment" asp-controller="Home">
+    <h5>Add new comment</h5>
+    <div class="row">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="col mt-2">
+            <div class="form-group">
+                <label class="form-label" asp-for="Username">Username</label>
+                <input asp-for="Username" class="form-control" id="Email" />
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Username"></span></div>
+            </div>
+        </div>
+        <div class="w-100 d-md-none d-block"></div>
+        <div class="col mt-2">
+             <div class="form-group">
+                <label class="form-label" asp-for="Email">Email</label>
+                <input asp-for="Email" class="form-control" id="Email" />
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Email"></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mt-2">
+            <div class="form-group">
+                <label class="form-label"  asp-for="Text">Commentary</label>
+                <textarea asp-for="Text" class="form-control" id="comment"></textarea>
+                <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Text"></span></div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Post comment</button>
+        </div>
+    </div>
+
+</form>
