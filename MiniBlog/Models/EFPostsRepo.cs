@@ -3,7 +3,6 @@ namespace MiniBlog.Models;
 
 public partial class EFPostsRepo : IPostsRepo
 {
-
     private MiniBlogDbContext context;
 
     private ILogger<EFPostsRepo> logger;
@@ -17,7 +16,10 @@ public partial class EFPostsRepo : IPostsRepo
 
     public async Task<IEnumerable<Post>> RetrievePostsRange(PaginateParams paginateParams, string? tagName = null)
     {
-        IQueryable<Post> query = context.Posts.Include(p => p.Tags).Include(p => p.Commentaries).OrderByDescending(p => p.DateTime);
+        IQueryable<Post> query = context.Posts
+            .Include(p => p.Tags)
+            .Include(p => p.Commentaries)
+            .OrderByDescending(p => p.DateTime);
         if (tagName != null)
         {
             tagName = tagName.Trim().ToLower();
@@ -41,7 +43,12 @@ public partial class EFPostsRepo : IPostsRepo
     {
         Post? post = await context.Posts.Include(p => p.Tags).Where(p => p.PostId == postId).FirstOrDefaultAsync();
         if (post is null) return null;
-        post.Commentaries = await context.Commentaries.Where(c => c.PostId == postId).OrderByDescending(c => c.DateTime).Skip(commentsParams.Skip).Take(commentsParams.Take).ToListAsync();
+        post.Commentaries = await context.Commentaries
+            .Where(c => c.PostId == postId)
+            .OrderByDescending(c => c.DateTime)
+            .Skip(commentsParams.Skip)
+            .Take(commentsParams.Take)
+            .ToListAsync();
         return post;
     }
     
@@ -56,7 +63,12 @@ public partial class EFPostsRepo : IPostsRepo
 
     public async Task DeletePost(long id)
     {
-        Post? post = await context.Posts.Include(p => p.Commentaries).Include(p => p.Tags).Where(p => p.PostId == id).FirstOrDefaultAsync();
+        Post? post = await context.Posts
+            .Include(p => p.Commentaries)
+            .Include(p => p.Tags)
+            .Where(p => p.PostId == id)
+            .FirstOrDefaultAsync();
+
         if (post is not null)
         {
             context.Posts.Remove(post);
@@ -97,7 +109,8 @@ public partial class EFPostsRepo : IPostsRepo
 
     public async Task<Tag?> RetrieveTagByName(string tagName)
     {
-        Tag? tag = await context.Tags.FirstOrDefaultAsync(t => String.Compare(t.Name, tagName, StringComparison.OrdinalIgnoreCase) == 0);
+        tagName = tagName.Trim();
+        Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
         return tag;
     }
 

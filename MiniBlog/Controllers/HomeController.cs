@@ -15,7 +15,7 @@ public class HomeController : Controller
     const int postsPerPage = 5;
     const int commentsPerPage = 5;
 
-    
+
     public HomeController(IPostsRepo _repo, ILogger<HomeController> _logger, IHttpContextAccessor _context, LinkGenerator _linkGenerator)
     {
         repo = _repo;
@@ -31,7 +31,7 @@ public class HomeController : Controller
         int postsCount = tagName == null ? await repo.GetPostsCount() : await repo.GetPostsCount(tagName);
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, postsCount);
         PaginateParams paginateParams = new(paginationData?.SkipNumber ?? 0, postsPerPage);
-        var posts = tagName is null ? await repo.RetrievePostsRange(paginateParams): await repo.RetrievePostsRange(paginateParams, tagName);
+        var posts = tagName is null ? await repo.RetrievePostsRange(paginateParams) : await repo.RetrievePostsRange(paginateParams, tagName);
 
         var model = new MultiplePostsPageViewModel
         {
@@ -63,12 +63,12 @@ public class HomeController : Controller
         return View(model);
     }
 
-  
+
     [HttpPost("/post/AddComment")]
     public async Task<IActionResult> AddComment(CommentaryViewModel commentary)
-    {   
+    {
         long postId;
-        if(TempData["postId"] == null || !long.TryParse((string?)TempData["postId"], out postId)) return BadRequest();
+        if (TempData["postId"] == null || !long.TryParse((string?)TempData["postId"], out postId)) return BadRequest();
         Commentary comment = new Commentary() { Username = commentary.Username, Text = commentary.Text, Email = commentary.Email };
         if (ModelState.IsValid)
         {
@@ -108,6 +108,8 @@ public class HomeController : Controller
     [HttpPost("/post/save")]
     public async Task<IActionResult> CreateOrUpdatePost(PostEditViewModel? postModel)
     {
+        string[]? tagNames = postModel?.TagString?.Split(",", StringSplitOptions.RemoveEmptyEntries);
+        if (tagNames == null || tagNames.Length > 5) ModelState.AddModelError(nameof(postModel.TagString), "Maximum number of tags is 5");
         if (ModelState.IsValid && postModel != null)
         {
             Post post = postModel.Post;
@@ -118,7 +120,7 @@ public class HomeController : Controller
                 foreach (string t in postModel.TagString.Split(",", StringSplitOptions.RemoveEmptyEntries))
                 {
                     string tagName = t.Trim();
-                    await repo.CreateTagIfNotExist(new Tag { Name = tagName});
+                    await repo.CreateTagIfNotExist(new Tag { Name = tagName });
                     Tag? tag = await repo.RetrieveTagByName(tagName);
                     post.Tags.Add(tag!);
                 }
@@ -141,7 +143,10 @@ public class HomeController : Controller
             return RedirectToAction(nameof(Post), new { postId = returnId });
 
         }
-        return View(nameof(Post));
+        else
+        {
+            return View(nameof(EditPost), postModel);
+        }
     }
 
     [HttpPost("/commmentary/delete/{commId:long}")]
