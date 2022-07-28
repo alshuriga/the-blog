@@ -114,12 +114,10 @@ public class HomeControllersTest
         PostsRepoMock.Verify(r => r.RetrievePost(It.IsAny<long>(), It.IsAny<PaginateParams>()), Times.Once);
         Assert.NotNull(resultModel);
         Assert.Equal(post, resultModel?.Post);
-        Assert.Equal(5, post.Commentaries.Count);
     }
 
     [Fact]
     public async void Post_GetPostByInvalidId_ReturnsNotFound()
-    {
         Post post = SeedPosts(1).First();
 
         PostsRepoMock.Setup(r => r.RetrievePost(It.IsAny<long>(), It.IsAny<PaginateParams>())).ReturnsAsync((Post?)null);
