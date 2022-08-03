@@ -8,4 +8,6 @@ public class SinglePostPageViewModel
     public PaginationData? CommentsPaginationData { get; set; }
     public int CommentsCount { get; set; }
 
+    public Commentary Comment { get; set; } = new Commentary();
+
 }

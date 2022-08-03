@@ -8,32 +8,28 @@ namespace MiniBlog.Web.Controllers;
 public class HomeController : Controller
 {
     //services
-    private IPostsRepo repo;
-    private ILogger logger;
-    private IHttpContextAccessor context;
-    private LinkGenerator linkGenerator;
+    private readonly IPostsRepo _repo;
+    private readonly ILogger _logger;
 
     //constants
-    const int postsPerPage = 5;
-    const int commentsPerPage = 5;
+    const int PostsPerPage = 5;
+    const int CommentsPerPage = 5;
 
 
-    public HomeController(IPostsRepo _repo, ILogger<HomeController> _logger, IHttpContextAccessor _context, LinkGenerator _linkGenerator)
+    public HomeController(IPostsRepo repo, ILogger<HomeController> logger)
     {
-        repo = _repo;
-        logger = _logger;
-        context = _context;
-        linkGenerator = _linkGenerator;
+        this._repo = repo;
+        this._logger = logger;
     }
 
     [HttpGet("/{currentPage:int?}")]
     [HttpGet("/tag/{tagName:alpha}/{currentPage:int?}")]
     public async Task<IActionResult> Index(int currentPage = 1, string? tagName = null)
     {
-        int postsCount = tagName == null ? await repo.GetPostsCount() : await repo.GetPostsCount(tagName);
-        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, postsPerPage, postsCount);
-        PaginateParams paginateParams = new(paginationData?.SkipNumber ?? 0, postsPerPage);
-        var posts = tagName is null ? await repo.RetrievePostsRange(paginateParams) : await repo.RetrievePostsRange(paginateParams, tagName);
+        int postsCount = tagName == null ? await _repo.GetPostsCount() : await _repo.GetPostsCount(tagName);
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, PostsPerPage, postsCount);
+        PaginateParams paginateParams = new(paginationData?.SkipNumber ?? 0, PostsPerPage);
+        var posts = tagName is null ? await _repo.RetrievePostsRange(paginateParams) : await _repo.RetrievePostsRange(paginateParams, tagName);
 
         var model = new MultiplePostsPageViewModel
         {
@@ -48,12 +44,12 @@ public class HomeController : Controller
     [HttpGet("/post/{postId:long}/{currentPage:int?}")]
     public async Task<IActionResult> Post(long postId, int currentPage = 1)
     {
-        int commentsCount = await repo.GetCommentariesCount(postId);
-        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, commentsPerPage, commentsCount);
-        PaginateParams postParams = new(paginationData?.SkipNumber ?? 0, commentsPerPage);
-        Post? post = await repo.RetrievePost(postId, postParams);
+        int commentsCount = await _repo.GetCommentariesCount(postId);
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, CommentsPerPage, commentsCount);
+        PaginateParams postParams = new(paginationData?.SkipNumber ?? 0, CommentsPerPage);
+        Post? post = await _repo.RetrievePost(postId, postParams);
         if (post == null) return NotFound();
-        logger.LogDebug($"Comments: {post.Commentaries.Any()}");
+        _logger.LogDebug($"Comments: {post.Commentaries.Any()}");
         TempData["postId"] = postId.ToString();
         var model = new SinglePostPageViewModel()
         {
@@ -61,20 +57,18 @@ public class HomeController : Controller
             CommentsPaginationData = paginationData,
             CommentsCount = commentsCount
         };
-        logger.LogDebug($"Comments in model: {String.Join(", ", model.Post.Commentaries.Select(c => c.CommentaryId))}");
+        _logger.LogDebug($"Comments in model: {string.Join(", ", model.Post.Commentaries.Select(c => c.CommentaryId))}");
         return View(model);
     }
 
 
-    [HttpPost("/post/AddComment")]
-    public async Task<IActionResult> AddComment(CommentaryViewModel commentary)
+    [HttpPost("/post/AddComment/{postid:long}")]
+    public async Task<IActionResult> AddComment(CommentaryViewModel commentary, long postId)
     {
-        long postId;
-        if (TempData["postId"] == null || !long.TryParse((string?)TempData["postId"], out postId)) return BadRequest();
-        Commentary comment = new Commentary() { Username = commentary.Username, Text = commentary.Text, Email = commentary.Email };
         if (ModelState.IsValid)
         {
-            await repo.CreateComment(comment, postId);
+            Commentary comment = new Commentary() { Username = commentary.Username, Text = commentary.Text, Email = commentary.Email};
+            await _repo.CreateComment(comment, postId);
         }
         return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
     }
@@ -84,7 +78,7 @@ public class HomeController : Controller
     {
         if (postId == default(long)) return NotFound();
 
-        await repo.DeletePost(postId);
+        await _repo.DeletePost(postId);
         return RedirectToAction(nameof(Index));
     }
 
@@ -96,7 +90,7 @@ public class HomeController : Controller
         if (postId != null)
         {
             ViewData["title"] = "Edit Post";
-            Post? Post = await repo.RetrievePost(postId ?? 0, new PaginateParams());
+            Post? Post = await _repo.RetrievePost(postId ?? 0, new PaginateParams());
             if (Post is null) return NotFound();
             string tagString = String.Join(",", Post.Tags.Select(t => t.Name).AsEnumerable());
             PostEditViewModel model = new() { Post = Post, TagString = tagString };
@@ -116,30 +110,30 @@ public class HomeController : Controller
         {
             Post post = postModel.Post;
             post.Tags.Clear();
-            logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
+            _logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
             if (!String.IsNullOrWhiteSpace(postModel.TagString))
             {
                 foreach (string t in postModel.TagString.Split(",", StringSplitOptions.RemoveEmptyEntries))
                 {
                     string tagName = t.Trim();
-                    await repo.CreateTagIfNotExist(new Tag { Name = tagName });
-                    Tag? tag = await repo.RetrieveTagByName(tagName);
+                    await _repo.CreateTagIfNotExist(new Tag { Name = tagName });
+                    Tag? tag = await _repo.RetrieveTagByName(tagName);
                     post.Tags.Add(tag!);
                 }
             }
-            logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
+            _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
             long? returnId;
             if (post.PostId != 0)
             {
-                await repo.UpdatePost(post);
+                await _repo.UpdatePost(post);
                 returnId = post.PostId;
             }
             else
             {
-                returnId = await repo.CreatePost(post);
+                returnId = await _repo.CreatePost(post);
             }
-            logger.LogDebug($"Post id (controller-side): {returnId.ToString()}");
-            logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
+            _logger.LogDebug($"Post id (controller-side): {returnId.ToString()}");
+            _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
 
             if (returnId is null) return NotFound();
             return RedirectToAction(nameof(Post), new { postId = returnId });
@@ -154,7 +148,7 @@ public class HomeController : Controller
     [HttpPost("/commmentary/delete/{commId:long}")]
     public async Task<IActionResult> DeleteComment(long commId, string? returnId)
     {
-        await repo.DeleteComment(commId);
+        await _repo.DeleteComment(commId);
         if (returnId is null) return NotFound();
         return RedirectToAction(nameof(Post), new { postId = returnId });
     }
