@@ -19,16 +19,15 @@ public class CommentaryForm : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync(long postId)
     {
-        CommentaryViewModel? model = null;
-        if (User.Identity?.IsAuthenticated != null && User.Identity.IsAuthenticated)
+        if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             // var mgr = HttpContext.RequestServices.CreateScope().ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             
-            model = new CommentaryViewModel { Username = user.UserName, Email = user.Email };
+            var model = new CommentaryViewModel { Username = user.UserName, Email = user.Email };
+            ViewData["postId"] = postId;
+            return View("Default", model);
         }
-
-        ViewData["postId"] = postId;
-        return View("Default", model);
+        return View("SignedOut");
     }
 }

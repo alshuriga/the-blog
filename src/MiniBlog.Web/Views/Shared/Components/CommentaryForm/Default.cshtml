@@ -1,24 +1,22 @@
-﻿@model CommentaryViewModel?
+﻿@model CommentaryViewModel
 @{
    await Html.RenderPartialAsync("_ClientValidationScriptsPartial");
 }
-@if (Model != null)
-{
-    <form method="post" asp-action="AddComment" asp-controller="Home" asp-route-postId="@ViewData["postId"]">
+<form method="post" asp-action="AddComment" asp-controller="Home" asp-route-postId="@ViewData["postId"]">
         <h5>Add new comment</h5>
         <div class="row">
             <div class="text-danger" asp-validation-summary="ModelOnly"></div>
             <div class="col mt-2">  
                 <div class="form-group">
-                    <label class="form-label" name="Username" >Username</label>
-                    <input name="Username" class="form-control" value="@Model.Username" disabled/>
+                    <label class="form-label" name="Username" >Username:</label>
+                    <div class="h5">@Model.Username</div>
                 </div>
             </div>
             <div class="w-100 d-md-none d-block"></div>
             <div class="col mt-2">
                 <div class="form-group">
-                    <label class="form-label" name="Email" >Email</label>
-                    <input name="Email" class="form-control" value="@Model.Email" disabled/>
+                    <label class="form-label" name="Email" >Email:</label>
+                    <div class="h5">@Model.Email</div>
                 </div>
             </div>
         </div>
@@ -34,12 +32,3 @@
         </div>
 
     </form>
-}
-else
-{
-    <div class="text-center">
-        <div class="mb-3 h6">You must be logged in to comment.</div>
-        <a class="btn btn-primary" asp-action="Login" asp-controller="Account">Log in</a>
-    </div>
-    
-}

@@ -5,6 +5,7 @@ using MiniBlog.Core.Constants;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPostsRepo, EFPostsRepo>();
@@ -30,7 +31,7 @@ builder.Services.Configure<IdentityOptions>(opts =>
 });
 
 var app = builder.Build();
-
+    
 IdentitySeedData.EnsureSeed(app.Services);
 app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();

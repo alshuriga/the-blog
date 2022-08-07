@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Core.Models;
 
-namespace MiniBlog.TagHelpers;
+namespace MiniBlog.Web.TagHelpers;
 
 public class PaginationTagHelper : TagHelper
 {

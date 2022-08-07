@@ -66,11 +66,15 @@ public class HomeController : Controller
     }
 
     
-    [HttpPost("/post/AddComment/{postid:long}")]
+    [HttpPost("/AddComment/{postid:long}")]
     public async Task<IActionResult> AddComment(CommentaryViewModel commentary, long postId)
     {
-        if (ModelState.IsValid && User.Identity != null && User.Identity.IsAuthenticated)
+        if (ModelState.IsValid)
         {
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user != null)
             {
