@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Core.Models;
 using MiniBlog.Web.ViewModels;
@@ -61,7 +62,7 @@ public class HomeController : Controller
         return View(model);
     }
 
-
+    
     [HttpPost("/post/AddComment/{postid:long}")]
     public async Task<IActionResult> AddComment(CommentaryViewModel commentary, long postId)
     {
@@ -73,6 +74,7 @@ public class HomeController : Controller
         return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
     }
 
+    [Authorize(Roles = "Admins")]
     [HttpPost("/post/delete/{postId:long}")]
     public async Task<IActionResult> DeletePost(long postId)
     {
@@ -83,6 +85,7 @@ public class HomeController : Controller
     }
 
 
+    [Authorize(Roles = "Admins")]
     [HttpGet("/post/new")]
     [HttpGet("/post/edit/{postId:long}")]
     public async Task<IActionResult> EditPost(long? postId)
@@ -101,6 +104,7 @@ public class HomeController : Controller
         return View(newModel);
     }
 
+    [Authorize(Roles = "Admins")]
     [HttpPost("/post/save")]
     public async Task<IActionResult> CreateOrUpdatePost(PostEditViewModel? postModel)
     {
@@ -145,6 +149,7 @@ public class HomeController : Controller
         }
     }
 
+    [Authorize(Roles = "Admins")]
     [HttpPost("/commmentary/delete/{commId:long}")]
     public async Task<IActionResult> DeleteComment(long commId, string? returnId)
     {

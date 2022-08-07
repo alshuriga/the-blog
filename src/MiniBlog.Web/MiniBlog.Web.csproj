@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Shared\Components\AddComment\Default.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\Components\AuthInfo\Default.cshtml" />
   </ItemGroup>
 
 </Project>
