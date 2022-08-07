@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Core.Models;
 using MiniBlog.Web.ViewModels;
@@ -11,14 +12,16 @@ public class HomeController : Controller
     //services
     private readonly IPostsRepo _repo;
     private readonly ILogger _logger;
+    private readonly UserManager<IdentityUser> _userManager;
 
     //constants
     const int PostsPerPage = 5;
     const int CommentsPerPage = 5;
 
 
-    public HomeController(IPostsRepo repo, ILogger<HomeController> logger)
+    public HomeController(IPostsRepo repo, ILogger<HomeController> logger, UserManager<IdentityUser> userManager)
     {
+        this._userManager = userManager;
         this._repo = repo;
         this._logger = logger;
     }
@@ -66,10 +69,14 @@ public class HomeController : Controller
     [HttpPost("/post/AddComment/{postid:long}")]
     public async Task<IActionResult> AddComment(CommentaryViewModel commentary, long postId)
     {
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && User.Identity != null && User.Identity.IsAuthenticated)
         {
-            Commentary comment = new Commentary() { Username = commentary.Username, Text = commentary.Text, Email = commentary.Email};
-            await _repo.CreateComment(comment, postId);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user != null)
+            {
+                Commentary comment = new Commentary() { Username = user.UserName, Email = user.Email, Text = commentary.Text };
+                await _repo.CreateComment(comment, postId);
+            }
         }
         return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
     }

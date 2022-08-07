@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 
@@ -16,19 +15,27 @@
     <div class="container">
         <a href="/" class="navbar-brand"><i class="fa-solid fa-book me-2"></i>MiniBlog</a>
         <ul class="navbar-nav me-auto">
-            <li class="nav-item ms-1">
-                <a class="nav-link" asp-action="EditPost" asp-controller="Home">New Post</a>
-            </li>
+            @if (User.IsInRole("Admins"))
+            {
+                <li class="nav-item ms-1">
+                    <a class="nav-link text-info" asp-action="UserList" asp-controller="Admin">Admin tools</a>
+                </li>
+
+                <li class="nav-item ms-1">
+                    <a class="nav-link" asp-action="EditPost" asp-controller="Home">New Post</a>
+                </li>
+            }
+
         </ul>
         <div class="float-end">
             <partial name="_AuthToolsPartial"/>
         </div>
-    </div>  
+    </div>
 </div>
 
-    <div class="container my-5">
-        @RenderBody()
-    </div>
+<div class="container my-5">
+    @RenderBody()
+</div>
 </body>
 
 </html>

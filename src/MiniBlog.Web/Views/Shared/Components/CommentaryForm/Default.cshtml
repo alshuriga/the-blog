@@ -1,27 +1,24 @@
-﻿@model CommentaryViewModel
+﻿@model CommentaryViewModel?
 @{
    await Html.RenderPartialAsync("_ClientValidationScriptsPartial");
 }
-@if (User.Identity?.IsAuthenticated ?? false)
+@if (Model != null)
 {
-
-    <form method="post" asp-action="AddComment" asp-controller="Home">
+    <form method="post" asp-action="AddComment" asp-controller="Home" asp-route-postId="@ViewData["postId"]">
         <h5>Add new comment</h5>
         <div class="row">
             <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-            <div class="col mt-2">
+            <div class="col mt-2">  
                 <div class="form-group">
-                    <label class="form-label" asp-for="Username">Username</label>
-                    <input asp-for="Username" class="form-control"/>
-                    <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Username"></span></div>
+                    <label class="form-label" name="Username" >Username</label>
+                    <input name="Username" class="form-control" value="@Model.Username" disabled/>
                 </div>
             </div>
             <div class="w-100 d-md-none d-block"></div>
             <div class="col mt-2">
                 <div class="form-group">
-                    <label class="form-label" asp-for="Email">Email</label>
-                    <input asp-for="Email" class="form-control"/>
-                    <div class="form-text"><span class="text-danger pt-1" asp-validation-for="Email"></span></div>
+                    <label class="form-label" name="Email" >Email</label>
+                    <input name="Email" class="form-control" value="@Model.Email" disabled/>
                 </div>
             </div>
         </div>
@@ -40,5 +37,9 @@
 }
 else
 {
-    <a class="btn btn-primary" asp-action="Login" asp-controller="Account">Log in</a>
+    <div class="text-center">
+        <div class="mb-3 h6">You must be logged in to comment.</div>
+        <a class="btn btn-primary" asp-action="Login" asp-controller="Account">Log in</a>
+    </div>
+    
 }
