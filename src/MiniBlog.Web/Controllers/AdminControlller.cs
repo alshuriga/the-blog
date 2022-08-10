@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MiniBlog.Web.ViewModels;
 
 namespace MiniBlog.Web.Controllers;
@@ -23,16 +22,20 @@ public class AdminController : Controller
     [HttpGet("users/list")]
     public IActionResult UserList()
     {
-        IEnumerable<UserViewModel> users = _userManager.Users
+        var allUsers = _userManager.Users
             .Select(u => new UserViewModel()
             {
                 Id = u.Id,
                 Username = u.UserName,
                 Email = u.Email,
                 Roles = _userManager.GetRolesAsync(u).Result
-            });
-        
-        return View(users);
+            }).ToList();
+        var model = new UserListsViewModel()
+        {
+            BasicUsers = allUsers.Where(u => !u.Roles.Any()),
+            AdminUsers = allUsers.Where(u => u.Roles.Contains("Admins"))
+        };
+        return View(model);
     }
 
     [HttpPost("users/delete")]
@@ -43,29 +46,35 @@ public class AdminController : Controller
         return RedirectToAction(nameof(UserList));
     }
 
-    [HttpGet("users/create")]
-    public IActionResult CreateUser()
+    [HttpPost]
+    public async Task<IActionResult> SwitchAdmin([FromForm]string userId)
     {
-        return View();
-    }
-    
-    [HttpPost("users/create")]
-    public async Task<IActionResult> CreateUser([FromForm] UserViewModel user)
-    {
-        if (ModelState.IsValid)
+        var user = await _userManager.FindByIdAsync(userId);
+        string roleName = "Admins";
+        if (user != null)
         {
-            IdentityUser idUser = new IdentityUser { UserName = user.Username, Email = user.Email };
-            var result = await _userManager.CreateAsync(idUser, user.Password);
-            if (result.Succeeded)
+            IdentityResult res;
+            if (await _userManager.IsInRoleAsync(user, roleName))
             {
-                return RedirectToAction(nameof(UserList));
+                if ((await _userManager.GetUsersInRoleAsync(roleName)).Count() == 1)
+                {
+                    ModelState.AddModelError("", "There has to be at least one user with Admin rights");
+                    return RedirectToAction(nameof(UserList));
+                }
+                res = await _userManager.RemoveFromRoleAsync(user, roleName);
             }
-            foreach (var err in result.Errors)
+            else
+            {
+                res = await _userManager.AddToRoleAsync(user, roleName);
+            }
+            if (res.Succeeded) return RedirectToAction(nameof(UserList));
+            foreach (var err in res.Errors)
             {
                 ModelState.AddModelError("", err.Description);
             }
+            return RedirectToAction(nameof(UserList));
         }
-
-        return View();
+        ModelState.AddModelError("", "User not found");
+        return RedirectToAction(nameof(UserList));
     }
 }

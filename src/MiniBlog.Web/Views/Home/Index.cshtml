@@ -1,18 +1,20 @@
 @model MultiplePostsPageViewModel
 
 <div class="row" id="posts row">
+    <div class="display-6 mt-md-1 mt-0 mx-md-auto text-center text-md-start">
     @if (Model.TagName != null && Model.PostsCount != null)
     {
-        <div class="display-6 mt-2">@Model.PostsCount post(s) with <strong>@Model.TagName</strong> tag</div>
+        @: @Model.PostsCount post(s) with <strong class="text-lowercase">@Model.TagName</strong> tag
     }
     else
     {
-        <div class="display-6 mt-2">All posts</div>
+        @:All posts
     }
+    </div>
     <div class="col">
         @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
         {
-            await Html.RenderPartialAsync("_PostView", new PostPartialViewModel { Post = p, CommentsButton = true, CommentCount = @p.Commentaries.Count});
+            await Html.RenderPartialAsync("_PostView", new PostPartialViewModel { Post = p, CommentsButton = true, CommentCount = @p.Commentaries.Count });
         }
     </div>
 </div>

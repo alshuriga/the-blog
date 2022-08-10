@@ -41,7 +41,32 @@ public class AccountController : Controller
                 ModelState.AddModelError("", "Username or/and password is incorrect");
             }
         }
+        return View();
+    }
 
+    [HttpGet]
+    public IActionResult SignUp(string? returnUrl)
+    {
+        ViewData["returnUrl"] = returnUrl ?? "/";
+        return View(ViewModelFactory.CreateSignUpUserModel());
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SignUp(EditUserViewModel user, string? returnUrl)
+    {
+        if (ModelState.IsValid)
+        {
+            IdentityUser idUser = new IdentityUser { UserName = user.Username, Email = user.Email };
+            var result = await _userManager.CreateAsync(idUser, user.Password);
+            if (result.Succeeded)
+            {
+                return Redirect(returnUrl ?? "/");
+            }
+            foreach (var err in result.Errors)
+            {
+                ModelState.AddModelError("", err.Description);
+            }
+        }
         return View();
     }
 
@@ -59,5 +84,17 @@ public class AccountController : Controller
         return View(model: returnUrl);
     }
 
+    [Authorize(Roles = "Admins")]
+    [HttpGet("{username}")]
+    public async Task<IActionResult> EditUser(string userName)
+    {
+        IdentityUser? user = await _userManager.FindByNameAsync(userName);
+        if (user != null)
+        {
+            return View(ViewModelFactory.CreateEditUserModel(user));
+        }
+        return BadRequest();
+    }
 
+    
 }
