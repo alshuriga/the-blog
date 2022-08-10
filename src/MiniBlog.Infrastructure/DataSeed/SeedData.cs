@@ -1,14 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.Extensions.DependencyInjection;
 using MiniBlog.Core.Entities;
 using MiniBlog.Infrastructure.Data;
+using MiniBlog.Infrastructure.DataSeed;
 
-namespace MiniBlog.Infrastructure;
+namespace MiniBlog.Infrastructure.DataSeed;
 
 public static class SeedData
 {
-    public static void EnsureSeed(MiniBlogDbContext db)
+    public static void EnsureSeed(IServiceProvider services)
     {
+        var db = services.CreateScope().ServiceProvider.GetRequiredService<MiniBlogEfContext>();
+        
         if (db.Database.GetPendingMigrations().Any())
         {
             db.Database.Migrate();

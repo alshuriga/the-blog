@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using MiniBlog.Infrastructure.Data;
 using MiniBlog.Infrastructure.DataSeed;
@@ -9,14 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPostsRepo, EFPostsRepo>();
-builder.Services.AddDbContext<MiniBlogDbContext>(opts => {
-    opts.UseSqlServer(builder.Configuration.GetConnectionString("MiniBlogDbContext"), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-    if(builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
+builder.Services.AddDbContext<MiniBlogEfContext>(opts =>
+{
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("MiniBlogDbContext"),
+        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+    if (builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
 });
 builder.Services.AddDbContext<IdentityEfContext>(opts =>
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("IdentityEfContext"));
-    if(builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
+    if (builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
 });
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityEfContext>();
@@ -31,8 +34,25 @@ builder.Services.Configure<IdentityOptions>(opts =>
 });
 
 var app = builder.Build();
-    
-IdentitySeedData.EnsureSeed(app.Services);
+
+if (app.Environment.IsDevelopment())
+{
+    IdentitySeedData.EnsureSeed(app.Services);
+    SeedData.EnsureSeed(app.Services); 
+}
+
+if (app.Environment.IsProduction()) Console.WriteLine("Environment set to Production");
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions()
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();
 
@@ -42,5 +62,3 @@ app.UseAuthorization();
 app.MapDefaultControllerRoute();
 
 app.Run();
-
-

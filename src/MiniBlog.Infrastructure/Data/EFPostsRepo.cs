@@ -7,10 +7,10 @@ namespace MiniBlog.Infrastructure.Data;
 
 public partial class EFPostsRepo : IPostsRepo
 {
-    private MiniBlogDbContext context;
+    private MiniBlogEfContext context;
 
 
-    public EFPostsRepo(MiniBlogDbContext injectedContext)
+    public EFPostsRepo(MiniBlogEfContext injectedContext)
     {
         context = injectedContext;
     }

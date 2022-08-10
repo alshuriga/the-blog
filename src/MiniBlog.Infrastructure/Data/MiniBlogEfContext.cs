@@ -3,7 +3,7 @@ using MiniBlog.Core.Entities;
 
 namespace MiniBlog.Infrastructure.Data;
 
-public class MiniBlogDbContext : DbContext
+public class MiniBlogEfContext : DbContext
 {
     public DbSet<Post> Posts => Set<Post>();
 
@@ -11,7 +11,7 @@ public class MiniBlogDbContext : DbContext
 
     public DbSet<Commentary> Commentaries => Set<Commentary>();
 
-    public MiniBlogDbContext(DbContextOptions<MiniBlogDbContext> options) : base(options)
+    public MiniBlogEfContext(DbContextOptions<MiniBlogEfContext> options) : base(options)
     {
         
     }
