@@ -4,10 +4,11 @@ using MiniBlog.Infrastructure.Data;
 using MiniBlog.Infrastructure.DataSeed;
 using MiniBlog.Core.Constants;
 using Microsoft.EntityFrameworkCore;
+using MiniBlog.Web.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(opts => { opts.Filters.Add<ApplicationExceptionFilter>(); });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPostsRepo, EFPostsRepo>();
 builder.Services.AddDbContext<MiniBlogEfContext>(opts =>
@@ -33,12 +34,14 @@ builder.Services.Configure<IdentityOptions>(opts =>
     opts.User.RequireUniqueEmail = true;
 });
 
+builder.Services.AddScoped<ApplicationExceptionFilter>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     IdentitySeedData.EnsureSeed(app.Services);
-    SeedData.EnsureSeed(app.Services); 
+    SeedData.EnsureSeed(app.Services);
 }
 
 if (app.Environment.IsProduction()) Console.WriteLine("Environment set to Production");
@@ -52,6 +55,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
+
 
 app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();

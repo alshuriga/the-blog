@@ -42,6 +42,11 @@ public class AdminController : Controller
     public async Task<IActionResult> DeleteUser([FromForm]string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
+        if (await _userManager.IsInRoleAsync(user, "Admins") &&
+            (await _userManager.GetUsersInRoleAsync("Admins")).Count == 1)
+        {
+            throw new ApplicationException("You must have at least one account with admin rights");
+        }
         await _userManager.DeleteAsync(user);
         return RedirectToAction(nameof(UserList));
     }
@@ -58,8 +63,7 @@ public class AdminController : Controller
             {
                 if ((await _userManager.GetUsersInRoleAsync(roleName)).Count() == 1)
                 {
-                    ModelState.AddModelError("", "There has to be at least one user with Admin rights");
-                    return RedirectToAction(nameof(UserList));
+                    throw new ApplicationException("You must have at least one account with admin rights");
                 }
                 res = await _userManager.RemoveFromRoleAsync(user, roleName);
             }

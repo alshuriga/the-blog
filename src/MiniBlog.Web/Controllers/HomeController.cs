@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Core.Models;
+using MiniBlog.Web.Filters;
 using MiniBlog.Web.ViewModels;
 
 namespace MiniBlog.Web.Controllers;
 
 [AutoValidateAntiforgeryToken]
+[ServiceFilter(typeof(ApplicationExceptionFilter))]
 public class HomeController : Controller
 {
     //services
@@ -169,5 +171,11 @@ public class HomeController : Controller
         return RedirectToAction(nameof(Post), new { postId = returnId });
     }
 
+    [HttpGet("/exception")]
+    public IActionResult AppExceptionTest()
+    {
+        throw new ApplicationException("This is application exception");
+        return new NotFoundResult();
+    }
 
 }
