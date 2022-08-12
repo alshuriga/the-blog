@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MiniBlog\MiniBlog.csproj" />
+    <ProjectReference Include="..\src\Miniblog.Web\MiniBlog.Web.csproj" />
   </ItemGroup>
 
 </Project>

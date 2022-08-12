@@ -106,10 +106,10 @@ public class HomeController : Controller
         if (postId != null)
         {
             ViewData["title"] = "Edit Post";
-            Post? Post = await _repo.RetrievePost(postId ?? 0, new PaginateParams());
-            if (Post is null) return NotFound();
-            string tagString = String.Join(",", Post.Tags.Select(t => t.Name).AsEnumerable());
-            PostEditViewModel model = new() { Post = Post, TagString = tagString };
+            Post? post = await _repo.RetrievePost(postId ?? 0, new PaginateParams());
+            if (post is null) return NotFound();
+            string tagString = String.Join(",", post.Tags.Select(t => t.Name).AsEnumerable());
+            PostEditViewModel model = new() { Post = post, TagString = tagString };
             return View(model);
         }
         ViewData["title"] = "New Post";
@@ -127,7 +127,7 @@ public class HomeController : Controller
         {
             Post post = postModel.Post;
             post.Tags.Clear();
-            _logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
+            _logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name)));
             if (!String.IsNullOrWhiteSpace(postModel.TagString))
             {
                 foreach (string t in postModel.TagString.Split(",", StringSplitOptions.RemoveEmptyEntries))
@@ -135,10 +135,10 @@ public class HomeController : Controller
                     string tagName = t.Trim();
                     await _repo.CreateTagIfNotExist(new Tag { Name = tagName });
                     Tag? tag = await _repo.RetrieveTagByName(tagName);
-                    post.Tags.Add(tag!);
+                    if(tag != null) post.Tags.Add(tag);
                 }
             }
-            _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
+            _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name)));
             long? returnId;
             if (post.PostId != 0)
             {
@@ -150,7 +150,7 @@ public class HomeController : Controller
                 returnId = await _repo.CreatePost(post);
             }
             _logger.LogDebug($"Post id (controller-side): {returnId.ToString()}");
-            _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name).AsEnumerable()));
+            _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name)));
 
             if (returnId is null) return NotFound();
             return RedirectToAction(nameof(Post), new { postId = returnId });
@@ -169,13 +169,6 @@ public class HomeController : Controller
         await _repo.DeleteComment(commId);
         if (returnId is null) return NotFound();
         return RedirectToAction(nameof(Post), new { postId = returnId });
-    }
-
-    [HttpGet("/exception")]
-    public IActionResult AppExceptionTest()
-    {
-        throw new ApplicationException("This is application exception");
-        return new NotFoundResult();
     }
 
 }
