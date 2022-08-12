@@ -257,13 +257,7 @@ public class HomeControllersTest
         PostsRepoMock.Verify(r => r.RetrievePost(It.IsAny<long>(), It.IsAny<PaginateParams>()), Times.Once);
         Assert.IsType<NotFoundResult>(result);
     }
-
-    [Fact]
-    public async void AlwaysFail()
-    {
-        Assert.True(false);
-    }
-
+    
 
     private IEnumerable<Post> SeedPosts(int postNumber)
     {
