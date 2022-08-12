@@ -258,6 +258,12 @@ public class HomeControllersTest
         Assert.IsType<NotFoundResult>(result);
     }
 
+    [Fact]
+    public async void AlwaysFail()
+    {
+        Assert.True(false);
+    }
+
 
     private IEnumerable<Post> SeedPosts(int postNumber)
     {
