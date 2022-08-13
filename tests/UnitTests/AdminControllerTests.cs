@@ -1,15 +1,7 @@
 using MiniBlog.Web.Controllers;
 using MiniBlog.Web.ViewModels;
-using MiniBlog.Core.Interfaces;
-using MiniBlog.Core.Entities;
-using MiniBlog.Core.Models;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Logging;
-using System.Security.Claims;
 
 namespace MiniBlog.Tests;
 

@@ -6,7 +6,7 @@ using MiniBlog.Web.ViewModels;
 namespace MiniBlog.Web.Controllers;
 
 [Authorize(Roles = "Admins")]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class AdminController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
@@ -19,7 +19,6 @@ public class AdminController : Controller
     }
 
     [HttpGet]
-    [HttpGet("users/list")]
     public IActionResult UserList()
     {
         var allUsers = _userManager.Users

@@ -13,7 +13,7 @@ public static class SeedData
     {
         var db = services.CreateScope().ServiceProvider.GetRequiredService<MiniBlogEfContext>();
         
-        if (db.Database.GetPendingMigrations().Any())
+        if (db.Database.IsSqlServer() && db.Database.GetPendingMigrations().Any())
         {
             db.Database.Migrate();
         }

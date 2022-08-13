@@ -5,6 +5,7 @@ using MiniBlog.Infrastructure.DataSeed;
 using MiniBlog.Core.Constants;
 using Microsoft.EntityFrameworkCore;
 using MiniBlog.Web.Filters;
+using MiniBlog.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,9 +61,17 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();
 
+if(app.Environment.IsDevelopment()) app.UseMiddleware<TestsFakeAuthMiddleWare>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
 
 app.Run();
+
+
+public partial class Program {
+
+    protected virtual void ConfigureAdditionalMiddleware(IApplicationBuilder app){}
+}

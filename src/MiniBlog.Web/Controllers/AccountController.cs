@@ -5,6 +5,7 @@ using MiniBlog.Web.ViewModels;
 
 namespace MiniBlog.Web.Controllers;
 
+[Route("[controller]/[action]")]
 public class AccountController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
@@ -16,7 +17,7 @@ public class AccountController : Controller
         _signInManager = signInManager;
     }
 
-    [HttpGet]
+    [HttpGet()]
     public IActionResult Login([FromQuery] string? returnUrl)
     {
         if(returnUrl != null) ViewBag.returnUrl = returnUrl;
@@ -95,6 +96,7 @@ public class AccountController : Controller
         }
         return BadRequest();
     }
+
     
 
     
