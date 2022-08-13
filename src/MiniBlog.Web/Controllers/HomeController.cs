@@ -67,7 +67,7 @@ public class HomeController : Controller
         return View(model);
     }
 
-    
+    [Authorize]
     [HttpPost("/AddComment/{postid:long}")]
     public async Task<IActionResult> AddComment(CommentaryViewModel commentary, long postId)
     {
@@ -164,10 +164,10 @@ public class HomeController : Controller
 
     [Authorize(Roles = "Admins")]
     [HttpPost("/commmentary/delete/{commId:long}")]
-    public async Task<IActionResult> DeleteComment(long commId, string? returnId)
+    public async Task<IActionResult> DeleteComment(long commId, long? returnId)
     {
         await _repo.DeleteComment(commId);
-        if (returnId is null) return NotFound();
+        if (returnId is null) return RedirectToAction(nameof(Index));
         return RedirectToAction(nameof(Post), new { postId = returnId });
     }
 

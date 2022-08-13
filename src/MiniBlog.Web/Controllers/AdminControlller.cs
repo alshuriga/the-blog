@@ -28,7 +28,7 @@ public class AdminController : Controller
                 Id = u.Id,
                 Username = u.UserName,
                 Email = u.Email,
-                Roles = _userManager.GetRolesAsync(u).Result
+                Roles = _userManager.GetRolesAsync(u).Result.ToList()
             }).ToList();
         var model = new UserListsViewModel()
         {
