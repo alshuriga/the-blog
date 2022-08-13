@@ -9,7 +9,8 @@ public class IntegrationTestsBase : IClassFixture<CustomWebAppFactory<Program>>
     public IntegrationTestsBase(CustomWebAppFactory<Program> factory)
     {
         _factory = factory;
-        _client = _factory.CreateClient();
+        _client = _factory.CreateClient(new WebApplicationFactoryClientOptions() { AllowAutoRedirect = false });
+
     }
     
 }

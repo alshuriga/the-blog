@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using MiniBlog.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
-using MiniBlog.Infrastructure.DataSeed;
-using MiniBlog.Core.Entities;
 
 
 public class CustomWebAppFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
@@ -32,6 +30,7 @@ public class CustomWebAppFactory<TProgram> : WebApplicationFactory<TProgram> whe
             });
 
         });
+
 
     }
 }
