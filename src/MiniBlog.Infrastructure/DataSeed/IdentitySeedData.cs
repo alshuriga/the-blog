@@ -26,9 +26,11 @@ public class IdentitySeedData
                 UserName = "admin",
                 Email = "admin@example.com"
             };
-            
-            await userManager.CreateAsync(adminUser, "admin");
-            await userManager.AddToRoleAsync(adminUser, "Admins");
+        
+        
+         await userManager.CreateAsync(adminUser, "admin");
+         await userManager.AddToRoleAsync(adminUser, adminsRole.Name);
+
 
             IdentityUser normalUser = new IdentityUser
             {

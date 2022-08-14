@@ -42,8 +42,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    // IdentitySeedData.EnsureSeed(app.Services);
-    // SeedData.EnsureSeed(app.Services);
+    IdentitySeedData.EnsureSeed(app.Services);
+    SeedData.EnsureSeed(app.Services);
 }
 
 if (app.Environment.IsProduction()) Console.WriteLine("Environment set to Production");
@@ -53,7 +53,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions()
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
-if (!app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
 }
@@ -61,7 +61,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();
 
-if(app.Environment.IsDevelopment())
+if(app.Environment.EnvironmentName == "Testing")
 {
     app.UseMiddleware<TestsFakeAuthMiddleWare>();
 }

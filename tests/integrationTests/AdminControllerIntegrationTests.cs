@@ -1,12 +1,7 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using MiniBlog.Infrastructure.Data;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
-using Microsoft.Net.Http.Headers;
 using MiniBlog.Tests.Config;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
 
 namespace MiniBlog.Tests;
 
@@ -22,6 +17,10 @@ public class AdminControllerIntegrationTests : IntegrationTestsBase
     {
         var request = new HttpRequestMessage(HttpMethod.Get, "/admin/userlist");
         request.AppendFakeAuth(isAdmin: true);
+
+        var roles = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        _testOutputHelper.WriteLine("roles in DB: " + string.Join(", ", roles.Roles.Select(r => r.Name)));
 
         var result = await _client.SendAsync(request);
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
