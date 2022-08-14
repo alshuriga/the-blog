@@ -5,6 +5,8 @@ using MiniBlog.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
+using Microsoft.Net.Http.Headers;
+using MiniBlog.Tests.Config;
 
 namespace MiniBlog.Tests;
 
@@ -31,61 +33,36 @@ public class HomeControllerIntegrationTests : IntegrationTestsBase
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 
-    [Fact]
-    public async Task AdminUserList_AuthAsAdmin_ReturnsUserListPageOK()
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, "/admin/userlist");
-        request.AppendFakeAuth(isAdmin: true);
-
-        var result = await _client.SendAsync(request);
-        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-        Assert.Contains("Users List", (await result.Content.ReadAsStringAsync()));
-    }
-
-
-    [Fact]
-    public async Task AdminUserList_AuthAsNonAdmin_ReturnsAccessDenied302()
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, "/admin/userlist");
-        request.AppendFakeAuth(isAdmin: false);
-
-        var result = await _client.SendAsync(request);
-        Assert.Equal(HttpStatusCode.Redirect, result.StatusCode);
-        Assert.Contains("AccessDenied", result.Headers.Location?.AbsolutePath);
-    }
-
-    [Fact]
-    public async Task AdminUserList_AsAnonymous_ReturnsLogin302()
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, "/admin/userlist");
-
-        var result = await _client.SendAsync(request);
-        Assert.Equal(HttpStatusCode.Redirect, result.StatusCode);
-        Assert.Contains("Login", result.Headers.Location?.AbsolutePath);
-    }
-
 
     [Fact]
     public async Task CreatePost_AsAdmin_ReturnsPostPage()
     {
-        //TODO: Handle antiforgery token 
+        //GET request for antiforgery data  
+        var antiforgeryRequest = new HttpRequestMessage(HttpMethod.Get, "/post/new");
+        antiforgeryRequest.AppendFakeAuth(isAdmin: true);
+        var antiforgeryData = await (await _client.SendAsync(antiforgeryRequest)).ExtractAntiforgeryKeys();
+
+        //generating unique guid header
         var testHeader = Guid.NewGuid().ToString();
         var postForm = new FormUrlEncodedContent(new Dictionary<string, string> {
             { "Post.PostId", "0" },
             { "Post.DateTime", DateTime.Now.ToString() },
-           { "Post.Text", "Test post. Test post. Test post. Test post. "},
-           { "Post.Header", testHeader },
-           { "TagString", "one,two,three" }
+            { "Post.Text", "Test post. Test post. Test post. Test post. "},
+            { "Post.Header", testHeader },
+            { "TagString", "one,two,three" },
+            { AntiForgeryExtractor.AntiforgeryFormFieldName, antiforgeryData.field }
          });
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "/post/save");
-        request.AppendFakeAuth(isAdmin: true);
-        request.Content = postForm;
-        var result = await _client.SendAsync(request);
+        var postRequest = new HttpRequestMessage(HttpMethod.Post, "/post/save");
+        postRequest.AppendFakeAuth(isAdmin: true);
+        postRequest.Headers.Add("Cookies", new CookieHeaderValue(AntiForgeryExtractor.AntiforgeryCookieName, antiforgeryData.cookie).ToString());
+        postRequest.Content = postForm;
+        var result = await _client.SendAsync(postRequest);
         var db = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<MiniBlogEfContext>();
         var newPostId = db.Posts.Where(p => p.Header == testHeader).First().PostId;
+        
         Assert.Equal(HttpStatusCode.Redirect, result.StatusCode);
-        Assert.Equal(1, db.Posts.Where(p => p.Header == testHeader).Count());
+        Assert.Equal(1, db.Posts.Where(p => p.Header == testHeader && p.PostId == newPostId).Count());
         Assert.Contains($"post/{newPostId}", result.Headers.Location?.OriginalString);
     }
 }

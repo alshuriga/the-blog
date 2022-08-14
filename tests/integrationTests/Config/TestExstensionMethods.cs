@@ -1,4 +1,5 @@
-namespace MiniBlog.Tests;
+namespace MiniBlog.Tests.Config;    
+
 public static class TestExstensionMethods
 {
     public static void AppendFakeAuth(this HttpRequestMessage request, bool isAdmin = false)

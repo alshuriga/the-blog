@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using MiniBlog.Web.Filters;
 using MiniBlog.Web.Middleware;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews(opts => { opts.Filters.Add<ApplicationExceptionFilter>(); });
@@ -57,11 +58,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-
 app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();
 
-if(app.Environment.IsDevelopment()) app.UseMiddleware<TestsFakeAuthMiddleWare>();
+if(app.Environment.IsDevelopment())
+{
+    app.UseMiddleware<TestsFakeAuthMiddleWare>();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -73,5 +76,5 @@ app.Run();
 
 public partial class Program {
 
-    protected virtual void ConfigureAdditionalMiddleware(IApplicationBuilder app){}
+    
 }

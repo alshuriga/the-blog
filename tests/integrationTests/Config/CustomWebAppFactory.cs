@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MiniBlog.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
 
+namespace MiniBlog.Tests.Config;
 
 public class CustomWebAppFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {
@@ -11,9 +12,9 @@ public class CustomWebAppFactory<TProgram> : WebApplicationFactory<TProgram> whe
     {
         builder.ConfigureServices(services =>
         {
-            // var descriptor = services.SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<MiniBlogEfContext>));
             var descriptors = services.Select(s => s).Where(s => s.ServiceType == typeof(DbContextOptions<MiniBlogEfContext>)
                             || s.ServiceType == typeof(DbContextOptions<IdentityEfContext>)).ToList();
+                            
             foreach (var descr in descriptors)
             {
                 services.Remove(descr);
@@ -27,6 +28,11 @@ public class CustomWebAppFactory<TProgram> : WebApplicationFactory<TProgram> whe
             services.AddDbContext<IdentityEfContext>(opts =>
             {
                 opts.UseInMemoryDatabase("IdentityEfInMemory");
+            });
+
+            services.AddAntiforgery(opts => {
+                opts.Cookie.Name = AntiForgeryExtractor.AntiforgeryCookieName;
+                opts.FormFieldName = AntiForgeryExtractor.AntiforgeryFormFieldName;
             });
 
         });

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;
+namespace MiniBlog.Tests.Config;
 
 public class IntegrationTestsBase : IClassFixture<CustomWebAppFactory<Program>>
 {
