@@ -18,8 +18,8 @@ public static class AntiForgeryExtractor
     {
         string? cookie = response.Headers.GetValues("Set-Cookie").FirstOrDefault(c => c.Contains(AntiforgeryCookieName));
         if(cookie == null) throw new ArgumentException($"Cookie {AntiforgeryCookieName} not found.");
-        var regexCapture = Regex.Match(cookie, $@"/^.*{AntiforgeryCookieName}=(\S+?)[;|\s].*$/gm");
-        cookie = regexCapture.Groups[1].Value;
+        var regexCapture = Regex.Match(cookie, $@"{AntiforgeryCookieName}=([^;]+?); .*");
+        cookie = cookie.Substring(cookie.IndexOf('=')+1, cookie.IndexOf(';')-cookie.IndexOf('=')-1);
         return cookie;
     }
 

@@ -350,7 +350,7 @@ public class HomeControllersTests
     }
 
     [Fact]
-    public async void DeleteComment_PassExistingCommentIdAndNoPostId_RedirectsToPost()
+    public async void DeleteComment_PassExistingCommentIdAndNoPostId_RedirectsToIndex()
     {
         var commId = 12;
         var controller = GetTestControllerWithMocks();

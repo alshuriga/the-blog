@@ -42,8 +42,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    IdentitySeedData.EnsureSeed(app.Services);
-    SeedData.EnsureSeed(app.Services);
+    // IdentitySeedData.EnsureSeed(app.Services);
+    // SeedData.EnsureSeed(app.Services);
 }
 
 if (app.Environment.IsProduction()) Console.WriteLine("Environment set to Production");

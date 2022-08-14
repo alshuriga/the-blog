@@ -167,7 +167,7 @@ public class HomeController : Controller
     public async Task<IActionResult> DeleteComment(long commId, long? returnId)
     {
         await _repo.DeleteComment(commId);
-        if (returnId is default(long)) return RedirectToAction(nameof(Index));
+        if (returnId is null) return RedirectToAction(nameof(Index));
         return RedirectToAction(nameof(Post), new { postId = returnId });
     }
 
