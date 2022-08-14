@@ -2,6 +2,7 @@ using System.Net;
 using MiniBlog.Tests.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
 
 namespace MiniBlog.Tests;
 

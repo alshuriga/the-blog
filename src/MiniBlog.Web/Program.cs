@@ -46,8 +46,6 @@ if (app.Environment.IsDevelopment())
     SeedData.EnsureSeed(app.Services);
 }
 
-if (app.Environment.IsProduction()) Console.WriteLine("Environment set to Production");
-
 app.UseForwardedHeaders(new ForwardedHeadersOptions()
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
