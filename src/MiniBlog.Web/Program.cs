@@ -53,7 +53,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions()
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
-if (!app.Environment.IsProduction())
+if (!app.Environment.IsDevelopment() || !app.Environment.IsTesting())
 {
     app.UseHttpsRedirection();
 }
@@ -61,7 +61,7 @@ if (!app.Environment.IsProduction())
 app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();
 
-if(app.Environment.EnvironmentName == "Testing")
+if(app.Environment.IsTesting())
 {
     app.UseMiddleware<TestsFakeAuthMiddleWare>();
 }
@@ -73,8 +73,4 @@ app.MapDefaultControllerRoute();
 
 app.Run();
 
-
-public partial class Program {
-
-    
-}
+public partial class Program { }
