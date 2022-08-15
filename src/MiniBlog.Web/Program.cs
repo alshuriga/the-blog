@@ -14,12 +14,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews(opts => { opts.Filters.Add<ApplicationExceptionFilter>(); });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPostsRepo, EFPostsRepo>();
+
 builder.Services.AddDbContext<MiniBlogEfContext>(opts =>
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("MiniBlogDbContext"),
         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
     if (builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
 });
+
 builder.Services.AddDbContext<IdentityEfContext>(opts =>
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("IdentityEfContext"));
