@@ -16,8 +16,6 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-    - name: current dir
-      run: cd src/MiniBlog.Core && ls -al
     - name: Restore dependencies
       run: dotnet restore src
     - name: Build
