@@ -49,9 +49,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    IdentitySeedData.EnsureSeed(app.Services);
-    SeedData.EnsureSeed(app.Services);
-}
+    SeedData.EnsureSeedContent(app.Services);
+    await SeedData.EnsureSeedIdentity(app.Services);
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions()
 {
