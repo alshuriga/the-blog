@@ -362,6 +362,12 @@ public class HomeControllersTests
         Assert.Equal("Index", ((RedirectToActionResult)result).ActionName);
     }
 
+    // [Fact]
+    // public void AlwaysFail()
+    // {
+    //     Assert.True(false);
+    // }
+
     //
     //private methods, not tests
     //

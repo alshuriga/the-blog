@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using MiniBlog.Infrastructure.Data;
 using MiniBlog.Infrastructure.DataSeed;
@@ -36,6 +37,10 @@ builder.Services.Configure<IdentityOptions>(opts =>
     opts.User.RequireUniqueEmail = true;
 });
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(opts => {
+    opts.Cookie.Name = "TestCookieName";
+});
+
 builder.Services.AddScoped<ApplicationExceptionFilter>();
 
 var app = builder.Build();
@@ -55,7 +60,6 @@ if (!app.Environment.IsDevelopment() || !app.Environment.IsTesting())
 {
     app.UseHttpsRedirection();
 }
-
 app.UseStatusCodePages("text/html", ErrorTemplates.StatusCodePageTemplate);
 app.UseStaticFiles();
 

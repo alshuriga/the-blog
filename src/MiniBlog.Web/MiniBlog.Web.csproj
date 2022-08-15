@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Miniblog.Core\MiniBlog.Core.csproj" />
-    <ProjectReference Include="..\Miniblog.Infrastructure\MiniBlog.Infrastructure.csproj" />
+    <ProjectReference Include="..\MiniBlog.Core\MiniBlog.Core.csproj" />
+    <ProjectReference Include="..\MiniBlog.Infrastructure\MiniBlog.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
