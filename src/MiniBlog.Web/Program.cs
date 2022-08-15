@@ -51,6 +51,7 @@ if (app.Environment.IsDevelopment())
 {
     SeedData.EnsureSeedContent(app.Services);
     await SeedData.EnsureSeedIdentity(app.Services);
+}
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions()
 {
