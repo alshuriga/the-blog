@@ -120,13 +120,13 @@ public class HomeController : Controller
         if (ModelState.IsValid && postModel != null)
         {
             Post post = postModel.Post;
-            post.Tags.Clear();
+            post.Tags = new List<Tag>();
             _logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name)));
             foreach (string t in tagNames)
                 {
                     string tagName = t.Trim();
-                    Tag? tag = await _repo.RetrieveTagByName(tagName) ?? new() { Name = tagName };
-                    if(tag != null) post.Tags.Add(tag);
+                    Tag tag = await _repo.RetrieveTagByName(tagName) ?? new() { Name = tagName };
+                    post.Tags.Add(tag);
                 }
             _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name)));
             long? returnId;

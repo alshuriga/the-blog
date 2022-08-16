@@ -30,7 +30,7 @@
                 @if (@Model.CommentsButton)
                 {
                     <div class="float-end">
-                    <a asp-action="Post" asp-controller="Home" asp-route-postid="@Model.Post.PostId">
+                    <a asp-action="ShowPost" asp-controller="Home" asp-route-postid="@Model.Post.PostId">
                         <button class="float-end btn btn-outline-secondary">Comments (@Model.CommentCount.ToString())<i class="fa-regular fa-comment-dots ms-2"></i></button>
                     </a>
                     </div>

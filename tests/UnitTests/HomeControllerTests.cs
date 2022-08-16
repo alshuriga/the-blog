@@ -239,14 +239,14 @@ public class HomeControllersTests
     [Fact]
     public async void EditPost_PassNoPostId_ReturnsViewForCreating()
     {
-        PostsRepoMock.Setup(r => r.RetrievePost(-1, It.IsAny<PaginateParams>())).ReturnsAsync((Post?)null);
+        PostsRepoMock.Setup(r => r.RetrievePost(0, It.IsAny<PaginateParams>())).ReturnsAsync((Post?)null);
         var controller = GetTestControllerWithMocks();
         var result = await controller.EditPost();
         var resultModel = (result as ViewResult)?.Model as PostEditViewModel;
         PostsRepoMock.Verify(r => r.RetrievePost(It.IsAny<long>(), It.IsAny<PaginateParams>()), Times.Never);
         Assert.IsType<ViewResult>(result);
         Assert.NotNull(resultModel);
-        Assert.Equal(-1, resultModel?.Post.PostId);
+        Assert.Equal(0, resultModel?.Post.PostId);
         Assert.Equal("New Post", (result as ViewResult)?.ViewData["title"]);
     }
 

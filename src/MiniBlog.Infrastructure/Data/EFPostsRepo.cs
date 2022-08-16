@@ -19,6 +19,7 @@ public partial class MiniBlogEfRepo : IMiniBlogRepo
     public async Task<IEnumerable<Post>> RetrievePostsRange(PaginateParams paginateParams, string? tagName = null)
     {
         IQueryable<Post> query = context.Posts
+            .AsNoTracking()
             .Include(p => p.Tags)
             .Include(p => p.Commentaries)
             .OrderByDescending(p => p.DateTime);
@@ -64,17 +65,8 @@ public partial class MiniBlogEfRepo : IMiniBlogRepo
 
     public async Task DeletePost(long id)
     {
-        Post? post = await context.Posts
-            .Include(p => p.Commentaries)
-            .Include(p => p.Tags)
-            .Where(p => p.PostId == id)
-            .FirstOrDefaultAsync();
-
-        if (post is not null)
-        {
-            context.Posts.Remove(post);
-            await context.SaveChangesAsync();
-        }
+        context.Posts.Remove(new Post() { PostId = id});
+        await context.SaveChangesAsync();
     }
 
 
@@ -102,16 +94,15 @@ public partial class MiniBlogEfRepo : IMiniBlogRepo
     {
         if(await RetrieveTagByName(tag.Name) == null)
         {
-        await context.Tags.AddAsync(tag);
-        await context.SaveChangesAsync();
+            await context.Tags.AddAsync(tag);
+            await context.SaveChangesAsync();
         }
-
     }
 
     public async Task<Tag?> RetrieveTagByName(string tagName)
     {
         tagName = tagName.Trim();
-        Tag? tag = await context.Tags.AsNoTracking().FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
+        Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
         return tag;
     }
 
