@@ -4,7 +4,7 @@ namespace MiniBlog.Core.Entities;
 
 public class Post
 {
-    public long PostId { get; set; }
+    public long PostId { get; set; } = -1;
 
     [MaxLength(50, ErrorMessage = "Maximum text length is 50 characters")]
     [Required(AllowEmptyStrings = false, ErrorMessage = "Header field cannot be empty")]

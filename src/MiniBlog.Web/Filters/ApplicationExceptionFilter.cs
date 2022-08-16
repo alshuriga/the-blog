@@ -22,14 +22,14 @@ public class ApplicationExceptionFilter : IExceptionFilter
     {
        // if (!_hostEnvironment.IsDevelopment())
        // {
-            if (context.Exception.GetType() == typeof(ApplicationException))
+            if (context.Exception.GetType() == typeof(MiniBlogWebException))
             {
                 context.Result = new ViewResult()
                 {
                     ViewName = "_AppError", 
                     ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                     {
-                        Model = new AppErrorViewModel() { Message = context.Exception.Message, ReturnUrl = context.HttpContext.Request.PathBase }
+                        Model = new AppErrorViewModel() { Message = context.Exception.Message, ReturnUrl = (context.Exception as MiniBlogWebException)?.ReturnUrl ?? "/"}
                     }
                 };
             }

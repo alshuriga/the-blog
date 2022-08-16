@@ -96,8 +96,5 @@ public class AccountController : Controller
         }
         return BadRequest();
     }
-
-    
-
     
 }

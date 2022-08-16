@@ -15,7 +15,7 @@ namespace MiniBlog.Tests;
 
 public class HomeControllersTests
 {
-    private Mock<IPostsRepo> PostsRepoMock { get; set; } = new();
+    private Mock<IMiniBlogRepo> PostsRepoMock { get; set; } = new();
     private Mock<UserManager<IdentityUser>> UserManagerMock { get; set; } = new(Mock.Of<IUserStore<IdentityUser>>(), null, null, null, null, null, null, null, null);
     private Mock<ILogger<HomeController>> LoggerMock { get; set; } = new();
     private HomeController GetTestControllerWithMocks() => new HomeController(PostsRepoMock.Object, LoggerMock.Object, UserManagerMock.Object);
@@ -120,7 +120,7 @@ public class HomeControllersTests
 
         var controller = GetTestControllerWithMocks();
         controller.TempData = new TempDataDictionary(new Mock<HttpContext>().Object, new Mock<ITempDataProvider>().Object);
-        var resultModel = (await controller.Post(postId: 1) as ViewResult)?.Model as SinglePostPageViewModel;
+        var resultModel = (await controller.ShowPost(postId: 1) as ViewResult)?.Model as SinglePostPageViewModel;
 
         PostsRepoMock.Verify(r => r.GetCommentariesCount(1), Times.Once);
         PostsRepoMock.Verify(r => r.RetrievePost(It.IsAny<long>(), It.IsAny<PaginateParams>()), Times.Once);
@@ -139,7 +139,7 @@ public class HomeControllersTests
             .ReturnsAsync((Post?)null);
 
         var controller = GetTestControllerWithMocks();
-        var result = await controller.Post(5);
+        var result = await controller.ShowPost(5);
         PostsRepoMock.Verify(r => r.GetCommentariesCount(5), Times.Once);
         PostsRepoMock.Verify(r => r.RetrievePost(It.IsAny<long>(), It.IsAny<PaginateParams>()), Times.Once);
         Assert.IsType<NotFoundResult>(result);
@@ -147,7 +147,7 @@ public class HomeControllersTests
 
 
     [Fact]
-    public async void CreateOrUpdatePost_AddPost_ReturnsRedirectToPost()
+    public async void SavePost_AddPost_ReturnsRedirectToPost()
     {
         Post postForModel = SeedPosts(1).First();
         postForModel.Tags = new List<Tag>();
@@ -164,7 +164,7 @@ public class HomeControllersTests
 
 
         var controller = GetTestControllerWithMocks();
-        var result = await controller.CreateOrUpdatePost(postEditViewModel);
+        var result = await controller.SavePost(postEditViewModel);
 
         Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal(3, postEditViewModel.Post.Tags.Count);
@@ -177,7 +177,7 @@ public class HomeControllersTests
     }
 
     [Fact]
-    public async void CreateOrUpdatePost_UpdatePost_ReturnsRedirectToPost()
+    public async void SavePost_UpdatePost_ReturnsRedirectToPost()
     {
         Post postForModel = new Post()
         {
@@ -192,19 +192,19 @@ public class HomeControllersTests
             { CommentaryId = 1, Text = $"Text_{i}", Username = $"Username_{i}", Email = $"email_{i}@example.com" });
         }
 
-        PostsRepoMock.Setup(r => r.CreateTagIfNotExist(It.IsAny<Tag>())).Callback((Tag t) => postForModel.Tags.Add(t));
+        PostsRepoMock.Setup(r => r.RetrieveTagByName(It.IsAny<string>())).ReturnsAsync((Tag?)null);
 
         PostEditViewModel postEditViewModel = new() { Post = postForModel, TagString = "tag1,tag2,tag3" };
 
         var controller = GetTestControllerWithMocks();
-        var result = await controller.CreateOrUpdatePost(postEditViewModel);
+        var result = await controller.SavePost(postEditViewModel);
 
         Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal(7, postEditViewModel.Post.PostId);
         Assert.Equal(postEditViewModel.Post.PostId, ((RedirectToActionResult)result).RouteValues?["postid"]);
         Assert.True(Enumerable.SequenceEqual(new string[] { "tag1", "tag2", "tag3" },
             postEditViewModel.Post.Tags.Select(t => t.Name).ToArray()));
-        PostsRepoMock.Verify(r => r.CreateTagIfNotExist(It.IsAny<Tag>()), Times.Exactly(3));
+        PostsRepoMock.Verify(r => r.RetrieveTagByName(It.IsAny<string>()), Times.Exactly(3));
         PostsRepoMock.Verify(r => r.CreatePost(postForModel), Times.Never);
         PostsRepoMock.Verify(r => r.UpdatePost(It.IsAny<Post>()), Times.Once);
     }
@@ -237,16 +237,16 @@ public class HomeControllersTests
 
 
     [Fact]
-    public async void EditPost_PassNullPostId_ReturnsViewForCreating()
+    public async void EditPost_PassNoPostId_ReturnsViewForCreating()
     {
-        PostsRepoMock.Setup(r => r.RetrievePost(1, It.IsAny<PaginateParams>())).ReturnsAsync((Post?)null);
+        PostsRepoMock.Setup(r => r.RetrievePost(-1, It.IsAny<PaginateParams>())).ReturnsAsync((Post?)null);
         var controller = GetTestControllerWithMocks();
-        var result = await controller.EditPost(null);
+        var result = await controller.EditPost();
         var resultModel = (result as ViewResult)?.Model as PostEditViewModel;
         PostsRepoMock.Verify(r => r.RetrievePost(It.IsAny<long>(), It.IsAny<PaginateParams>()), Times.Never);
         Assert.IsType<ViewResult>(result);
         Assert.NotNull(resultModel);
-        Assert.Equal(0, resultModel?.Post.PostId);
+        Assert.Equal(-1, resultModel?.Post.PostId);
         Assert.Equal("New Post", (result as ViewResult)?.ViewData["title"]);
     }
 
@@ -274,18 +274,6 @@ public class HomeControllersTests
         PostsRepoMock.Verify(r => r.DeletePost(It.Is<long>(l => l == postId)), Times.Once);
         Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Index", ((RedirectToActionResult)result).ActionName);
-    }
-
-    [Fact]
-    public async void DeletePost_PassZeroAsPostId_ReturnsNotFound()
-    {
-        long postId = 0;
-        var controller = GetTestControllerWithMocks();
-
-        var result = await controller.DeletePost(postId);
-
-        PostsRepoMock.Verify(r => r.DeletePost(It.Is<long>(l => l == postId)), Times.Never);
-        Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
@@ -318,22 +306,6 @@ public class HomeControllersTests
         Assert.Equal(postId, (long?)((RedirectToActionResult)result).RouteValues?["postId"]);
     }
 
-    [Fact]
-    public async void AddComment_AnonymousUser_RedirectsToLogin()
-    {
-        var anonUser = new ClaimsPrincipal(new ClaimsIdentity());
-        var postId = 10;
-        var testCommentary = new CommentaryViewModel { Text = "This is a test commentary" };
-        var controller = GetTestControllerWithMocks();
-        controller.ControllerContext.HttpContext = new DefaultHttpContext { User = anonUser };
-
-        var result = await controller.AddComment(testCommentary, postId);
- 
-        UserManagerMock.Verify(m => m.FindByNameAsync(It.IsAny<string>()), Times.Never);
-        PostsRepoMock.Verify(r => r.CreateComment(It.IsAny<Commentary>(), It.IsAny<long>()), Times.Never);
-        Assert.IsType<RedirectToActionResult>(result);
-        Assert.Equal("Login", ((RedirectToActionResult)result).ActionName);
-    }
 
     [Fact]
     public async void DeleteComment_PassExistingCommentId_RedirectsToPost()
@@ -349,28 +321,6 @@ public class HomeControllersTests
         Assert.Equal(returnId, (long?)((RedirectToActionResult)result).RouteValues?["postId"]);
     }
 
-    [Fact]
-    public async void DeleteComment_PassExistingCommentIdAndNoPostId_RedirectsToIndex()
-    {
-        var commId = 12;
-        var controller = GetTestControllerWithMocks();
-
-        var result = await controller.DeleteComment(commId, null);
-
-        PostsRepoMock.Verify(r => r.DeleteComment(It.Is<long>(l => ((byte)l) == commId)), Times.Once);
-        Assert.IsType<RedirectToActionResult>(result);
-        Assert.Equal("Index", ((RedirectToActionResult)result).ActionName);
-    }
-
-    // [Fact]
-    // public void AlwaysFail()
-    // {
-    //     Assert.True(false);
-    // }
-
-    //
-    //private methods, not tests
-    //
     private IEnumerable<Post> SeedPosts(int postNumber)
     {
         Post[] posts = new Post[postNumber];

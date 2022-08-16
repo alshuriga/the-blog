@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MiniBlog.Infrastructure.Data;
 
-public partial class EFPostsRepo : IPostsRepo
+public partial class MiniBlogEfRepo : IMiniBlogRepo
 {
     private MiniBlogEfContext context;
 
 
-    public EFPostsRepo(MiniBlogEfContext injectedContext)
+    public MiniBlogEfRepo(MiniBlogEfContext injectedContext)
     {
         context = injectedContext;
     }
@@ -111,7 +111,7 @@ public partial class EFPostsRepo : IPostsRepo
     public async Task<Tag?> RetrieveTagByName(string tagName)
     {
         tagName = tagName.Trim();
-        Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
+        Tag? tag = await context.Tags.AsNoTracking().FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
         return tag;
     }
 

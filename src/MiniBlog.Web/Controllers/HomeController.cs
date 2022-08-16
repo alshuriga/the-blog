@@ -12,7 +12,7 @@ namespace MiniBlog.Web.Controllers;
 public class HomeController : Controller
 {
     //services
-    private readonly IPostsRepo _repo;
+    private readonly IMiniBlogRepo _repo;
     private readonly ILogger _logger;
     private readonly UserManager<IdentityUser> _userManager;
 
@@ -21,7 +21,7 @@ public class HomeController : Controller
     const int CommentsPerPage = 5;
 
 
-    public HomeController(IPostsRepo repo, ILogger<HomeController> logger, UserManager<IdentityUser> userManager)
+    public HomeController(IMiniBlogRepo repo, ILogger<HomeController> logger, UserManager<IdentityUser> userManager)
     {
         this._userManager = userManager;
         this._repo = repo;
@@ -48,7 +48,7 @@ public class HomeController : Controller
     }
 
     [HttpGet("/post/{postId:long}/{currentPage:int?}")]
-    public async Task<IActionResult> Post(long postId, int currentPage = 1)
+    public async Task<IActionResult> ShowPost(long postId, int currentPage = 1)
     {
         int commentsCount = await _repo.GetCommentariesCount(postId);
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, CommentsPerPage, commentsCount);
@@ -73,26 +73,20 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.FindByNameAsync(User.Identity?.Name);
             if (user != null)
             {
                 Commentary comment = new Commentary() { Username = user.UserName, Email = user.Email, Text = commentary.Text };
                 await _repo.CreateComment(comment, postId);
             }
         }
-        return RedirectToAction(nameof(Post), routeValues: new { postId = postId });
+        return RedirectToAction(nameof(ShowPost), routeValues: new { postId = postId });
     }
 
     [Authorize(Roles = "Admins")]
     [HttpPost("/post/delete/{postId:long}")]
     public async Task<IActionResult> DeletePost(long postId)
     {
-        if (postId == default(long)) return NotFound();
-
         await _repo.DeletePost(postId);
         return RedirectToAction(nameof(Index));
     }
@@ -101,12 +95,12 @@ public class HomeController : Controller
     [Authorize(Roles = "Admins")]
     [HttpGet("/post/new")]
     [HttpGet("/post/edit/{postId:long}")]
-    public async Task<IActionResult> EditPost(long? postId)
+    public async Task<IActionResult> EditPost(long postId = default(long))
     {
-        if (postId != null)
+        if (postId != default(long))
         {
             ViewData["title"] = "Edit Post";
-            Post? post = await _repo.RetrievePost(postId ?? 0, new PaginateParams());
+            Post? post = await _repo.RetrievePost(postId, new PaginateParams());
             if (post is null) return NotFound();
             string tagString = String.Join(",", post.Tags.Select(t => t.Name).AsEnumerable());
             PostEditViewModel model = new() { Post = post, TagString = tagString };
@@ -119,28 +113,24 @@ public class HomeController : Controller
 
     [Authorize(Roles = "Admins")]
     [HttpPost("/post/save")]
-    public async Task<IActionResult> CreateOrUpdatePost(PostEditViewModel? postModel)
+    public async Task<IActionResult> SavePost(PostEditViewModel? postModel)
     {
-        string[]? tagNames = postModel?.TagString?.Split(",", StringSplitOptions.RemoveEmptyEntries);
-        if (tagNames == null || tagNames.Length > 5) ModelState.AddModelError(nameof(postModel.TagString), "Maximum number of tags is 5");
+        string[] tagNames = postModel?.TagString?.Split(",", StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+        if (tagNames.Length > 5) ModelState.AddModelError(nameof(postModel.TagString), "Maximum number of tags is 5");
         if (ModelState.IsValid && postModel != null)
         {
             Post post = postModel.Post;
             post.Tags.Clear();
             _logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name)));
-            if (!String.IsNullOrWhiteSpace(postModel.TagString))
-            {
-                foreach (string t in postModel.TagString.Split(",", StringSplitOptions.RemoveEmptyEntries))
+            foreach (string t in tagNames)
                 {
                     string tagName = t.Trim();
-                    await _repo.CreateTagIfNotExist(new Tag { Name = tagName });
-                    Tag? tag = await _repo.RetrieveTagByName(tagName);
+                    Tag? tag = await _repo.RetrieveTagByName(tagName) ?? new() { Name = tagName };
                     if(tag != null) post.Tags.Add(tag);
                 }
-            }
             _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name)));
             long? returnId;
-            if (post.PostId != 0)
+            if (post.PostId != default(long))
             {
                 await _repo.UpdatePost(post);
                 returnId = post.PostId;
@@ -152,8 +142,8 @@ public class HomeController : Controller
             _logger.LogDebug($"Post id (controller-side): {returnId.ToString()}");
             _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name)));
 
-            if (returnId is null) return NotFound();
-            return RedirectToAction(nameof(Post), new { postId = returnId });
+            if (returnId is null) throw new MiniBlogWebException("Error while saving a post");
+            return RedirectToAction(nameof(ShowPost), new { postId = returnId });
 
         }
         else
@@ -164,11 +154,10 @@ public class HomeController : Controller
 
     [Authorize(Roles = "Admins")]
     [HttpPost("/commmentary/delete/{commId:long}")]
-    public async Task<IActionResult> DeleteComment(long commId, long? returnId)
+    public async Task<IActionResult> DeleteComment(long commId, long returnId)
     {
         await _repo.DeleteComment(commId);
-        if (returnId is null) return RedirectToAction(nameof(Index));
-        return RedirectToAction(nameof(Post), new { postId = returnId });
+        return RedirectToAction(nameof(ShowPost), new { postId = returnId });
     }
 
 }

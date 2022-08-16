@@ -44,7 +44,7 @@ public class AdminController : Controller
         if (await _userManager.IsInRoleAsync(user, "Admins") &&
             (await _userManager.GetUsersInRoleAsync("Admins")).Count == 1)
         {
-            throw new ApplicationException("You must have at least one account with admin rights");
+            throw new MiniBlogWebException("You must have at least one account with admin rights", Url.Action(nameof(UserList)));
         }
         await _userManager.DeleteAsync(user);
         return RedirectToAction(nameof(UserList));
@@ -62,7 +62,7 @@ public class AdminController : Controller
             {
                 if ((await _userManager.GetUsersInRoleAsync(roleName)).Count() == 1)
                 {
-                    throw new ApplicationException("You must have at least one account with admin rights");
+                    throw new MiniBlogWebException("You must have at least one account with admin rights", Url.Action(nameof(UserList)));
                 }
                 res = await _userManager.RemoveFromRoleAsync(user, roleName);
             }

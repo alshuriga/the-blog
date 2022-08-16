@@ -2,6 +2,7 @@ using MiniBlog.Web.Controllers;
 using MiniBlog.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace MiniBlog.Tests;
 
@@ -61,8 +62,8 @@ public class AdminControllerTests
         UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == "Admins"))).ReturnsAsync(true);
         UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == "Admins"))).ReturnsAsync(new IdentityUser[1]);
         var controller = GetTestControllerWithMocks();
-
-        var ex = await Assert.ThrowsAsync<ApplicationException>(async () => await controller.DeleteUser(userId));
+        controller.Url = Mock.Of<IUrlHelper>();
+        var ex = await Assert.ThrowsAsync<MiniBlogWebException>(async () => await controller.DeleteUser(userId));
         UserManagerMock.Verify(m => m.DeleteAsync(It.Is<IdentityUser>(u => u == user)), Times.Never);
         Assert.Equal("You must have at least one account with admin rights", ex.Message);
     }
@@ -113,8 +114,8 @@ public class AdminControllerTests
         UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == "Admins"))).ReturnsAsync(true);
         UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == "Admins"))).ReturnsAsync(new IdentityUser[1]);
         var controller = GetTestControllerWithMocks();
-
-        var ex = await Assert.ThrowsAsync<ApplicationException>(async () => await controller.SwitchAdmin(userId));
+        controller.Url = Mock.Of<IUrlHelper>(MockBehavior.Loose);
+        var ex = await Assert.ThrowsAsync<MiniBlogWebException>(async () => await controller.SwitchAdmin(userId));
         UserManagerMock.Verify(m => m.AddToRoleAsync(It.IsAny<IdentityUser>(),  It.IsAny<string>()), Times.Never);
         UserManagerMock.Verify(m => m.RemoveFromRoleAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()), Times.Never);
         Assert.Equal("You must have at least one account with admin rights", ex.Message);
