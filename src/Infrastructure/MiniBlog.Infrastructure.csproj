@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\MiniBlog.Core\MiniBlog.Core.csproj" />
+    <ProjectReference Include="..\Core\MiniBlog.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

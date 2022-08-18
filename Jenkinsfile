@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                bat ' dotnet test tests/MiniBlog.Tests.csproj'
+                bat 'dotnet test tests'
             }
         }
     }
