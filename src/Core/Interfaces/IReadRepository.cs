@@ -7,6 +7,8 @@ public interface IReadRepository<T> where T : BaseEntity
 
     Task<IEnumerable<T>> ListAsync(ISpecification<T> specification);
 
+    Task<T?> RetrieveByIdAsync(long id, bool eager = false);
+
     Task<bool> AnyAsync(ISpecification<T> specification);
 
     Task<int> CountAsync();

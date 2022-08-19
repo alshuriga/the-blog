@@ -18,6 +18,8 @@ builder.Services.AddScoped<IRepository<Post>, EfPostsRepo>();
 builder.Services.AddScoped<IReadRepository<Post>, EfPostsReadRepo>();
 builder.Services.AddScoped<IRepository<Commentary>, EfCommentariesRepo>();
 builder.Services.AddScoped<IReadRepository<Commentary>, EfCommentariesReadRepo>();
+builder.Services.AddScoped<IRepository<Tag>, EfTagsRepo>();
+builder.Services.AddScoped<IReadRepository<Tag>, EfTagsReadRepo>();
 builder.Services.AddDbContext<MiniBlogEfContext>(opts =>
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("MiniBlogDbContext"),

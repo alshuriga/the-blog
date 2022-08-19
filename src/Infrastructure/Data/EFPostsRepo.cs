@@ -1,6 +1,7 @@
 using MiniBlog.Core.Interfaces;
 using MiniBlog.Core.Entities;
 using MiniBlog.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class EfPostsRepo : IRepository<Post>
 {
@@ -22,10 +23,10 @@ public class EfPostsRepo : IRepository<Post>
         await _db.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(Post post)
+    public async Task DeleteAsync(Post post)
     {
         _db.Posts.Remove(post);
-        return Task.CompletedTask;
+        await _db.SaveChangesAsync();
     }
 
     public async Task DeleteRangeAsync(IEnumerable<Post> posts)

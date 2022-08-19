@@ -12,6 +12,5 @@ public interface IRepository<T> where T : BaseEntity
     Task DeleteAsync(T entity);
 
     Task DeleteRangeAsync(IEnumerable<T> entities);
-
     
 }

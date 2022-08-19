@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/MiniBlog.Web/MiniBlog.Web.csproj",
+                "${workspaceFolder}/src/Web/MiniBlog.Web.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/src/MiniBlog.Web/MiniBlog.Web.csproj",
+                "${workspaceFolder}/src/Web/MiniBlog.Web.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/src/MiniBlog.Web/MiniBlog.Web.csproj"
+                "${workspaceFolder}/src/Web/MiniBlog.Web.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

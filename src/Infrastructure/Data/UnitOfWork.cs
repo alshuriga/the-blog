@@ -7,18 +7,22 @@ public class EfUnitOfWork : IUnitOfWork
     private readonly IReadRepository<Post> _postReadRepo;
     private readonly IRepository<Commentary> _commentRepo;
     private readonly IReadRepository<Commentary> _commentReadRepo;
-    // private readonly IRepository<Tag> _tagRepo;
-    // private readonly IReadRepository<Tag> _tagReadRepo;
+    private readonly IRepository<Tag> _tagRepo;
+    private readonly IReadRepository<Tag> _tagReadRepo;
 
-    public EfUnitOfWork(IRepository<Post> postRepo,
-        IReadRepository<Post> postReadRepo, 
-        IRepository<Commentary> commentRepom,
-        IReadRepository<Commentary> commentReadRepo)
+    public EfUnitOfWork(IRepository<Post> postsRepo,
+        IReadRepository<Post> postsReadRepo, 
+        IRepository<Commentary> commentsRepo,
+        IReadRepository<Commentary> commentsReadRepo,
+        IReadRepository<Tag> tagsReadRepo,
+        IRepository<Tag> tagsRepo)
     {
-        _postRepo = postRepo;
-        _postReadRepo = postReadRepo;
-        _commentRepo = commentRepo;
-        _commentReadRepo = commentReadRepo;
+        _postRepo = postsRepo;
+        _postReadRepo = postsReadRepo;
+        _commentRepo = commentsRepo;
+        _commentReadRepo = commentsReadRepo;
+        _tagReadRepo = tagsReadRepo;
+        _tagRepo = tagsRepo;
     }
 
     public IRepository<Post> postRepo => _postRepo;
@@ -29,7 +33,7 @@ public class EfUnitOfWork : IUnitOfWork
 
     public IReadRepository<Commentary> commentReadRepo => _commentReadRepo;
 
-    public IRepository<Tag> tagsRepo => throw new NotImplementedException();
+    public IRepository<Tag> tagsRepo => _tagRepo;
 
-    public IReadRepository<Tag> tagsReadRepo => throw new NotImplementedException();
+    public IReadRepository<Tag> tagsReadRepo => _tagReadRepo;
 }
