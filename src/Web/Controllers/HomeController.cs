@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Core.Models;
 using MiniBlog.Web.Filters;
 using MiniBlog.Web.ViewModels;
+using Ardalis.Specification;
 
 namespace MiniBlog.Web.Controllers;
 
@@ -15,35 +16,58 @@ public class HomeController : Controller
     private readonly IMiniBlogRepo _repo;
     private readonly ILogger _logger;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IRepository<Post> _postsRepo;
+
+    private readonly IReadRepository<Post> _postsReadRepo;
 
     //constants
     const int PostsPerPage = 5;
     const int CommentsPerPage = 5;
 
 
-    public HomeController(IMiniBlogRepo repo, ILogger<HomeController> logger, UserManager<IdentityUser> userManager)
+    public HomeController(IMiniBlogRepo repo, ILogger<HomeController> logger, UserManager<IdentityUser> userManager, IRepository<Post> postsRepo, IReadRepository<Post> postsReadRepo)
     {
         this._userManager = userManager;
         this._repo = repo;
         this._logger = logger;
+        this._postsRepo = postsRepo;
+        this._postsReadRepo = postsReadRepo;
     }
 
     [HttpGet("/{currentPage:int?}")]
     [HttpGet("/tag/{tagName:alpha}/{currentPage:int?}")]
     public async Task<IActionResult> Index(int currentPage = 1, string? tagName = null)
     {
-        int postsCount = tagName == null ? await _repo.GetPostsCount() : await _repo.GetPostsCount(tagName);
-        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, PostsPerPage, postsCount);
-        PaginateParams paginateParams = new(paginationData?.SkipNumber ?? 0, PostsPerPage);
-        var posts = tagName is null ? await _repo.RetrievePostsRange(paginateParams) : await _repo.RetrievePostsRange(paginateParams, tagName);
+        Tag? tag = tagName == null ? null : new() { Name = tagName };
+        ISpecification<Post> postsSpecification = new PostsByPageSpecification(currentPage, tag, true);
 
-        var model = new MultiplePostsPageViewModel
+        int postsCount = tag == null
+        ? await _postsReadRepo.CountAsync()
+        : await _postsReadRepo.CountAsync(new PostsByTagSpecification(tag));
+
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, MiniBlog.Constants.PaginationConstants.POSTS_PER_PAGE, postsCount);
+        var posts = ((await _postsReadRepo.ListAsync(postsSpecification)).Select(p => new PostPartialViewModel
+        {
+            Post = new PostDto
+            {
+                Id = p.Id,
+                Header = p.Header,
+                DateTime = p.DateTime,
+                Text = p.Text
+            },
+            TagNames = p.Tags.Select(t => t.Name),
+            CommentsButton = false,
+            CommentariesCount = _repo.GetCommentariesCount(p.Id).Result
+        }));
+
+        var model = new PostsIndexViewModel
         {
             Posts = posts,
             PaginationData = paginationData,
             TagName = tagName,
-            PostsCount = postsCount
+            PostsCount = postsCount,
         };
+
         return View("Index", model);
     }
 
@@ -57,19 +81,38 @@ public class HomeController : Controller
         if (post == null) return NotFound();
         _logger.LogDebug($"Comments: {post.Commentaries.Any()}");
         TempData["postId"] = postId.ToString();
-        var model = new SinglePostPageViewModel()
+        var model = new PostViewModel()
         {
-            Post = post,
-            CommentsPaginationData = paginationData,
-            CommentsCount = commentsCount
+            PostPartial = new()
+            {
+                Post = new()
+                {
+                    Id = post.Id,
+                    Header = post.Header,
+                    Text = post.Text,
+                    DateTime = post.DateTime
+                },
+                CommentsButton = false,
+                TagNames = post.Tags.Select(t => t.Name)
+            },
+            Commentaries = post.Commentaries.Select(c => new CommentaryDto
+            {
+                Id = c.CommentaryId,
+                Username = c.Username,
+                Email = c.Email,
+                Text = c.Text,
+                DateTime = c.DateTime
+            }),
+            CommentsPaginationData = paginationData
         };
-        _logger.LogDebug($"Comments in model: {string.Join(", ", model.Post.Commentaries.Select(c => c.CommentaryId))}");
+
+        _logger.LogDebug($"Comments in model: {string.Join(", ", model.Commentaries.Select(c => c.Id))}");
         return View(model);
     }
 
     [Authorize]
     [HttpPost("/AddComment/{postid:long}")]
-    public async Task<IActionResult> AddComment(CommentaryViewModel commentary, long postId)
+    public async Task<IActionResult> AddComment(CommentaryDto commentary, long postId)
     {
         if (ModelState.IsValid)
         {
@@ -103,11 +146,21 @@ public class HomeController : Controller
             Post? post = await _repo.RetrievePost(postId, new PaginateParams());
             if (post is null) return NotFound();
             string tagString = String.Join(",", post.Tags.Select(t => t.Name).AsEnumerable());
-            PostEditViewModel model = new() { Post = post, TagString = tagString };
+            PostEditViewModel model = new()
+            {
+                Post = new PostDto
+                {
+                    Id = post.Id,
+                    Header = post.Header,
+                    Text = post.Text,
+                    DateTime = post.DateTime
+                },
+                TagString = tagString
+            };
             return View(model);
         }
         ViewData["title"] = "New Post";
-        PostEditViewModel newModel = new() { Post = new Post() };
+        PostEditViewModel newModel = new() { Post = new PostDto() };
         return View(newModel);
     }
 
@@ -119,21 +172,28 @@ public class HomeController : Controller
         if (tagNames.Length > 5) ModelState.AddModelError(nameof(postModel.TagString), "Maximum number of tags is 5");
         if (ModelState.IsValid && postModel != null)
         {
-            Post post = postModel.Post;
-            post.Tags = new List<Tag>();
+            Post post = new()
+            {
+                Id = postModel.Post.Id,
+                Header = postModel.Post.Header,
+                Text = postModel.Post.Text,
+                DateTime = postModel.Post.DateTime,
+                Tags = new List<Tag>()
+            };
+
             _logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name)));
             foreach (string t in tagNames)
-                {
-                    string tagName = t.Trim();
-                    Tag tag = await _repo.RetrieveTagByName(tagName) ?? new() { Name = tagName };
-                    post.Tags.Add(tag);
-                }
+            {
+                string tagName = t.Trim();
+                Tag tag = await _repo.RetrieveTagByName(tagName) ?? new() { Name = tagName };
+                post.Tags.Add(tag);
+            }
             _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name)));
             long? returnId;
-            if (post.PostId != default(long))
+            if (post.Id != default(long))
             {
                 await _repo.UpdatePost(post);
-                returnId = post.PostId;
+                returnId = post.Id;
             }
             else
             {

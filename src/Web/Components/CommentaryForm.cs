@@ -24,7 +24,7 @@ public class CommentaryForm : ViewComponent
             // var mgr = HttpContext.RequestServices.CreateScope().ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             
-            var model = new CommentaryViewModel { Username = user.UserName, Email = user.Email };
+            var model = new CommentaryDto { Username = user.UserName, Email = user.Email };
             ViewData["postId"] = postId;
             return View("Default", model);
         }

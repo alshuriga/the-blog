@@ -1,4 +1,4 @@
-@model MultiplePostsPageViewModel
+@model PostsIndexViewModel
 
 <div class="row" id="posts row">
     <div class="display-6 mt-md-1 mt-0 mx-md-auto text-center text-md-start">
@@ -12,9 +12,9 @@
     }
     </div>
     <div class="col">
-        @foreach (var p in Model.Posts ?? Enumerable.Empty<Post>())
+        @foreach (var p in Model.Posts ?? Enumerable.Empty<PostPartialViewModel>())
         {
-            await Html.RenderPartialAsync("_PostView", new PostPartialViewModel { Post = p, CommentsButton = true, CommentCount = @p.Commentaries.Count });
+            await Html.RenderPartialAsync("_PostView", p);
         }
     </div>
 </div>

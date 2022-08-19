@@ -1,31 +1,27 @@
-@model SinglePostPageViewModel
+@model PostViewModel
 
 
 <div class="row-cols-1">
     @{
-        await Html.RenderPartialAsync("_PostView", new PostPartialViewModel
-        {
-            Post = Model.Post,
-            CommentsButton = false
-        });
+        await Html.RenderPartialAsync("_PostView", Model.PostPartial);
     }
 </div>
 <div class="row-cols-1 pt-5">
     <h5>
-        @(Model.CommentsCount == 0 ? "No comments. Be the first!" : $"{Model.CommentsCount} comment(s)")
+        @(Model.PostPartial?.CommentariesCount == 0 ? "No comments. Be the first!" : $"{Model.PostPartial?.CommentariesCount} comment(s)")
     </h5>
 </div>
 <div class="row mt-4">
     <div class="col">
         <div class="card border-light p-4 bg-primary bg-opacity-10">
-            @(await Component.InvokeAsync("CommentaryForm", new { postId = Model.Post.PostId }))
+            @(await Component.InvokeAsync("CommentaryForm", new { postId = Model.PostPartial?.Post.Id }))
         </div>
     </div>
     <div class="w-100 d-lg-none d-block"></div>
     <div class="col mt-4 mt-lg-0">
         <div class="row">
             <div class="col">
-                @foreach (var com in @Model.Post.Commentaries)
+                @foreach (var com in @Model.Commentaries)
                 {
                     <div class="card border-light  border-2  bg-light bg-opacity-10 mb-3">
                         <div class="card-header">
@@ -47,8 +43,8 @@
                         </div>
                         <div class="card-footer p-0">
                             <form method="post" asp-action="DeleteComment" asp-controller="Home"
-                                  asp-route-commid="@com.CommentaryId">
-                                <input name="returnId" type="hidden" value="@Model.Post.PostId">
+                                  asp-route-commid="@com.Id">
+                                <input name="returnId" type="hidden" value="@Model.PostPartial?.Post.Id">
                                 @if (User.IsInRole("Admins"))
                                 {
                                     <button class="btn m-2 btn-sm float-end btn-secondary" type="submit">

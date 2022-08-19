@@ -1,120 +1,48 @@
-using MiniBlog.Core.Models;
 using MiniBlog.Core.Interfaces;
 using MiniBlog.Core.Entities;
-using Microsoft.EntityFrameworkCore;
+using MiniBlog.Infrastructure.Data;
 
-namespace MiniBlog.Infrastructure.Data;
-
-public partial class MiniBlogEfRepo : IMiniBlogRepo
+public class EfPostsRepo : IRepository<Post>
 {
-    private MiniBlogEfContext context;
-
-
-    public MiniBlogEfRepo(MiniBlogEfContext injectedContext)
+    private readonly MiniBlogEfContext _db;
+    public EfPostsRepo(MiniBlogEfContext db)
     {
-        context = injectedContext;
+        _db = db;
     }
 
-
-    public async Task<IEnumerable<Post>> RetrievePostsRange(PaginateParams paginateParams, string? tagName = null)
+    public async Task AddAsync(Post post)
     {
-        IQueryable<Post> query = context.Posts
-            .AsNoTracking()
-            .Include(p => p.Tags)
-            .Include(p => p.Commentaries)
-            .OrderByDescending(p => p.DateTime);
-        if (tagName != null)
-        {
-            tagName = tagName.Trim().ToLower();
-            Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName);
-            if (tag is null) return Enumerable.Empty<Post>();
-            query = query.Where(p => p.Tags.Contains(tag));
-        }
-        return await query.Skip(paginateParams.Skip).Take(paginateParams.Take).ToListAsync();
+        await _db.Posts.AddAsync(post);
+        await _db.SaveChangesAsync();
     }
 
-    public async Task<long?> CreatePost(Post post)
+    public async Task AddRangeAsync(IEnumerable<Post> posts)
     {
-        await context.Posts.AddAsync(post);
-        int changes = await context.SaveChangesAsync();
-        if (changes > 0) return post.PostId;
-        return null;
+        await _db.Posts.AddRangeAsync(posts);
+        await _db.SaveChangesAsync();
     }
 
-    public async Task<Post?> RetrievePost(long postId, PaginateParams commentsParams)
+    public Task DeleteAsync(Post post)
     {
-        Post? post = await context.Posts.Include(p => p.Tags).Where(p => p.PostId == postId).FirstOrDefaultAsync();
-        if (post is null) return null;
-        post.Commentaries = await context.Commentaries
-            .Where(c => c.PostId == postId)
-            .OrderByDescending(c => c.DateTime)
-            .Skip(commentsParams.Skip)
-            .Take(commentsParams.Take)
-            .ToListAsync();
-        return post;
-    }
-    
-    public async Task UpdatePost(Post post)
-    {
-        Post? existing = await context.Posts.Include(t => t.Tags).FirstAsync(p => p.PostId == post.PostId);
-        context.Entry(existing).CurrentValues.SetValues(post);
-        existing.Tags = post.Tags;
-        await context.SaveChangesAsync();
+        _db.Posts.Remove(post);
+        return Task.CompletedTask;
     }
 
-
-    public async Task DeletePost(long id)
+    public async Task DeleteRangeAsync(IEnumerable<Post> posts)
     {
-        context.Posts.Remove(new Post() { PostId = id});
-        await context.SaveChangesAsync();
+        _db.Posts.RemoveRange(posts);
+        await _db.SaveChangesAsync();
     }
 
-
-    public async Task CreateComment(Commentary? commentary, long postId)
+    public async Task UpdateAsync(Post post)
     {
-        Post? post = await context.Posts.FirstOrDefaultAsync(p => p.PostId == postId);
-        if (post != null && commentary != null)
-        {
-            post.Commentaries.Add(commentary);
-            await context.SaveChangesAsync();
-        }
+        _db.Posts.Update(post);
+        await _db.SaveChangesAsync();
     }
 
-    public async Task DeleteComment(long commId)
+    public async Task UpdateRangeAsync(Post post)
     {
-        Commentary? comment = await context.Commentaries.FirstOrDefaultAsync(c => c.CommentaryId == commId);
-        if (comment != null)
-        {
-            context.Remove(comment);
-            await context.SaveChangesAsync();
-        }
-    }
-
-    public async Task CreateTagIfNotExist(Tag tag)
-    {
-        if(await RetrieveTagByName(tag.Name) == null)
-        {
-            await context.Tags.AddAsync(tag);
-            await context.SaveChangesAsync();
-        }
-    }
-
-    public async Task<Tag?> RetrieveTagByName(string tagName)
-    {
-        tagName = tagName.Trim();
-        Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
-        return tag;
-    }
-
-    public async Task<int> GetPostsCount(string? tagName = null)
-    {
-        var query = context.Posts.AsQueryable();
-        if(tagName is not null) query = query.Where(p => p.Tags.Where(t => t.Name == tagName).Any());
-        return await query.CountAsync();
-    }
-
-     public async Task<int> GetCommentariesCount(long postId)
-    {
-        return await context.Commentaries.Where(c => c.PostId == postId).CountAsync();
+        _db.Posts.UpdateRange(post);
+        await _db.SaveChangesAsync();
     }
 }

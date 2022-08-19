@@ -4,7 +4,7 @@
     <div class="card-body p-4">
         <div class="row">
             <div class="col">
-                <a asp-action="Post" asp-controller="Home" asp-route-postid="@Model.Post.PostId" class="text-black text-decoration-none"><h1 class="card-title">@Model.Post.Header</h1></a> 
+                <a asp-action="ShowPost" asp-controller="Home" asp-route-postid="@Model.Post.Id" class="text-black text-decoration-none"><h1 class="card-title">@Model.Post.Header.ToString()</h1></a> 
             </div>
             <div class="col">
                 <p class="text-end font-weight-light">@Model.Post.DateTime.ToString("MMMM dd, yyyy"),
@@ -19,10 +19,10 @@
         <div class="row my-1">
             <div class="col-4">
                 <h5>
-                    @foreach (Tag t in Model.Post.Tags)
+                    @foreach (var tagName in Model.TagNames)
                     {
-                        <a asp-action="Index" asp-controller="Home" asp-route-tagname="@t.Name"
-                        class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@t.Name</a>
+                        <a asp-action="Index" asp-controller="Home" asp-route-tagname="@tagName"
+                        class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@tagName</a>
                     }
                 </h5>
             </div>
@@ -30,8 +30,8 @@
                 @if (@Model.CommentsButton)
                 {
                     <div class="float-end">
-                    <a asp-action="ShowPost" asp-controller="Home" asp-route-postid="@Model.Post.PostId">
-                        <button class="float-end btn btn-outline-secondary">Comments (@Model.CommentCount.ToString())<i class="fa-regular fa-comment-dots ms-2"></i></button>
+                    <a asp-action="ShowPost" asp-controller="Home" asp-route-postid="@Model.Post.Id">
+                        <button class="float-end btn btn-outline-secondary">Comments (@Model.CommentariesCount.ToString())<i class="fa-regular fa-comment-dots ms-2"></i></button>
                     </a>
                     </div>
                 }
@@ -43,9 +43,9 @@
                             <span class="me-2">Options</span></div>
                         <ul class="dropdown-menu">
                             <li class="dropdown-item"><a class="btn" asp-action="EditPost" asp-controller="Home"
-                                                         asp-route-postid="@Model.Post.PostId" class="text-black text-decoration-none">Edit</a></li>
+                                                         asp-route-postid="@Model.Post.Id" class="text-black text-decoration-none">Edit</a></li>
                             <li class="dropdown-item">
-                                <form method="post" asp-action="DeletePost" asp-controller="Home" asp-route-postid="@Model.Post.PostId">
+                                <form method="post" asp-action="DeletePost" asp-controller="Home" asp-route-postid="@Model.Post.Id">
                                     <button type="submit" class="btn">Delete</button>
                                 </form>
                             </li>
