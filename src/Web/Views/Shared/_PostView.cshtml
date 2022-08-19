@@ -45,7 +45,7 @@
                             <li class="dropdown-item"><a class="btn" asp-action="EditPost" asp-controller="Home"
                                                          asp-route-postid="@Model.Post.Id" class="text-black text-decoration-none">Edit</a></li>
                             <li class="dropdown-item">
-                                <form method="post" asp-action="DeletePost" asp-controller="Home" asp-route-postid="@Model.Post.Id">
+                                <form method="post" asp-page="DeletePost" asp-route-postid="@Model.Post.Id">
                                     <button type="submit" class="btn">Delete</button>
                                 </form>
                             </li>

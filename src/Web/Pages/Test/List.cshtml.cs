@@ -3,8 +3,9 @@ using MiniBlog.Core.Models;
 using MiniBlog.Web.ViewModels;
 using MiniBlog.Core.Specifications;
 using MiniBlog.Core.Constants;
-
 using Ardalis.Specification;
+
+namespace MiniBlog.Web.Pages;
 
 public class ListModel : PageModel
 {

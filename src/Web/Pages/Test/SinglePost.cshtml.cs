@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Ardalis.Specification;
 using MiniBlog.Core.Constants;
 
+namespace MiniBlog.Web.Pages;
+
 public class SinglePostModel : PageModel
 {
     private readonly IUnitOfWork _unit;
