@@ -1,4 +1,4 @@
-namespace MiniBlog.Constants;
+namespace MiniBlog.Core.Constants;
 
 public static class PaginationConstants
 {

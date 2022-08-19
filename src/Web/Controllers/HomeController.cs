@@ -19,13 +19,16 @@ public class HomeController : Controller
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IUnitOfWork _unit;
 
+    private readonly TagService _tagService;
+
     //constants
     const int PostsPerPage = 5;
     const int CommentsPerPage = 5;
 
 
-    public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork)
+    public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, TagService tagService)
     {
+        this._tagService = tagService;
         this._userManager = userManager;
         this._logger = logger;
         this._unit = unitOfWork;
@@ -42,7 +45,7 @@ public class HomeController : Controller
         ? await _unit.postReadRepo.CountAsync()
         : await _unit.postReadRepo.CountAsync(new PostsByTagSpecification(tag));
 
-        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, MiniBlog.Constants.PaginationConstants.POSTS_PER_PAGE, postsCount);
+        PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, MiniBlog.Core.Constants.PaginationConstants.POSTS_PER_PAGE, postsCount);
         var posts = ((await _unit.postReadRepo.ListAsync(postsSpecification)).Select(p => new PostPartialViewModel
         {
             Post = new PostDto
@@ -123,6 +126,7 @@ public class HomeController : Controller
         return RedirectToAction(nameof(ShowPost), routeValues: new { postId = postId });
     }
 
+
     [Authorize(Roles = "Admins")]
     [HttpPost("/post/delete/{postId:long}")]
     public async Task<IActionResult> DeletePost(long postId)
@@ -169,41 +173,29 @@ public class HomeController : Controller
         if (tagNames.Length > 5) ModelState.AddModelError(nameof(postModel.TagString), "Maximum number of tags is 5");
         if (ModelState.IsValid && postModel != null)
         {
-            Post post = new()
-            {
-                Id = postModel.Post.Id,
+            Post post = await  _unit.postReadRepo.RetrieveByIdAsync(postModel.Post.Id) ?? new(){
                 Header = postModel.Post.Header,
                 Text = postModel.Post.Text,
-                DateTime = postModel.Post.DateTime,
-                Tags = new List<Tag>()
+                DateTime = postModel.Post.DateTime
             };
-
-            _logger.LogDebug($"Tags passed to controller: " + string.Join(",", post.Tags.Select(t => t.Name)));
-            foreach (string t in tagNames)
+            var tags = await Task.WhenAll(tagNames.Select(async t =>
             {
-                string tagName = t.Trim();
-                Tag tag = (await _unit.tagsReadRepo.ListAsync(new TagsByNameSpecification(tagName))).FirstOrDefault() ?? new();
-                post.Tags.Add(tag);
-            }
-            _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name)));
-            long? returnId;
-            
+                Tag tag = (await _unit.tagsReadRepo.ListAsync(new TagsByNameSpecification(t))).FirstOrDefault() ?? new Tag { Name = t };
+                return tag;
+            }));
+
+            await _tagService.UpdatePostTags(post, tags);
+
             if (post.Id != default(long))
             {
                 await _unit.postRepo.UpdateAsync(post);
-                returnId = post.Id;
             }
             else
             {
                 await _unit.postRepo.AddAsync(post);
-                returnId = post.Id;
             }
-            _logger.LogDebug($"Post id (controller-side): {returnId.ToString()}");
-            _logger.LogDebug($"Tags after modifying: " + string.Join(",", post.Tags.Select(t => t.Name)));
 
-            if (returnId is null) throw new MiniBlogWebException("Error while saving a post");
-            return RedirectToAction(nameof(ShowPost), new { postId = returnId });
-
+            return RedirectToAction(nameof(ShowPost), new { postId = post.Id });
         }
         else
         {
@@ -215,7 +207,7 @@ public class HomeController : Controller
     [HttpPost("/commentary/delete/{commId:long}")]
     public async Task<IActionResult> DeleteComment(long commId, long returnId = 0)
     {
-        await _unit.commentRepo.DeleteAsync(new Commentary { Id = commId});
+        await _unit.commentRepo.DeleteAsync(new Commentary { Id = commId });
         return RedirectToAction(nameof(ShowPost), new { postId = returnId });
     }
 

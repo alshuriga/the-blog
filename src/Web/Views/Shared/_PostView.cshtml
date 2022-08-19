@@ -4,7 +4,7 @@
     <div class="card-body p-4">
         <div class="row">
             <div class="col">
-                <a asp-action="ShowPost" asp-controller="Home" asp-route-postid="@Model.Post.Id" class="text-black text-decoration-none"><h1 class="card-title">@Model.Post.Header.ToString()</h1></a> 
+                <a asp-page="SinglePost" asp-route-postid="@Model.Post.Id" class="text-black text-decoration-none"><h1 class="card-title">@Model.Post.Header.ToString()</h1></a> 
             </div>
             <div class="col">
                 <p class="text-end font-weight-light">@Model.Post.DateTime.ToString("MMMM dd, yyyy"),
@@ -21,7 +21,7 @@
                 <h5>
                     @foreach (var tagName in Model.TagNames)
                     {
-                        <a asp-action="Index" asp-controller="Home" asp-route-tagname="@tagName"
+                        <a asp-page="List" asp-route-tagname="@tagName"
                         class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@tagName</a>
                     }
                 </h5>
@@ -30,7 +30,7 @@
                 @if (@Model.CommentsButton)
                 {
                     <div class="float-end">
-                    <a asp-action="ShowPost" asp-controller="Home" asp-route-postid="@Model.Post.Id">
+                    <a asp-page="SinglePost" asp-route-postid="@Model.Post.Id">
                         <button class="float-end btn btn-outline-secondary">Comments (@Model.CommentariesCount.ToString())<i class="fa-regular fa-comment-dots ms-2"></i></button>
                     </a>
                     </div>

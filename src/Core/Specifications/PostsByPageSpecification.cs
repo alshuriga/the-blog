@@ -1,5 +1,5 @@
 using MiniBlog.Core.Entities;
-using MiniBlog.Constants;
+using MiniBlog.Core.Constants;
 using Ardalis.Specification;
 public class PostsByPageSpecification : Specification<Post>
 {
