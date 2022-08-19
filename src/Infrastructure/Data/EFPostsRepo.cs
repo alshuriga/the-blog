@@ -40,9 +40,9 @@ public class EfPostsRepo : IRepository<Post>
         await _db.SaveChangesAsync();
     }
 
-    public async Task UpdateRangeAsync(Post post)
+    public async Task UpdateRangeAsync(IEnumerable<Post> posts)
     {
-        _db.Posts.UpdateRange(post);
+        _db.Posts.UpdateRange(posts);
         await _db.SaveChangesAsync();
     }
 }

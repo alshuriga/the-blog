@@ -16,22 +16,19 @@ public class HomeController : Controller
     private readonly IMiniBlogRepo _repo;
     private readonly ILogger _logger;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly IRepository<Post> _postsRepo;
-
-    private readonly IReadRepository<Post> _postsReadRepo;
+    private readonly IUnitOfWork _unit;
 
     //constants
     const int PostsPerPage = 5;
     const int CommentsPerPage = 5;
 
 
-    public HomeController(IMiniBlogRepo repo, ILogger<HomeController> logger, UserManager<IdentityUser> userManager, IRepository<Post> postsRepo, IReadRepository<Post> postsReadRepo)
+    public HomeController(IMiniBlogRepo repo, ILogger<HomeController> logger, UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork)
     {
         this._userManager = userManager;
         this._repo = repo;
         this._logger = logger;
-        this._postsRepo = postsRepo;
-        this._postsReadRepo = postsReadRepo;
+        this._unit = unitOfWork;
     }
 
     [HttpGet("/{currentPage:int?}")]
@@ -42,11 +39,11 @@ public class HomeController : Controller
         ISpecification<Post> postsSpecification = new PostsByPageSpecification(currentPage, tag, true);
 
         int postsCount = tag == null
-        ? await _postsReadRepo.CountAsync()
-        : await _postsReadRepo.CountAsync(new PostsByTagSpecification(tag));
+        ? await _unit.postReadRepo.CountAsync()
+        : await _unit.postReadRepo.CountAsync(new PostsByTagSpecification(tag));
 
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, MiniBlog.Constants.PaginationConstants.POSTS_PER_PAGE, postsCount);
-        var posts = ((await _postsReadRepo.ListAsync(postsSpecification)).Select(p => new PostPartialViewModel
+        var posts = ((await _unit.postReadRepo.ListAsync(postsSpecification)).Select(p => new PostPartialViewModel
         {
             Post = new PostDto
             {
@@ -97,7 +94,7 @@ public class HomeController : Controller
             },
             Commentaries = post.Commentaries.Select(c => new CommentaryDto
             {
-                Id = c.CommentaryId,
+                Id = c.Id,
                 Username = c.Username,
                 Email = c.Email,
                 Text = c.Text,

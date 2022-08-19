@@ -16,6 +16,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IMiniBlogRepo, MiniBlogEfRepo>();
 builder.Services.AddScoped<IRepository<Post>, EfPostsRepo>();
 builder.Services.AddScoped<IReadRepository<Post>, EfPostsReadRepo>();
+builder.Services.AddScoped<IRepository<Commentary>, EfCommentariesRepo>();
+builder.Services.AddScoped<IReadRepository<Commentary>, EfCommentariesReadRepo>();
 builder.Services.AddDbContext<MiniBlogEfContext>(opts =>
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("MiniBlogDbContext"),
@@ -28,6 +30,8 @@ builder.Services.AddDbContext<IdentityEfContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("IdentityEfContext"));
     if (builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
 });
+
+builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityEfContext>();
 builder.Services.Configure<IdentityOptions>(opts =>
