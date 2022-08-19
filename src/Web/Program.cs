@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews(opts => { opts.Filters.Add<ApplicationExceptionFilter>(); });
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IMiniBlogRepo, MiniBlogEfRepo>();
 builder.Services.AddScoped<IRepository<Post>, EfPostsRepo>();
 builder.Services.AddScoped<IReadRepository<Post>, EfPostsReadRepo>();
 builder.Services.AddScoped<IRepository<Commentary>, EfCommentariesRepo>();
