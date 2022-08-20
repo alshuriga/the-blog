@@ -13,8 +13,6 @@ public class EditorModel : PageModel
 {
     private readonly IUnitOfWork _unit;
 
-    private readonly ITagService _tagService;
-
     [BindProperty]
     public PostDto Post { get; set; } = new();
 
@@ -22,10 +20,9 @@ public class EditorModel : PageModel
     [RegularExpression(@"^[a-z][a-z0-9_\s,]+[a-z0-9]$", ErrorMessage = "Please use lowercase tags separated by commas, e.g., \"red, green, blue\"")]
     public string? TagString { get; set; } = String.Empty;
 
-    public EditorModel(IUnitOfWork unit, ITagService tagService)
+    public EditorModel(IUnitOfWork unit)
     {
         _unit = unit;
-        _tagService = tagService;
     }
 
     public async Task<IActionResult> OnGet(long postId = 0)
@@ -58,18 +55,17 @@ public class EditorModel : PageModel
         if (tagNames.Length > 5) ModelState.AddModelError(nameof(tagString), "Maximum number of tags is 5");
         if (ModelState.IsValid)
         {
-            Post newPost = await _unit.postReadRepo.RetrieveByIdAsync(post.Id) ?? new();
-            newPost.Header = post.Header;
-            newPost.Text = post.Text;
-            newPost.DateTime = post.DateTime;
-            
-            var tags = await Task.WhenAll(tagNames.Select(async t =>
+            var tags = (await Task.WhenAll(tagNames.Select(async t =>
             {
                 Tag tag = (await _unit.tagsReadRepo.ListAsync(new TagsByNameSpecification(t))).FirstOrDefault() ?? new Tag { Name = t };
                 return tag;
-            }));
+            }))).ToList();
 
-            await _tagService.UpdatePostTags(newPost, tags);
+            Post newPost = await _unit.postReadRepo.RetrieveByIdAsync(post.Id, true) ?? new();
+            newPost.Header = post.Header;
+            newPost.Text = post.Text;
+            newPost.DateTime = post.DateTime;
+            newPost.Tags = tags;
 
             if (newPost.Id != default(long))
             {

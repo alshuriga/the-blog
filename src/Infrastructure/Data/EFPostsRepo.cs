@@ -37,8 +37,11 @@ public class EfPostsRepo : IRepository<Post>
 
     public async Task UpdateAsync(Post post)
     {
-        _db.Posts.Update(post);
-        await _db.SaveChangesAsync();
+        //var existing = _db.Posts.AsNoTracking().Include(p => p.Tags).First(post => post.Id == post.Id);
+        //_db.Entry(existing).CurrentValues.SetValues(post);
+        //existing.Tags = post.Tags;
+        _db.Update(post);
+       await _db.SaveChangesAsync();
     }
 
     public async Task UpdateRangeAsync(IEnumerable<Post> posts)

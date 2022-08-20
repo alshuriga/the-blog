@@ -18,9 +18,9 @@ public class Post : BaseEntity
 
     public bool IsDraft { get; set; }
 
-    public ICollection<Commentary> Commentaries { get; set; } = new List<Commentary>();
-    
-    public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public ICollection<Commentary> Commentaries { get; set; } = null!;
+
+    public ICollection<Tag> Tags { get; set; } = null!;
 
 
 }

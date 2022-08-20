@@ -25,7 +25,6 @@ builder.Services.AddDbContext<MiniBlogEfContext>(opts =>
         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
     if (builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
 });
-builder.Services.AddScoped<ITagService, TagService>();
 
 builder.Services.AddDbContext<IdentityEfContext>(opts =>
 {
