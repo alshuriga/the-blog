@@ -2,7 +2,7 @@
 @{
    await Html.RenderPartialAsync("_ClientValidationScriptsPartial");
 }
-<form method="post" asp-action="AddComment" asp-controller="Home" asp-route-postId="@ViewData["postId"]">
+<form method="post" asp-page="SinglePost" asp-page-handler="AddComment" asp-route-postId="@ViewData["postId"]">
         <h5>Add new comment</h5>
         <div class="row">
             <div class="text-danger" asp-validation-summary="ModelOnly"></div>

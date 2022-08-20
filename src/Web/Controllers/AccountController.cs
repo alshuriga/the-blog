@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Web.ViewModels;
 
+
 namespace MiniBlog.Web.Controllers;
 
 [Route("[controller]/[action]")]
@@ -85,7 +86,7 @@ public class AccountController : Controller
         return View(model: returnUrl);
     }
 
-    [Authorize(Roles = "Admins")]
+    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     [HttpGet("{username}")]
     public async Task<IActionResult> EditUser(string userName)
     {

@@ -7,6 +7,7 @@ using MiniBlog.Core.Constants;
 using Microsoft.EntityFrameworkCore;
 using MiniBlog.Web.Filters;
 using MiniBlog.Web.Middleware;
+using MiniBlog.Web.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,7 @@ builder.Services.AddDbContext<MiniBlogEfContext>(opts =>
         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
     if (builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
 });
-builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<ITagService, TagService>();
 
 builder.Services.AddDbContext<IdentityEfContext>(opts =>
 {
@@ -51,7 +52,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddScoped<ApplicationExceptionFilter>();
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(opts => {
+    opts.Conventions.AddPageRoute(PageNamesConstants.PostsList, "/");
+});
 
 var app = builder.Build();
 

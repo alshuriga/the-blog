@@ -22,12 +22,12 @@ public class PaginationTagHelper : TagHelper
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         int paginationFrom = PaginationData.CurrentPage <= 1 ? 1 : PaginationData.CurrentPage - 1;
-        int paginationTo = PaginationData.CurrentPage >= PaginationData.PageNumber ? PaginationData.CurrentPage : PaginationData.CurrentPage + 1;
+        int paginationTo = PaginationData.CurrentPage >= PaginationData.PagesCount ? PaginationData.CurrentPage : PaginationData.CurrentPage + 1;
         string firstPageClass = PaginationData.CurrentPage <= 1 ? "disabled" : "";
-        string lastPageClass = PaginationData.CurrentPage >= PaginationData.PageNumber ? "disabled" : "";
+        string lastPageClass = PaginationData.CurrentPage >= PaginationData.PagesCount ? "disabled" : "";
         output.TagName = "ul";
         output.Attributes.SetAttribute("class", "pagination justify-content-center");
-        if (PaginationData.PageNumber > 1) output.Content.AppendHtml(GetTag(1, firstPageClass, "First"));
+        if (PaginationData.PagesCount > 1) output.Content.AppendHtml(GetTag(1, firstPageClass, "First"));
 
         for (int i = paginationFrom; i <= paginationTo; i++)
         {
@@ -35,7 +35,7 @@ public class PaginationTagHelper : TagHelper
             output.Content.AppendHtml(GetTag(i, isActive));
         }
 
-        output.Content.AppendHtml(GetTag(PaginationData.PageNumber, lastPageClass, "Last"));
+        output.Content.AppendHtml(GetTag(PaginationData.PagesCount, lastPageClass, "Last"));
     }
 
     private TagBuilder GetTag(int linkPage, string pageClass = "", string? aContent = null)

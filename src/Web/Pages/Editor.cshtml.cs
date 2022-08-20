@@ -4,13 +4,16 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Core.Specifications;
 using Ardalis.Specification;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MiniBlog.Web.Pages;
+
+[Authorize(Roles = RolesConstants.ADMIN_ROLE)]
 public class EditorModel : PageModel
 {
     private readonly IUnitOfWork _unit;
 
-    private readonly TagService _tagService;
+    private readonly ITagService _tagService;
 
     [BindProperty]
     public PostDto Post { get; set; } = new();
@@ -19,7 +22,7 @@ public class EditorModel : PageModel
     [RegularExpression(@"^[a-z][a-z0-9_\s,]+[a-z0-9]$", ErrorMessage = "Please use lowercase tags separated by commas, e.g., \"red, green, blue\"")]
     public string? TagString { get; set; } = String.Empty;
 
-    public EditorModel(IUnitOfWork unit, TagService tagService)
+    public EditorModel(IUnitOfWork unit, ITagService tagService)
     {
         _unit = unit;
         _tagService = tagService;

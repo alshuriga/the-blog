@@ -1,5 +1,5 @@
-@model PostsIndexViewModel
-
+@page "/list"
+@model ListModel
 <div class="row" id="posts row">
     <div class="display-6 mt-md-1 mt-0 mx-md-auto text-center text-md-start">
     @if (Model.TagName != null && Model.PostsCount != null)
@@ -12,7 +12,7 @@
     }
     </div>
     <div class="col">
-        @foreach (var p in Model.Posts ?? Enumerable.Empty<PostPartialViewModel>())
+        @foreach (var p in Model.Posts)
         {
             await Html.RenderPartialAsync("_PostView", p);
         }

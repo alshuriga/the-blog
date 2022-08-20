@@ -1,5 +1,3 @@
-
-
 namespace MiniBlog.Core.Entities;
 
 public class Commentary : BaseEntity
