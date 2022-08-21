@@ -59,7 +59,7 @@
                 </div>
                 @if (Model.CommentsPaginationData != null)
                 {
-                    <pagination pagination-data="@Model.CommentsPaginationData"></pagination>
+                    <pagination pagination-data="@Model.CommentsPaginationData" query="@Request.Query"></pagination>
                 }
             </div>
     </div>

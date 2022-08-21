@@ -1,5 +1,5 @@
 ﻿<div class="text-center">
     <div class="mb-3 h6">You must be logged in to comment.</div>
-    <a class="btn btn-primary" asp-action="Login" asp-controller="Account">Log in</a>
+    <a class="btn btn-primary" asp-action="Login" asp-controller="Account" asp-route-returnUrl="@Url.Action()">Log in</a>
     <a class="btn btn-primary" asp-action="SignUp" asp-controller="Account" asp-route-returnUrl="@Url.Action()">Sign Up</a>
 </div>
