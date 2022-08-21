@@ -12,7 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using MiniBlog.Core.Specifications;
 using System.Linq.Expressions;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using MiniBlog.Tests.UnitTests.Mocks;
+
 namespace MiniBlog.Tests.UnitTests;
+
 
 public class HomeControllersTests
 {
@@ -45,7 +51,7 @@ public class HomeControllersTests
         var mockPosts = SeedTestData.Posts(PaginationConstants.POSTS_PER_PAGE * 3);
         var expectedPosts = mockPosts.Skip(SkipPostToPage(3)).Take(PaginationConstants.POSTS_PER_PAGE);
         postReadRepo.Setup(p => p.ListAsync(It.IsAny<Specification<Post>>())).ReturnsAsync(expectedPosts);
-        postReadRepo.Setup(p => p.CountAsync()).ReturnsAsync(mockPosts.Count());
+        postReadRepo.Setup(p => p.CountAsync(It.IsAny<Specification<Post>>())).ReturnsAsync(mockPosts.Count());
         var expectedPostDto = expectedPosts.Select(p => new PostDto
         {
             Id = p.Id,
@@ -110,9 +116,9 @@ public class HomeControllersTests
     {
         var expectedPageNumber = 5;
         var mockPosts = SeedTestData.Posts(PaginationConstants.POSTS_PER_PAGE * expectedPageNumber);
-        var expectedPosts = mockPosts.Take(PaginationConstants.POSTS_PER_PAGE);
-        postReadRepo.Setup(r => r.CountAsync()).ReturnsAsync(mockPosts.Count());
-        postReadRepo.Setup(r => r.ListAsync(It.IsAny<Specification<Post>>())).ReturnsAsync(expectedPosts);
+        var pageOfPosts = mockPosts.Take(PaginationConstants.POSTS_PER_PAGE);
+        postReadRepo.Setup(r => r.CountAsync(It.IsAny<ISpecification<Post>>())).ReturnsAsync(mockPosts.Count());
+        postReadRepo.Setup(r => r.ListAsync(It.IsAny<Specification<Post>>())).ReturnsAsync(pageOfPosts);
 
         var model = new ListModel(unitMock.Object);
 
@@ -183,7 +189,7 @@ public class HomeControllersTests
     }
 
     [Fact]
-    public async void SavePost_AddPost_ReturnsRedirectToPost()
+    public async void SavePost_AddPostAsAdmin_ReturnsRedirectToPost()
     {
         PostDto postDto = new()
         {
@@ -196,9 +202,8 @@ public class HomeControllersTests
         postReadRepo.Setup(r => r.RetrieveByIdAsync(It.IsAny<long>(), It.IsAny<bool>())).ReturnsAsync((Post?)null);
         tagReadRepo.Setup(r => r.ListAsync(It.IsAny<TagsByNameSpecification>())).ReturnsAsync(Enumerable.Empty<Tag>());
         var model = new EditorModel(unitMock.Object);
-
+        model.PageContext = MockObjects.GetPageContext(true, RolesConstants.ADMIN_ROLE);
         var result = await model.OnPost(postDto, tagString);
-
         Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("SinglePost", (result as RedirectToPageResult)?.PageName);
         postRepo.Verify(p => p.AddAsync(It.Is<Post>(p => 
@@ -210,7 +215,7 @@ public class HomeControllersTests
     }
 
     [Fact]
-    public async void SavePost_Update_ReturnsRedirectToPost()
+    public async void SavePost_UpdateAsAdmin_ReturnsRedirectToPost()
     {
         Post oldPost = new()
         {
@@ -231,6 +236,7 @@ public class HomeControllersTests
            postReadRepo.Setup(r => r.RetrieveByIdAsync(It.IsAny<long>(), It.IsAny<bool>())).ReturnsAsync(oldPost);
            tagReadRepo.Setup(r => r.ListAsync(It.IsAny<TagsByNameSpecification>())).ReturnsAsync(Enumerable.Empty<Tag>());
         var model = new EditorModel(unitMock.Object);
+        model.PageContext = MockObjects.GetPageContext(true, RolesConstants.ADMIN_ROLE);
 
         var result = await model.OnPost(postDto, tagString);
 

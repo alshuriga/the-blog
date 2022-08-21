@@ -42,7 +42,6 @@ public class HomeControllerIntegrationTests : IntegrationTestsBase
         var antiforgeryRequest = new HttpRequestMessage(HttpMethod.Get, "/edit");
         antiforgeryRequest.AppendFakeAuth(isAdmin: true);
         var antiforgeryData = await (await _client.SendAsync(antiforgeryRequest)).ExtractAntiforgeryKeys();
-
         //generating unique guid header
         var testHeader = Guid.NewGuid().ToString();
         var postForm = new FormUrlEncodedContent(new Dictionary<string, string> {
@@ -64,6 +63,6 @@ public class HomeControllerIntegrationTests : IntegrationTestsBase
 
         Assert.Equal(HttpStatusCode.Redirect, result.StatusCode);
         Assert.Equal(1, db.Posts.Where(p => p.Header == testHeader && p.Id == newPostId).Count());
-        Assert.Contains($"SinglePost/{newPostId}", result.Headers.Location?.OriginalString);
+        Assert.Contains($"post/{newPostId}", result.Headers.Location?.OriginalString);
     }
 }
