@@ -195,8 +195,7 @@ public class HomeControllersTests
         string tagString = "tag1,tag2,tag3";
         postReadRepo.Setup(r => r.RetrieveByIdAsync(It.IsAny<long>(), It.IsAny<bool>())).ReturnsAsync((Post?)null);
         tagReadRepo.Setup(r => r.ListAsync(It.IsAny<TagsByNameSpecification>())).ReturnsAsync(Enumerable.Empty<Tag>());
-        var tagServiceMock = new Mock<ITagService>();
-        var model = new EditorModel(unitMock.Object, tagServiceMock.Object);
+        var model = new EditorModel(unitMock.Object);
 
         var result = await model.OnPost(postDto, tagString);
 
@@ -207,9 +206,7 @@ public class HomeControllersTests
         && p.DateTime == postDto.DateTime && p.Text == postDto.Text
         )), Times.Once);
         postRepo.Verify(p => p.UpdateAsync(It.IsAny<Post>()), Times.Never);
-        tagServiceMock.Verify(s =>  s.UpdatePostTags(It.IsAny<Post>(), 
-                It.Is<IEnumerable<Tag>>(t =>
-                t.Select(t => t.Name).SequenceEqual(tagString.Split(",", StringSplitOptions.None)))));
+
     }
 
     [Fact]
@@ -233,23 +230,20 @@ public class HomeControllersTests
         string tagString = "tag1,tag2,tag3";
            postReadRepo.Setup(r => r.RetrieveByIdAsync(It.IsAny<long>(), It.IsAny<bool>())).ReturnsAsync(oldPost);
            tagReadRepo.Setup(r => r.ListAsync(It.IsAny<TagsByNameSpecification>())).ReturnsAsync(Enumerable.Empty<Tag>());
-        var tagServiceMock = new Mock<ITagService>();
-        var model = new EditorModel(unitMock.Object, tagServiceMock.Object);
+        var model = new EditorModel(unitMock.Object);
 
         var result = await model.OnPost(postDto, tagString);
 
         Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("SinglePost", (result as RedirectToPageResult)?.PageName);
-        Assert.Equal(oldPost.Id, (result as RedirectToPageResult)?.RouteValues["postId"]);
+        Assert.Equal(oldPost.Id, (result as RedirectToPageResult)!.RouteValues!["postId"]);
         postRepo.Verify(p => p.UpdateAsync(It.Is<Post>(p =>
             p.Header == postDto.Header
             && p.DateTime == postDto.DateTime 
             && p.Text == postDto.Text)), 
             Times.Once);
         postRepo.Verify(p => p.AddAsync(It.IsAny<Post>()), Times.Never);
-        tagServiceMock.Verify(s => s.UpdatePostTags(It.IsAny<Post>(),
-                It.Is<IEnumerable<Tag>>(t =>
-                t.Select(t => t.Name).SequenceEqual(tagString.Split(",", StringSplitOptions.None)))));
+     
     }
 }
 

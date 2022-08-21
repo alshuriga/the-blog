@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using MiniBlog.Core.Constants;
+using MiniBlog.Web.Exceptions;
 
 namespace MiniBlog.Tests;
 
