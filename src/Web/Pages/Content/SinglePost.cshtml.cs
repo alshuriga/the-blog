@@ -7,6 +7,8 @@ using Ardalis.Specification;
 using MiniBlog.Core.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using MiniBlog.Web.Extensions;
+using MiniBlog.Web.Exceptions;
 
 namespace MiniBlog.Web.Pages;
 
@@ -30,6 +32,7 @@ public class SinglePostModel : PageModel
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, PaginationConstants.COMMENTS_PER_PAGE, commentariesCount);
         Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId, true);
         if (post == null) return NotFound();
+        if (post.IsDraft) this.ValidateAdminAuth();
         TempData["postId"] = postId.ToString();
 
         PostPartial = new()
@@ -43,7 +46,8 @@ public class SinglePostModel : PageModel
             },
             CommentsButton = false,
             TagNames = post.Tags.Select(t => t.Name),
-            CommentariesCount = commentariesCount
+            CommentariesCount = commentariesCount,
+            IsDraft = post.IsDraft,
         };
 
         Commentaries = commentariesPageSpec.Evaluate(post.Commentaries).Select(c => new CommentaryDto
@@ -63,6 +67,8 @@ public class SinglePostModel : PageModel
 
     public async Task<IActionResult> OnPostAddComment(CommentaryDto commentary, long postId)
     {
+        if (!User.Identity?.IsAuthenticated ?? true) throw new NotLoggedInException();
+
         if (ModelState.IsValid)
         {
             var user = await _userMgr.FindByNameAsync(User.Identity?.Name);
@@ -75,16 +81,17 @@ public class SinglePostModel : PageModel
         return RedirectToPage("SinglePost", routeValues: new { postId = postId });
     }
 
-    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
+
     public async Task<IActionResult> OnPostDeleteComment(long commentaryId, long postId)
     {
+        this.ValidateAdminAuth();
         await _unit.commentRepo.DeleteAsync(new Commentary { Id = commentaryId });
         return RedirectToPage(new {postId = postId});
     }
 
-    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> OnPostDeletePost(long postId)
     {
+        this.ValidateAdminAuth();
         await _unit.postRepo.DeleteAsync(new Post { Id = postId });
         return RedirectToPage("List");
     }

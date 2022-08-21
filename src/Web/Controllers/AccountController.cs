@@ -18,7 +18,7 @@ public class AccountController : Controller
         _signInManager = signInManager;
     }
 
-    [HttpGet()]
+    [HttpGet]
     public IActionResult Login([FromQuery] string? returnUrl)
     {
         if(returnUrl != null) ViewBag.returnUrl = returnUrl;

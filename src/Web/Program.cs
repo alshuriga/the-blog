@@ -52,7 +52,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddScoped<ApplicationExceptionFilter>();
 
 builder.Services.AddRazorPages(opts => {
-    opts.Conventions.AddPageRoute(PageNamesConstants.PostsList, "/");
+    opts.Conventions.AddPageRoute(PageNamesConstants.POSTS_LIST_PAGE, "/");
+
 });
 
 var app = builder.Build();

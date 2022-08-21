@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Web.ViewModels;
+using MiniBlog.Web.Exceptions;
 
 namespace MiniBlog.Web.Controllers;
 
@@ -50,6 +51,8 @@ public class AdminController : Controller
         return RedirectToAction(nameof(UserList));
     }
 
+
+
     [HttpPost]
     public async Task<IActionResult> SwitchAdmin([FromForm]string userId)
     {
@@ -80,4 +83,5 @@ public class AdminController : Controller
         ModelState.AddModelError("", "User not found");
         return RedirectToAction(nameof(UserList));
     }
+
 }

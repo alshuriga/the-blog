@@ -15,6 +15,7 @@ public class PaginationTagHelper : TagHelper
     [HtmlAttributeNotBound]
     public ViewContext ViewContext { get; set; } = null!;
     public PaginationData PaginationData { get; set; } = null!;
+    public IQueryCollection Query { get; set; } = null!;
     public PaginationTagHelper(IUrlHelperFactory _factory)
     {
         factory = _factory;
@@ -41,7 +42,9 @@ public class PaginationTagHelper : TagHelper
     private TagBuilder GetTag(int linkPage, string pageClass = "", string? aContent = null)
     {
         IUrlHelper helper = factory.GetUrlHelper(ViewContext);
-        string? url = helper.ActionLink(values: new { currentPage = linkPage, tagName = ViewContext.RouteData.Values["tagName"] });
+        var routeData = Query.ToDictionary(q => q.Key, q => q.Value.ToString());
+        routeData["currentPage"] = linkPage.ToString();
+        string? url = helper.ActionLink(values: routeData);
         var a = new TagBuilder("a");
         a.Attributes.Add("href", $"{url}");
         a.Attributes.Add("class", "page-link");

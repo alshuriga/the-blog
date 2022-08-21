@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Core.Specifications;
 using Ardalis.Specification;
 using Microsoft.AspNetCore.Authorization;
+using MiniBlog.Web.Extensions;
+
 
 namespace MiniBlog.Web.Pages;
 
@@ -39,7 +41,8 @@ public class EditorModel : PageModel
                 Id = post.Id,
                 Header = post.Header,
                 Text = post.Text,
-                DateTime = post.DateTime
+                DateTime = DateTime.Now,
+                IsDraft = post.IsDraft
             };
             TagString = tagString;
             return Page();
@@ -49,8 +52,10 @@ public class EditorModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPost(PostDto post, string tagString)
+    public async Task<IActionResult> OnPost(PostDto post, string tagString, bool asDraft = true)
     {
+        this.ValidateAdminAuth();
+
         string[] tagNames = tagString?.Split(",", StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
         if (tagNames.Length > 5) ModelState.AddModelError(nameof(tagString), "Maximum number of tags is 5");
         if (ModelState.IsValid)
@@ -66,6 +71,7 @@ public class EditorModel : PageModel
             newPost.Text = post.Text;
             newPost.DateTime = post.DateTime;
             newPost.Tags = tags;
+            newPost.IsDraft = asDraft;
 
             if (newPost.Id != default(long))
             {

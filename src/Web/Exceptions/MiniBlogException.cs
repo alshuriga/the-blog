@@ -1,3 +1,5 @@
+namespace MiniBlog.Web.Exceptions;
+
 public class MiniBlogWebException : ApplicationException
 {
     public string ReturnUrl { get; private set; } = "/";
@@ -5,6 +7,4 @@ public class MiniBlogWebException : ApplicationException
     {
         if(returnUrl != null) ReturnUrl = returnUrl;
     }
-    
-
 }

@@ -6,4 +6,5 @@ public class PostDto
     public string Header { get; set; } = string.Empty;
     public string Text { get; set; } = string.Empty;
     public DateTime DateTime { get; set; }
+    public bool? IsDraft {  get; set; }
 }

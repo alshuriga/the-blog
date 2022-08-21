@@ -30,10 +30,17 @@
             <small><span asp-validation-for="TagString" class="text-danger"></span></small>
         </div>
     </div>
-     <div class="row">
-        <div class="col">
-            <button class="btn btn-primary mt-4" type="submit">Publish</button>
+         <div class="float-start">
+            <a class="btn btn-primary mt-4" asp-page="List">Back</a>
+        </div> 
+        <div class=" float-end">
+            <button class="btn btn-primary mt-4" type="submit" asp-route-asdraft="false">Publish</button>
         </div>
-    </div>
+        @if(Model.Post.IsDraft ?? true)
+            {
+            <div class=" float-end">
+                <button class="btn btn-secondary mt-4 me-3" type="submit" asp-route-asdraft="true">Save to Drafts</button>
+            </div>
+            }        
 </form>
  </div>
