@@ -17,21 +17,9 @@ public class EfPostsRepo : IRepository<Post>
         await _db.SaveChangesAsync();
     }
 
-    public async Task AddRangeAsync(IEnumerable<Post> posts)
-    {
-        await _db.Posts.AddRangeAsync(posts);
-        await _db.SaveChangesAsync();
-    }
-
     public async Task DeleteAsync(Post post)
     {
         _db.Posts.Remove(post);
-        await _db.SaveChangesAsync();
-    }
-
-    public async Task DeleteRangeAsync(IEnumerable<Post> posts)
-    {
-        _db.Posts.RemoveRange(posts);
         await _db.SaveChangesAsync();
     }
 
@@ -42,11 +30,5 @@ public class EfPostsRepo : IRepository<Post>
         //existing.Tags = post.Tags;
         _db.Update(post);
        await _db.SaveChangesAsync();
-    }
-
-    public async Task UpdateRangeAsync(IEnumerable<Post> posts)
-    {
-        _db.Posts.UpdateRange(posts);
-        await _db.SaveChangesAsync();
     }
 }

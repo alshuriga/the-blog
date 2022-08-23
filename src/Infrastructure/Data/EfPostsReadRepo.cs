@@ -13,29 +13,31 @@ public class EfPostsReadRepo : IReadRepository<Post>
         _db = db;
     }
 
-    public Task<bool> AnyAsync(ISpecification<Post> specification)
+    public Task<bool> AnyAsync(ISpecification<Post>? specification = null)
     {
-        return Task.FromResult(_db.Posts.WithSpecification(specification).Any());
+        if (specification != null) 
+            return _db.Posts.WithSpecification(specification).AnyAsync();
+
+        return _db.Posts.AnyAsync();
     }
 
-    public Task<int> CountAsync()
+    public async Task<int> CountAsync(ISpecification<Post>? specification = null)
     {
-        return Task.FromResult(_db.Posts.Count());
+        if (specification != null)
+            return await _db.Posts.WithSpecification(specification).CountAsync();
+
+       return await _db.Posts.CountAsync();
     }
 
-    public Task<int> CountAsync(ISpecification<Post> specification)
-    {
-        return Task.FromResult(_db.Posts.WithSpecification(specification).Count());
-    }
 
-    public  Task<IEnumerable<Post>> ListAsync()
+    public Task<IEnumerable<Post>> ListAsync(ISpecification<Post>? specification = null)
     {
-        return Task.FromResult(_db.Posts.AsEnumerable());
-    }
+        IEnumerable<Post> posts;
+        if (specification != null)
+            posts = _db.Posts.WithSpecification(specification).AsEnumerable();
+        else posts = _db.Posts.AsEnumerable();
 
-    public  Task<IEnumerable<Post>> ListAsync(ISpecification<Post> specification)
-    {
-        return Task.FromResult(_db.Posts.WithSpecification(specification).AsEnumerable());
+        return Task.FromResult(posts);
     }
 
     public async Task<Post?> RetrieveByIdAsync(long id, bool eager = false)

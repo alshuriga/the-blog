@@ -16,22 +16,9 @@ public class EfTagsRepo : IRepository<Tag>
         await _db.Tags.AddAsync(entity);
         await _db.SaveChangesAsync();
     }
-
-    public async Task AddRangeAsync(IEnumerable<Tag> entities)
-    {
-        await _db.Tags.AddRangeAsync(entities);
-        await _db.SaveChangesAsync();
-    }
-
     public async Task DeleteAsync(Tag entity)
     {
         _db.Tags.Remove(entity);
-        await _db.SaveChangesAsync();
-    }
-
-    public async Task DeleteRangeAsync(IEnumerable<Tag> entities)
-    {
-        _db.Tags.RemoveRange(entities);
         await _db.SaveChangesAsync();
     }
 
@@ -41,9 +28,4 @@ public class EfTagsRepo : IRepository<Tag>
         await _db.SaveChangesAsync();
     }
 
-    public async Task UpdateRangeAsync(IEnumerable<Tag> entities)
-    {
-        _db.Tags.UpdateRange(entities);
-        await _db.SaveChangesAsync();
-    }
 }

@@ -17,21 +17,9 @@ public class EfCommentariesRepo : IRepository<Commentary>
         await _db.SaveChangesAsync();
     }
 
-    public async Task AddRangeAsync(IEnumerable<Commentary> entities)
-    {
-        await _db.AddRangeAsync(entities);
-        await _db.SaveChangesAsync();
-    }
-
     public async Task DeleteAsync(Commentary entity)
     {
         _db.Remove(entity);
-        await _db.SaveChangesAsync();
-    }
-
-    public async Task DeleteRangeAsync(IEnumerable<Commentary> entities)
-    {
-        _db.RemoveRange(entities);
         await _db.SaveChangesAsync();
     }
 
@@ -41,9 +29,4 @@ public class EfCommentariesRepo : IRepository<Commentary>
         await _db.SaveChangesAsync();
     }
 
-    public async Task UpdateRangeAsync(IEnumerable<Commentary> entities)
-    {
-        _db.UpdateRange(entities);
-        await _db.SaveChangesAsync();
-    }
 }

@@ -12,10 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using MiniBlog.Core.Specifications;
 using System.Linq.Expressions;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using MiniBlog.Tests.UnitTests.Mocks;
 
 namespace MiniBlog.Tests.UnitTests;
 
@@ -133,10 +129,12 @@ public class HomeControllersTests
         int expectedPostsNumber = 3;
         var testTag = new Tag { Name = "test1234" };
         var postsMock = SeedTestData.Posts(10);
+
         foreach (var post in postsMock.Take(expectedPostsNumber - 1))
         {
             post.Tags.Add(testTag);
         }
+
         var expectedPosts = postsMock.Take(expectedPostsNumber);
         Expression<Func<PostsByPageSpecification, bool>> func = p =>
         !p.Evaluate(postsMock)
@@ -144,7 +142,6 @@ public class HomeControllersTests
             .Select(t => t.Select(t => t.Name))
             .Where(t => !t.Contains(testTag.Name))
             .Any();
-
 
         var model = new ListModel(unitMock.Object);
         await model.OnGet(currentPage: 1, testTag.Name);

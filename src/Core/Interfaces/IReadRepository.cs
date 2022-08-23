@@ -3,16 +3,12 @@ namespace MiniBlog.Core.Interfaces;
 
 public interface IReadRepository<T> where T : BaseEntity
 {
-    Task<IEnumerable<T>> ListAsync();
-
-    Task<IEnumerable<T>> ListAsync(ISpecification<T> specification);
+    Task<IEnumerable<T>> ListAsync(ISpecification<T>? specification = null);
 
     Task<T?> RetrieveByIdAsync(long id, bool eager = false);
 
-    Task<bool> AnyAsync(ISpecification<T> specification);
-
-    Task<int> CountAsync();
+    Task<bool> AnyAsync(ISpecification<T>? specification = null);
     
-    Task<int> CountAsync(ISpecification<T> specification);
+    Task<int> CountAsync(ISpecification<T>? specification = null);
 
 }

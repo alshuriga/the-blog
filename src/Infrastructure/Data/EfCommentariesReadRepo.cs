@@ -15,35 +15,35 @@ public class EfCommentariesReadRepo : IReadRepository<Commentary>
         _db = db;
     }
 
-    public Task<bool> AnyAsync(ISpecification<Commentary> specification)
+    public Task<bool> AnyAsync(ISpecification<Commentary>? specification = null)
     {
-        return Task.FromResult(_db.Commentaries.WithSpecification(specification).Any());
+        if (specification != null)
+            return _db.Commentaries.WithSpecification(specification).AnyAsync();
+
+        return _db.Commentaries.AnyAsync();
     }
 
-    public Task<int> CountAsync()
+    public async Task<int> CountAsync(ISpecification<Commentary>? specification = null)
     {
-        return Task.FromResult(_db.Commentaries.Count());
+        if (specification != null)
+            return await _db.Commentaries.WithSpecification(specification).CountAsync();
+
+        return await _db.Commentaries.CountAsync();
     }
 
-    public Task<int> CountAsync(ISpecification<Commentary> specification)
+    public Task<IEnumerable<Commentary>> ListAsync(ISpecification<Commentary>? specification = null)
     {
-        return Task.FromResult(_db.Commentaries.WithSpecification(specification).Count());
-    }
+        IEnumerable<Commentary> Commentaries;
+        if (specification != null)
+            Commentaries = _db.Commentaries.WithSpecification(specification).AsEnumerable();
+        else Commentaries = _db.Commentaries.AsEnumerable();
 
-    public Task<IEnumerable<Commentary>> ListAsync()
-    {
-        return  Task.FromResult(_db.Commentaries.AsEnumerable());
-    }
-
-    public Task<IEnumerable<Commentary>> ListAsync(ISpecification<Commentary> specification)
-    {
-        return  Task.FromResult(_db.Commentaries.WithSpecification(specification).AsEnumerable());
+        return Task.FromResult(Commentaries);
     }
 
     public async Task<Commentary?> RetrieveByIdAsync(long id, bool eager = false)
     {
-        var query = _db.Commentaries.AsQueryable();
-        if(eager) query.Include(c => c.Post).ThenInclude(p => p!.Tags);
-        return await query.FirstOrDefaultAsync(c => c.Id == id);
+        var query = eager ? _db.Commentaries.Include(p => p.Post) : _db.Commentaries.AsQueryable();
+        return await query.FirstOrDefaultAsync(p => p.Id == id);
     }
 }
