@@ -30,7 +30,7 @@ public class SinglePostModel : PageModel
         int commentariesCount = await _unit.commentReadRepo.CountAsync(new CommentsByPostIdSpecification(postId));
         var commentariesPageSpec = new CommentsByPostIdSpecification(postId, currentPage);
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, PaginationConstants.COMMENTS_PER_PAGE, commentariesCount);
-        Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId);
+        Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId, p => p.Tags);
         if (post == null) return NotFound();
         if (post.IsDraft) this.ValidateAdminAuth();
         TempData["postId"] = postId.ToString();
