@@ -4,7 +4,7 @@ namespace MiniBlog.Infrastructure.Data;
 
 public class EfRepository<T> : IRepository<T> where T : BaseEntity
 {
-    private readonly MiniBlogEfContext _db;
+    protected readonly MiniBlogEfContext _db;
 
     public EfRepository(MiniBlogEfContext db)
     {

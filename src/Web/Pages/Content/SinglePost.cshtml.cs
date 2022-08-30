@@ -45,7 +45,7 @@ public class SinglePostModel : PageModel
                 DateTime = post.DateTime
             },
             CommentsButton = false,
-            TagNames = (await _unit.tagsReadRepo.ListAsync(new TagsByPostIdSpecification(post.Id))).Select(t => t.Name),
+            TagNames = post.Tags.Select(t => t.Name),
             CommentariesCount = commentariesCount,
             IsDraft = post.IsDraft,
         };

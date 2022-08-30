@@ -156,12 +156,11 @@ public class HomeControllersTests
     public async void Post_GetPostById_ReturnsViewWithCorrectPost()
     {
         Post post = SeedTestData.Posts(1).First();
-        postReadRepo.Setup(p => p.RetrieveByIdAsync(It.IsAny<long>(), null)).ReturnsAsync(post);
-
+        postReadRepo.Setup(p => p.RetrieveByIdAsync(It.IsAny<long>(), It.IsAny<Expression<Func<Post, object>>[]?>())).ReturnsAsync(post);
         var model = new SinglePostModel(unitMock.Object, UserManagerMock.Object);
         model.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
         await model.OnGet(post.Id);
-        Assert.Equal(JsonConvert.SerializeObject(post.Id), JsonConvert.SerializeObject(model.PostPartial.Post.Id));
+        Assert.Equal(post.Id, model.PostPartial.Post.Id);
         Assert.True(model.Commentaries.Count() <= PaginationConstants.COMMENTS_PER_PAGE);
         Assert.Equal(post.Id.ToString(), model.TempData["postId"]);
         Assert.False(model.PostPartial.CommentsButton);
@@ -173,14 +172,14 @@ public class HomeControllersTests
     [Fact]
     public async void Post_GetPostByInvalidId_ReturnsNotFound()
     {
-        postReadRepo.Setup(p => p.RetrieveByIdAsync(It.IsAny<long>(), null)).ReturnsAsync((Post?)null).Verifiable();
+        postReadRepo.Setup(p => p.RetrieveByIdAsync(It.IsAny<long>(), It.IsAny<Expression<Func<Post, object>>[]?>())).ReturnsAsync((Post?)null).Verifiable();
 
         var model = new SinglePostModel(unitMock.Object, UserManagerMock.Object);
 
         var result = await model.OnGet(1);
 
         Assert.IsType<NotFoundResult>(result);
-        postReadRepo.Verify(p => p.RetrieveByIdAsync(1, null), Times.Once());
+        postReadRepo.Verify(p => p.RetrieveByIdAsync(1, It.IsAny<Expression<Func<Post, object>>[]?>()), Times.Once());
         postReadRepo.VerifyNoOtherCalls();
 
     }
@@ -196,7 +195,7 @@ public class HomeControllersTests
             DateTime = DateTime.Now
         };
         string tagString = "tag1,tag2,tag3";
-        postReadRepo.Setup(r => r.RetrieveByIdAsync(It.IsAny<long>(), null)).ReturnsAsync((Post?)null);
+        postReadRepo.Setup(r => r.RetrieveByIdAsync(It.IsAny<long>(), It.IsAny<Expression<Func<Post, object>>[]?>())).ReturnsAsync((Post?)null);
         tagReadRepo.Setup(r => r.ListAsync(It.IsAny<TagsByNameSpecification>())).ReturnsAsync(Enumerable.Empty<Tag>());
         var model = new EditorModel(unitMock.Object);
         model.PageContext = MockObjects.GetPageContext(true, RolesConstants.ADMIN_ROLE);
@@ -230,7 +229,7 @@ public class HomeControllersTests
             DateTime = DateTime.Now
         };
         string tagString = "tag1,tag2,tag3";
-           postReadRepo.Setup(r => r.RetrieveByIdAsync(It.IsAny<long>(), null)).ReturnsAsync(oldPost);
+           postReadRepo.Setup(r => r.RetrieveByIdAsync(It.IsAny<long>(), It.IsAny<Expression<Func<Post, object>>[]?>())).ReturnsAsync(oldPost);
            tagReadRepo.Setup(r => r.ListAsync(It.IsAny<TagsByNameSpecification>())).ReturnsAsync(Enumerable.Empty<Tag>());
         var model = new EditorModel(unitMock.Object);
         model.PageContext = MockObjects.GetPageContext(true, RolesConstants.ADMIN_ROLE);

@@ -8,7 +8,7 @@ namespace MiniBlog.Infrastructure.Data;
 
 public class EfReadRepository<T> : IReadRepository<T> where T : BaseEntity
 {
-    private readonly MiniBlogEfContext _db;
+    protected readonly MiniBlogEfContext _db;
     public EfReadRepository(MiniBlogEfContext db)
     {
         _db = db;   
@@ -38,7 +38,7 @@ public class EfReadRepository<T> : IReadRepository<T> where T : BaseEntity
         return await _db.Set<T>().ToListAsync();
     }
 
-    public async Task<T?> RetrieveByIdAsync(long id, Expression<Func<T, object>>[]? includes = null)
+    public async Task<T?> RetrieveByIdAsync(long id, params Expression<Func<T, object>>[]? includes)
     {
         var query = _db.Set<T>().AsQueryable();
         if(includes != null)

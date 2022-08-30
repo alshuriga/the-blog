@@ -32,9 +32,9 @@ public class EditorModel : PageModel
         if (postId != 0)
         {
             ViewData["title"] = "Edit Post";
-            Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId);
+            Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId, p => p.Tags);
             if (post is null) return NotFound();
-            string tagString = String.Join(",", (await _unit.tagsReadRepo.ListAsync(new TagsByPostIdSpecification(post.Id))).Select(t => t.Name));
+            string tagString = String.Join(",", post.Tags.Select(t => t.Name));
 
             Post = new PostDto
             {
@@ -58,13 +58,13 @@ public class EditorModel : PageModel
         if (tagNames.Length > 5) ModelState.AddModelError(nameof(tagString), "Maximum number of tags is 5");
         if (ModelState.IsValid)
         {
-            var tags = (await Task.WhenAll(tagNames.Select(async t =>
+            var tags = new List<Tag>();
+            foreach(var tag in tagNames)
             {
-                Tag tag = (await _unit.tagsReadRepo.ListAsync(new TagsByNameSpecification(t))).FirstOrDefault() ?? new Tag { Name = t };
-                return tag;
-            }))).ToList();
+                tags.Add((await _unit.tagsReadRepo.ListAsync(new TagsByNameSpecification(tag))).FirstOrDefault() ?? new Tag { Name = tag });
+            }
 
-            Post newPost = await _unit.postReadRepo.RetrieveByIdAsync(post.Id) ?? new();
+            Post newPost = await _unit.postReadRepo.RetrieveByIdAsync(post.Id, p => p.Tags) ?? new();
             newPost.Header = post.Header;
             newPost.Text = post.Text;
             newPost.DateTime = post.DateTime;
