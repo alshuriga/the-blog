@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MiniBlog.Core.Entities;
 
-public class Post
+public class Post : BaseEntity
 {
-    public long PostId { get; set; }
+  //  public long PostId { get; set; }
 
     [MaxLength(50, ErrorMessage = "Maximum text length is 50 characters")]
     [Required(AllowEmptyStrings = false, ErrorMessage = "Header field cannot be empty")]
@@ -18,9 +18,9 @@ public class Post
 
     public bool IsDraft { get; set; }
 
-    public ICollection<Commentary> Commentaries { get; set; } = new List<Commentary>();
-    
-    public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public ICollection<Commentary> Commentaries { get; set; } = null!;
+
+    public ICollection<Tag> Tags { get; set; } = null!;
 
 
 }

@@ -3,17 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniBlog.Infrastructure.Data;
 
 #nullable disable
 
-namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
+namespace MiniBlog.Infrastructure.Migrations.MiniBlogEf
 {
     [DbContext(typeof(MiniBlogEfContext))]
-    partial class MiniBlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220818220942_cleanarch")]
+    partial class cleanarch
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,11 +59,11 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
 
             modelBuilder.Entity("MiniBlog.Core.Entities.Post", b =>
                 {
-                    b.Property<long>("PostId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("PostId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
@@ -79,7 +81,7 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.HasKey("PostId");
+                    b.HasKey("Id");
 
                     b.ToTable("Posts");
                 });
@@ -103,13 +105,13 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
 
             modelBuilder.Entity("PostTag", b =>
                 {
-                    b.Property<long>("PostsPostId")
+                    b.Property<long>("PostsId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("TagsTagId")
                         .HasColumnType("int");
 
-                    b.HasKey("PostsPostId", "TagsTagId");
+                    b.HasKey("PostsId", "TagsTagId");
 
                     b.HasIndex("TagsTagId");
 
@@ -131,7 +133,7 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                 {
                     b.HasOne("MiniBlog.Core.Entities.Post", null)
                         .WithMany()
-                        .HasForeignKey("PostsPostId")
+                        .HasForeignKey("PostsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

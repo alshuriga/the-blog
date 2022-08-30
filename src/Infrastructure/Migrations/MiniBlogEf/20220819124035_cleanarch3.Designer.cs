@@ -9,11 +9,11 @@ using MiniBlog.Infrastructure.Data;
 
 #nullable disable
 
-namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
+namespace MiniBlog.Infrastructure.Migrations.MiniBlogEf
 {
     [DbContext(typeof(MiniBlogEfContext))]
-    [Migration("20220807200645_Initial")]
-    partial class Initial
+    [Migration("20220819124035_cleanarch3")]
+    partial class cleanarch3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,11 +26,11 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
 
             modelBuilder.Entity("MiniBlog.Core.Entities.Commentary", b =>
                 {
-                    b.Property<long>("CommentaryId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CommentaryId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
@@ -50,7 +50,7 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CommentaryId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PostId");
 
@@ -59,11 +59,11 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
 
             modelBuilder.Entity("MiniBlog.Core.Entities.Post", b =>
                 {
-                    b.Property<long>("PostId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("PostId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
@@ -81,39 +81,39 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.HasKey("PostId");
+                    b.HasKey("Id");
 
                     b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("MiniBlog.Core.Entities.Tag", b =>
                 {
-                    b.Property<int>("TagId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TagId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("TagId");
+                    b.HasKey("Id");
 
                     b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("PostTag", b =>
                 {
-                    b.Property<long>("PostsPostId")
+                    b.Property<long>("PostsId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("TagsTagId")
-                        .HasColumnType("int");
+                    b.Property<long>("TagsId")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("PostsPostId", "TagsTagId");
+                    b.HasKey("PostsId", "TagsId");
 
-                    b.HasIndex("TagsTagId");
+                    b.HasIndex("TagsId");
 
                     b.ToTable("PostTag");
                 });
@@ -133,13 +133,13 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                 {
                     b.HasOne("MiniBlog.Core.Entities.Post", null)
                         .WithMany()
-                        .HasForeignKey("PostsPostId")
+                        .HasForeignKey("PostsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MiniBlog.Core.Entities.Tag", null)
                         .WithMany()
-                        .HasForeignKey("TagsTagId")
+                        .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

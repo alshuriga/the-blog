@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
+namespace MiniBlog.Infrastructure.Migrations.MiniBlogEf
 {
-    public partial class Initial : Migration
+    public partial class cleanarch : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,7 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                 name: "Posts",
                 columns: table => new
                 {
-                    PostId = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Header = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Text = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
@@ -22,7 +22,7 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.PostId);
+                    table.PrimaryKey("PK_Posts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,7 +57,7 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                         name: "FK_Commentaries_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "PostId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -65,17 +65,17 @@ namespace MiniBlog.Infrastructure.Migrations.MiniBlogDb
                 name: "PostTag",
                 columns: table => new
                 {
-                    PostsPostId = table.Column<long>(type: "bigint", nullable: false),
+                    PostsId = table.Column<long>(type: "bigint", nullable: false),
                     TagsTagId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostTag", x => new { x.PostsPostId, x.TagsTagId });
+                    table.PrimaryKey("PK_PostTag", x => new { x.PostsId, x.TagsTagId });
                     table.ForeignKey(
-                        name: "FK_PostTag_Posts_PostsPostId",
-                        column: x => x.PostsPostId,
+                        name: "FK_PostTag_Posts_PostsId",
+                        column: x => x.PostsId,
                         principalTable: "Posts",
-                        principalColumn: "PostId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PostTag_Tags_TagsTagId",

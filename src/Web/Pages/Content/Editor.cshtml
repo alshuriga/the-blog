@@ -1,12 +1,13 @@
-@using MiniBlog.Web.ViewModels
-@model PostEditViewModel
+@page "/edit/{postId:int?}"
+@model EditorModel
+
 @{
     await Html.RenderPartialAsync("_ClientValidationScriptsPartial");
 }
 <div class="row pt-5"> 
     <p class="display-6">@ViewData["title"]</p>
-<form method="post" asp-action="SavePost" asp-controller="Home">
-    @Html.HiddenFor( p => p.Post.PostId)
+<form method="post" asp-page="Editor">
+    @Html.HiddenFor( p => p.Post.Id)
     @Html.HiddenFor( p => p.Post.DateTime)
     <div class="row mt-3">
         <div class="col">
@@ -29,10 +30,17 @@
             <small><span asp-validation-for="TagString" class="text-danger"></span></small>
         </div>
     </div>
-     <div class="row">
-        <div class="col">
-            <button class="btn btn-primary mt-4" type="submit">Publish</button>
+         <div class="float-start">
+            <a class="btn btn-primary mt-4" asp-page="List">Back</a>
+        </div> 
+        <div class=" float-end">
+            <button class="btn btn-primary mt-4" type="submit" asp-route-asdraft="false">Publish</button>
         </div>
-    </div>
+        @if(Model.Post.IsDraft ?? true)
+            {
+            <div class=" float-end">
+                <button class="btn btn-secondary mt-4 me-3" type="submit" asp-route-asdraft="true">Save to Drafts</button>
+            </div>
+            }        
 </form>
  </div>

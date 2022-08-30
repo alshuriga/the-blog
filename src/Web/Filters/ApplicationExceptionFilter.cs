@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MiniBlog.Web.Controllers;
 using MiniBlog.Web.ViewModels;
+using MiniBlog.Web.Exceptions;
 
 namespace MiniBlog.Web.Filters;
 
@@ -20,19 +21,28 @@ public class ApplicationExceptionFilter : IExceptionFilter
     }
     public void OnException(ExceptionContext context)
     {
-       // if (!_hostEnvironment.IsDevelopment())
-       // {
-            if (context.Exception.GetType() == typeof(MiniBlogWebException))
+        bool isGet = context.HttpContext.Request.Method == HttpMethod.Get.Method;
+        string? url = isGet ? context.HttpContext.Request.Path.Value : null;
+
+        if (context.Exception is NotLoggedInException noLogInEx)
+        {
+            context.Result = new RedirectToActionResult(nameof(AccountController.Login), "Account", new { ReturnUrl = url ?? noLogInEx.ReturnUrl });
+        }
+        else if (context.Exception is AccessDeniedException accessEx)
+            context.Result = new RedirectToActionResult(nameof(AccountController.AccessDenied), "Account", new { ReturnUrl = url ?? accessEx.ReturnUrl }); 
+
+        else if (context.Exception is MiniBlogWebException ex)
+        {
+            context.Result = new ViewResult()
             {
-                context.Result = new ViewResult()
+                ViewName = "_AppError",
+                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
-                    ViewName = "_AppError", 
-                    ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                    {
-                        Model = new AppErrorViewModel() { Message = context.Exception.Message, ReturnUrl = (context.Exception as MiniBlogWebException)?.ReturnUrl ?? "/"}
-                    }
-                };
-            }
+                    Model = new AppErrorViewModel() { Message = context.Exception.Message, ReturnUrl = url ?? ex.ReturnUrl }
+                }
+            };
+        }
+       
         //}
-    } 
+    }
 }

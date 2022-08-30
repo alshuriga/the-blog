@@ -3,6 +3,8 @@ using MiniBlog.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using MiniBlog.Core.Constants;
+using MiniBlog.Web.Exceptions;
 
 namespace MiniBlog.Tests;
 
@@ -19,10 +21,10 @@ public class AdminControllerTests
     public void UserList_CallsAction_ReturnsViewWithCorrectModel()
     {
         var allUsers = GetUsers(10);
-        var adminRole = new IdentityRole { Name = "Admins" };
+        var adminRole = new IdentityRole { Name = RolesConstants.ADMIN_ROLE };
         UserManagerMock.Setup(m => m.Users).Returns(allUsers.AsQueryable);
         //first 5 users has Admins role
-        UserManagerMock.Setup(m => m.GetRolesAsync(It.Is<IdentityUser>(u => int.Parse(u.Id) < 5))).ReturnsAsync(new List<string> { "Admins" });
+        UserManagerMock.Setup(m => m.GetRolesAsync(It.Is<IdentityUser>(u => int.Parse(u.Id) < 5))).ReturnsAsync(new List<string> { RolesConstants.ADMIN_ROLE });
         //the rest of users do not have any roles;
         UserManagerMock.Setup(m => m.GetRolesAsync(It.Is<IdentityUser>(u => int.Parse(u.Id) >= 5))).ReturnsAsync(new List<string>());
         var controller = GetTestControllerWithMocks();
@@ -42,7 +44,7 @@ public class AdminControllerTests
         var user = new IdentityUser { Id = userId };
         UserManagerMock.Setup(m => m.FindByIdAsync(It.Is<string>(s => s == userId))).ReturnsAsync(user);
         UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.IsAny<string>())).ReturnsAsync(false);
-        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == "Admins"))).ReturnsAsync(new IdentityUser[10]);
+        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(new IdentityUser[10]);
         var controller = GetTestControllerWithMocks();
 
         var result = await controller.DeleteUser(userId);
@@ -59,8 +61,8 @@ public class AdminControllerTests
         var userId = "1";
         var user = new IdentityUser { Id = userId };
         UserManagerMock.Setup(m => m.FindByIdAsync(It.Is<string>(s => s == userId))).ReturnsAsync(user);
-        UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == "Admins"))).ReturnsAsync(true);
-        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == "Admins"))).ReturnsAsync(new IdentityUser[1]);
+        UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(true);
+        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(new IdentityUser[1]);
         var controller = GetTestControllerWithMocks();
         controller.Url = Mock.Of<IUrlHelper>();
         var ex = await Assert.ThrowsAsync<MiniBlogWebException>(async () => await controller.DeleteUser(userId));
@@ -74,14 +76,14 @@ public class AdminControllerTests
         var userId = "1";
         var user = new IdentityUser { Id = userId };
         UserManagerMock.Setup(m => m.FindByIdAsync(It.Is<string>(s => s == userId))).ReturnsAsync(user);
-        UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == "Admins"))).ReturnsAsync(true);
-        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == "Admins"))).ReturnsAsync(new IdentityUser[10]);
-        UserManagerMock.Setup(m => m.RemoveFromRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == "Admins"))).ReturnsAsync(IdentityResult.Success);
+        UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(true);
+        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(new IdentityUser[10]);
+        UserManagerMock.Setup(m => m.RemoveFromRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(IdentityResult.Success);
         var controller = GetTestControllerWithMocks();
         var result = await controller.SwitchAdmin(userId);
 
-        UserManagerMock.Verify(m => m.RemoveFromRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == "Admins")), Times.Once);
-        UserManagerMock.Verify(m => m.AddToRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == "Admins")), Times.Never);
+        UserManagerMock.Verify(m => m.RemoveFromRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE)), Times.Once);
+        UserManagerMock.Verify(m => m.AddToRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE)), Times.Never);
         Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("UserList", ((RedirectToActionResult)result).ActionName);
     }
@@ -93,14 +95,14 @@ public class AdminControllerTests
         var userId = "1";
         var user = new IdentityUser { Id = userId };
         UserManagerMock.Setup(m => m.FindByIdAsync(It.Is<string>(s => s == userId))).ReturnsAsync(user);
-        UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == "Admins"))).ReturnsAsync(false);
-        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == "Admins"))).ReturnsAsync(new IdentityUser[10]);
-        UserManagerMock.Setup(m => m.AddToRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == "Admins"))).ReturnsAsync(IdentityResult.Success);
+        UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(false);
+        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(new IdentityUser[10]);
+        UserManagerMock.Setup(m => m.AddToRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(IdentityResult.Success);
         var controller = GetTestControllerWithMocks();
         var result = await controller.SwitchAdmin(userId);
 
-        UserManagerMock.Verify(m => m.AddToRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == "Admins")), Times.Once);
-        UserManagerMock.Verify(m => m.RemoveFromRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == "Admins")), Times.Never);
+        UserManagerMock.Verify(m => m.AddToRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE)), Times.Once);
+        UserManagerMock.Verify(m => m.RemoveFromRoleAsync(It.Is<IdentityUser>(u => u == user), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE)), Times.Never);
         Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("UserList", ((RedirectToActionResult)result).ActionName);
     }
@@ -111,8 +113,8 @@ public class AdminControllerTests
         var userId = "1";
         var user = new IdentityUser { Id = userId };
         UserManagerMock.Setup(m => m.FindByIdAsync(It.Is<string>(s => s == userId))).ReturnsAsync(user);
-        UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == "Admins"))).ReturnsAsync(true);
-        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == "Admins"))).ReturnsAsync(new IdentityUser[1]);
+        UserManagerMock.Setup(m => m.IsInRoleAsync(It.IsAny<IdentityUser>(), It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(true);
+        UserManagerMock.Setup(m => m.GetUsersInRoleAsync(It.Is<string>(s => s == RolesConstants.ADMIN_ROLE))).ReturnsAsync(new IdentityUser[1]);
         var controller = GetTestControllerWithMocks();
         controller.Url = Mock.Of<IUrlHelper>(MockBehavior.Loose);
         var ex = await Assert.ThrowsAsync<MiniBlogWebException>(async () => await controller.SwitchAdmin(userId));

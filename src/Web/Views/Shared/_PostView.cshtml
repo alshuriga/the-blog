@@ -1,10 +1,19 @@
 @model PostPartialViewModel
 
-<div class="card mt-5">
-    <div class="card-body p-4">
+@{
+    string cardColor = @Model.IsDraft ? "border-warning" : string.Empty;
+}
+<div class="card mt-5 @cardColor">
+    <div class="card-body p-4 ">
         <div class="row">
             <div class="col">
-                <a asp-action="Post" asp-controller="Home" asp-route-postid="@Model.Post.PostId" class="text-black text-decoration-none"><h1 class="card-title">@Model.Post.Header</h1></a> 
+                 @if (Model.IsDraft)
+                {
+                    <span><i class="fa-solid fa-pencil me-2 mb-3"></i>Draft</span>
+                }
+                <a asp-page="SinglePost" asp-route-postid="@Model.Post.Id" class="text-black text-decoration-none"><h2 class="card-title text-truncate">@Model.Post.Header.ToString() 
+               
+               </h2></a> 
             </div>
             <div class="col">
                 <p class="text-end font-weight-light">@Model.Post.DateTime.ToString("MMMM dd, yyyy"),
@@ -19,10 +28,10 @@
         <div class="row my-1">
             <div class="col-4">
                 <h5>
-                    @foreach (Tag t in Model.Post.Tags)
+                    @foreach (var tagName in Model.TagNames)
                     {
-                        <a asp-action="Index" asp-controller="Home" asp-route-tagname="@t.Name"
-                        class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@t.Name</a>
+                        <a asp-page="List" asp-route-draft="@Model.IsDraft" asp-route-tagname="@tagName"
+                        class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@tagName</a>
                     }
                 </h5>
             </div>
@@ -30,22 +39,21 @@
                 @if (@Model.CommentsButton)
                 {
                     <div class="float-end">
-                    <a asp-action="ShowPost" asp-controller="Home" asp-route-postid="@Model.Post.PostId">
-                        <button class="float-end btn btn-outline-secondary">Comments (@Model.CommentCount.ToString())<i class="fa-regular fa-comment-dots ms-2"></i></button>
+                    <a asp-page="SinglePost" asp-route-postid="@Model.Post.Id" class="float-end btn btn-outline-secondary">
+                        Comments (@Model.CommentariesCount.ToString())<i class="fa-regular fa-comment-dots ms-2"></i>
                     </a>
                     </div>
                 }
 
-                @if (User.IsInRole("Admins"))
+                @if (User.IsInRole(RolesConstants.ADMIN_ROLE))
                 {
                     <div class="btn-group float-end">
                         <div class="btn btn-outline-secondary dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="me-2">Options</span></div>
                         <ul class="dropdown-menu">
-                            <li class="dropdown-item"><a class="btn" asp-action="EditPost" asp-controller="Home"
-                                                         asp-route-postid="@Model.Post.PostId" class="text-black text-decoration-none">Edit</a></li>
+                            <li class="dropdown-item"><a class="btn" asp-page="Editor" asp-route-postid="@Model.Post.Id" class="text-black text-decoration-none">Edit</a></li>
                             <li class="dropdown-item">
-                                <form method="post" asp-action="DeletePost" asp-controller="Home" asp-route-postid="@Model.Post.PostId">
+                                <form method="post" asp-page="SinglePost" asp-page-handler="DeletePost" asp-route-postid="@Model.Post.Id">
                                     <button type="submit" class="btn">Delete</button>
                                 </form>
                             </li>

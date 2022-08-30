@@ -7,14 +7,15 @@ using MiniBlog.Core.Constants;
 using Microsoft.EntityFrameworkCore;
 using MiniBlog.Web.Filters;
 using MiniBlog.Web.Middleware;
-
+using MiniBlog.Web.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews(opts => { opts.Filters.Add<ApplicationExceptionFilter>(); });
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IMiniBlogRepo, MiniBlogEfRepo>();
-
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+builder.Services.AddScoped(typeof(IReadRepository<>), typeof(EfReadRepository<>));
+builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 builder.Services.AddDbContext<MiniBlogEfContext>(opts =>
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("MiniBlogDbContext"),
@@ -27,6 +28,8 @@ builder.Services.AddDbContext<IdentityEfContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("IdentityEfContext"));
     if (builder.Environment.IsDevelopment()) opts.EnableSensitiveDataLogging();
 });
+
+builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityEfContext>();
 builder.Services.Configure<IdentityOptions>(opts =>
@@ -44,6 +47,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 });
 
 builder.Services.AddScoped<ApplicationExceptionFilter>();
+
+builder.Services.AddRazorPages(opts => {
+    opts.Conventions.AddPageRoute(PageNamesConstants.POSTS_LIST_PAGE, "/");
+
+});
 
 var app = builder.Build();
 
@@ -72,8 +80,9 @@ if(app.Environment.IsTesting())
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapRazorPages();
 app.MapDefaultControllerRoute();
+
 
 app.Run();
 

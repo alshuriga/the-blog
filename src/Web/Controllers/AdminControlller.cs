@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MiniBlog.Web.ViewModels;
+using MiniBlog.Web.Exceptions;
 
 namespace MiniBlog.Web.Controllers;
 
-[Authorize(Roles = "Admins")]
+[Authorize(Roles = RolesConstants.ADMIN_ROLE)]
 [Route("[controller]/[action]")]
 public class AdminController : Controller
 {
@@ -32,7 +33,7 @@ public class AdminController : Controller
         var model = new UserListsViewModel()
         {
             BasicUsers = allUsers.Where(u => !u.Roles.Any()),
-            AdminUsers = allUsers.Where(u => u.Roles.Contains("Admins"))
+            AdminUsers = allUsers.Where(u => u.Roles.Contains(RolesConstants.ADMIN_ROLE))
         };
         return View(model);
     }
@@ -41,8 +42,8 @@ public class AdminController : Controller
     public async Task<IActionResult> DeleteUser([FromForm]string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (await _userManager.IsInRoleAsync(user, "Admins") &&
-            (await _userManager.GetUsersInRoleAsync("Admins")).Count == 1)
+        if (await _userManager.IsInRoleAsync(user, RolesConstants.ADMIN_ROLE) &&
+            (await _userManager.GetUsersInRoleAsync(RolesConstants.ADMIN_ROLE)).Count == 1)
         {
             throw new MiniBlogWebException("You must have at least one account with admin rights", Url.Action(nameof(UserList)));
         }
@@ -50,11 +51,13 @@ public class AdminController : Controller
         return RedirectToAction(nameof(UserList));
     }
 
+
+
     [HttpPost]
     public async Task<IActionResult> SwitchAdmin([FromForm]string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        string roleName = "Admins";
+        string roleName = RolesConstants.ADMIN_ROLE;
         if (user != null)
         {
             IdentityResult res;
@@ -80,4 +83,5 @@ public class AdminController : Controller
         ModelState.AddModelError("", "User not found");
         return RedirectToAction(nameof(UserList));
     }
+
 }

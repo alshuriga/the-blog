@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MiniBlog.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
+using MiniBlog.Core.Constants;
 
 namespace MiniBlog.Infrastructure.DataSeed;
 
@@ -37,7 +38,7 @@ public static class SeedData
 
         if (!roleManager.Roles.Any() && !userManager.Users.Any())
         {
-            IdentityRole adminsRole = new IdentityRole("Admins");
+            IdentityRole adminsRole = new IdentityRole(RolesConstants.ADMIN_ROLE);
             await roleManager.CreateAsync(adminsRole);
 
             IdentityUser adminUser = new IdentityUser
