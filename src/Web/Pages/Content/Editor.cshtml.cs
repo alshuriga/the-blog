@@ -32,9 +32,9 @@ public class EditorModel : PageModel
         if (postId != 0)
         {
             ViewData["title"] = "Edit Post";
-            Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId, true);
+            Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId);
             if (post is null) return NotFound();
-            string tagString = String.Join(",", post.Tags.Select(t => t.Name).AsEnumerable());
+            string tagString = String.Join(",", (await _unit.tagsReadRepo.ListAsync(new TagsByPostIdSpecification(post.Id))).Select(t => t.Name));
 
             Post = new PostDto
             {
@@ -54,8 +54,6 @@ public class EditorModel : PageModel
 
     public async Task<IActionResult> OnPost(PostDto post, string tagString, bool asDraft = true)
     {
-        this.ValidateAdminAuth();
-
         string[] tagNames = tagString?.Split(",", StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
         if (tagNames.Length > 5) ModelState.AddModelError(nameof(tagString), "Maximum number of tags is 5");
         if (ModelState.IsValid)
@@ -66,7 +64,7 @@ public class EditorModel : PageModel
                 return tag;
             }))).ToList();
 
-            Post newPost = await _unit.postReadRepo.RetrieveByIdAsync(post.Id, true) ?? new();
+            Post newPost = await _unit.postReadRepo.RetrieveByIdAsync(post.Id) ?? new();
             newPost.Header = post.Header;
             newPost.Text = post.Text;
             newPost.DateTime = post.DateTime;

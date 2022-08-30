@@ -1,5 +1,6 @@
 using MiniBlog.Core.Entities;
 using MiniBlog.Core.Interfaces;
+using MiniBlog.Infrastructure.Data;
 
 public class EfUnitOfWork : IUnitOfWork
 {
@@ -10,12 +11,14 @@ public class EfUnitOfWork : IUnitOfWork
     private readonly IRepository<Tag> _tagRepo;
     private readonly IReadRepository<Tag> _tagReadRepo;
 
-    public EfUnitOfWork(IRepository<Post> postsRepo,
-        IReadRepository<Post> postsReadRepo, 
+    public EfUnitOfWork(
+        IRepository<Post> postsRepo,
+        IReadRepository<Post> postsReadRepo,
         IRepository<Commentary> commentsRepo,
         IReadRepository<Commentary> commentsReadRepo,
-        IReadRepository<Tag> tagsReadRepo,
-        IRepository<Tag> tagsRepo)
+        IRepository<Tag> tagsRepo,
+        IReadRepository<Tag> tagsReadRepo
+        )
     {
         _postRepo = postsRepo;
         _postReadRepo = postsReadRepo;

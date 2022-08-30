@@ -30,7 +30,7 @@ public class SinglePostModel : PageModel
         int commentariesCount = await _unit.commentReadRepo.CountAsync(new CommentsByPostIdSpecification(postId));
         var commentariesPageSpec = new CommentsByPostIdSpecification(postId, currentPage);
         PaginationData? paginationData = PaginationData.CreatePaginationDataOrNull(currentPage, PaginationConstants.COMMENTS_PER_PAGE, commentariesCount);
-        Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId, true);
+        Post? post = await _unit.postReadRepo.RetrieveByIdAsync(postId);
         if (post == null) return NotFound();
         if (post.IsDraft) this.ValidateAdminAuth();
         TempData["postId"] = postId.ToString();
@@ -45,12 +45,12 @@ public class SinglePostModel : PageModel
                 DateTime = post.DateTime
             },
             CommentsButton = false,
-            TagNames = post.Tags.Select(t => t.Name),
+            TagNames = (await _unit.tagsReadRepo.ListAsync(new TagsByPostIdSpecification(post.Id))).Select(t => t.Name),
             CommentariesCount = commentariesCount,
             IsDraft = post.IsDraft,
         };
 
-        Commentaries = commentariesPageSpec.Evaluate(post.Commentaries).Select(c => new CommentaryDto
+        Commentaries = (await _unit.commentReadRepo.ListAsync(commentariesPageSpec)).Select(c => new CommentaryDto
         {
             Id = c.Id,
             Username = c.Username,
