@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Application.Features.Tag.DTO
+namespace Blog.Application.Features.Tags.DTO
 {
     public class TagDTO
     {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Application.Mapping.Resolvers
+namespace Blog.Application.Mapping.Resolvers.Posts
 {
     public class CommentsCountResolver : IValueResolver<Post, PostListDTO, int>
     {

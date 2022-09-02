@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Application.Features.Commentary;
+namespace Blog.Application.Features.Commentaries;
 
 public class CreateCommentaryDTO
 {

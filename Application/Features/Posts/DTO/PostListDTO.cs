@@ -1,9 +1,9 @@
 ﻿
-using Blog.Application.Features.Tag.DTO;
+using Blog.Application.Features.Tags.DTO;
 
 namespace Blog.Application.Features.Posts.DTO;
 
-public class PostListDTO
+public class PostListDTO 
 {
     public string Text { get; set; } = null!;
     public string Header { get; set; } = null!;

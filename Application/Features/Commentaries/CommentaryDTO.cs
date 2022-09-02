@@ -1,4 +1,4 @@
-﻿namespace Blog.Application.Features.Commentary;
+﻿namespace Blog.Application.Features.Commentaries;
 
 public class CommentaryDTO
 {

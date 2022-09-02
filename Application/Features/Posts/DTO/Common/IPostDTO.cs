@@ -1,6 +1,4 @@
-﻿using Blog.Application.Features.Commentary;
-using Blog.Application.Features.Tag.DTO;
-namespace Blog.Application.Features.Posts.DTO.Common;
+﻿namespace Blog.Application.Features.Posts.DTO.Common;
 
 public interface IPostDTO
 {

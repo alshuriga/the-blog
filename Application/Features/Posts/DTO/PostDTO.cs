@@ -1,6 +1,6 @@
-﻿using Blog.Application.Features.Commentary;
+﻿using Blog.Application.Features.Commentaries;
 using Blog.Application.Features.Posts.DTO.Common;
-using Blog.Application.Features.Tag.DTO;
+using Blog.Application.Features.Tags.DTO;
 
 namespace Blog.Application.Features.Posts.DTO;
 

@@ -2,9 +2,11 @@
 using Blog.Core.Entities;
 using Blog.Application.Features;
 using Blog.Application.Features.Posts.DTO;
-using Blog.Application.Features.Tag.DTO;
-using Blog.Application.Features.Commentary;
-using Blog.Application.Mapping.Resolvers;
+using Blog.Application.Features.Tags.DTO;
+using Blog.Application.Features.Commentaries;
+using Blog.Application.Mapping.Resolvers.Posts;
+using Blog.Application.Features.Posts.DTO.Common;
+using Blog.Application.Interfaces.Common;
 
 namespace Blog.Application.MappingProfiles;
 
@@ -12,9 +14,12 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        
         CreateMap<Post, PostDTO>();
-        CreateMap<CreatePostDTO, Post>();
+        CreateMap<IPostDTO, Post>().ForMember(dest => dest.Tags, opts => opts.MapFrom<TagStringToTagsResolver>());
         CreateMap<UpdatePostDto, Post>();
+        CreateMap<Post, UpdatePostDto>().ForMember(dest => dest.TagString, opts => opts.MapFrom<TagToTagStringResolver>());
+
         CreateMap<Post, PostListDTO>().ForMember(dest => dest.CommentariesCount, opts => opts.MapFrom<CommentsCountResolver>());
 
         CreateMap<Tag, TagDTO>();

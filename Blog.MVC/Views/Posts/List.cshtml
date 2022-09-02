@@ -1,0 +1,28 @@
+﻿@using Blog.Application.Features.Posts.ViewModels
+@model PostsPageVM
+<div class="row" id="posts row">
+    <div class="display-6 mt-md-1 mt-0 mx-md-auto text-center text-md-start">
+@*    @if (Model.TagName != null && Model.PostsCount != null)
+    {
+        @: @Model.PostsCount @(Model.IsDrafts ? "draft" : "post")(s) with <strong class="text-lowercase">@Model.TagName</strong> tag
+    }
+    else
+    {
+        @:All @(Model.IsDrafts ? "draft" : "post")s
+    }*@
+    </div>
+    <div class="col">
+        @foreach (var p in Model.Posts.OrderByDescending(p => p.DateTime))
+        {
+            await Html.RenderPartialAsync("_PostPartial", p);
+        }
+    </div>
+</div>
+@*@if (Model.PaginationData != null)
+{
+    <div class="row mt-4" id="pagination-row">
+        <div class="col">
+            <pagination pagination-data="@Model.PaginationData" query="@Request.Query"></pagination>
+        </div>
+    </div>
+}*@
