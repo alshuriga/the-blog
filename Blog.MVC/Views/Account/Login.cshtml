@@ -1,0 +1,28 @@
+﻿@using Blog.Application.Features.Account.DTO
+@model UserSignInDTO
+
+@{
+    Layout = "_Layout";
+    //await Html.RenderPartialAsync("_ClientValidationScriptsPartial");
+}
+
+<div class="col col-sm-6 mx-auto">
+
+<div class="card py-4 px-5">
+    <form method="post" asp-action="Login" asp-route-returnurl="@(ViewBag.ReturnUrl ?? "")">
+        <div asp-validation-summary="All" class="alert alert-danger" hidden="@ViewData.ModelState.IsValid"></div>
+        <div class="text-center h4 mb-3">Log In</div>
+        <div class="form-group">
+            <label class="mb-2" asp-for="Username">Username</label>
+            <input asp-for="Username" class="form-control mb-4"/>
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="mb-2" asp-for="Password">Password</label>
+            <input type="password" asp-for="Password" class="form-control mb-4"/>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="text-center"><button type="submit" class=" btn btn-primary">Log in</button></div>
+    </form>
+</div>
+</div>

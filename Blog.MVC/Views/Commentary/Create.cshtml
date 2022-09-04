@@ -1,0 +1,19 @@
+﻿@using Blog.Application.Features.Commentaries
+@model CreateCommentaryDTO
+
+<div class="card border-light p-4 bg-primary bg-opacity-10">
+            <form method="post" asp-action="Create" asp-controller="Commentary">
+                <div class="text-danger" asp-validation-summary="All"></div>
+                <h5>Add new comment</h5>
+                <div class="row">
+                    <div class="col mt-2">
+                        <input asp-for="PostId" type="hidden" />
+                        <div class="form-group">
+                            <label class="form-label" name="Commentary.Text">Commentary</label>
+                            <textarea asp-for="Text" class="form-control" id="comment"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Post comment</button>
+                    </div>
+                </div>
+            </form>
+</div>

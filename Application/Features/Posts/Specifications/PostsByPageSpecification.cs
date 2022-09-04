@@ -4,13 +4,17 @@ using Blog.Application.Constants;
 
 namespace Blog.Application.Features.Posts.Specifications
 {
-    public class PostsByPageSpecification : Specification<Post>
+    public class PostsSpecification : Specification<Post>
     {
-        public PostsByPageSpecification(int currentPage, string? tagName = null)
+        public PostsSpecification(int? currentPage = null, string? tagName = null, bool? isDraft = null)
         {
-            if (tagName != null) Query.Where(p => p.Tags.Any(t => t.Name == tagName));
-            if (currentPage > 0) Query.Skip(PaginationConstants.POSTS_PER_PAGE * currentPage);
-            Query.Take(PaginationConstants.POSTS_PER_PAGE);
+            Query.Where(p => (tagName == null || p.Tags.Any(t => t.Name == tagName))
+                    && (isDraft == null || p.IsDraft == isDraft));
+            if (currentPage != null)
+            {
+                if (currentPage > 0) Query.Skip(PaginationConstants.POSTS_PER_PAGE * (int)currentPage);
+                Query.Take(PaginationConstants.POSTS_PER_PAGE);
+            }
         }
     }
 }

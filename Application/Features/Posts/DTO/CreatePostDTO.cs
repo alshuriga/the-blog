@@ -5,8 +5,7 @@ namespace Blog.Application.Features.Posts.DTO;
 
 public class CreatePostDTO : IPostDTO
 {
-    public string Text { get; set; } = null!;
-    public string Header { get; set; } = null!;
-    public string TagString { get; set; } = null!;
-    public DateTime DateTime { get; set; }
+    public string Text { get; set; } = string.Empty;
+    public string Header { get; set; } = string.Empty;
+    public string TagString { get; set; } = string.Empty;
 }

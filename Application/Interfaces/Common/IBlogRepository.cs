@@ -1,5 +1,6 @@
 ﻿using Ardalis.Specification;
 using Blog.Core.Entities.Common;
+using System.Linq.Expressions;
 
 namespace Blog.Application.Interfaces.Common;
 

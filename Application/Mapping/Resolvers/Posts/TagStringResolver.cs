@@ -19,7 +19,6 @@ namespace Blog.Application.Mapping.Resolvers.Posts
             return string.Join(",", source.Tags.Select(t => t.Name));
         }
     }
-
     public class TagStringToTagsResolver : IValueResolver<IPostDTO, Post, ICollection<Tag>>
     {
         private readonly IBlogRepository<Tag> _repo;
@@ -30,10 +29,10 @@ namespace Blog.Application.Mapping.Resolvers.Posts
         public ICollection<Tag> Resolve(IPostDTO source, Post destination, ICollection<Tag> destMember, ResolutionContext context)
         {
             var outputList = new List<Tag>();
-            var tagNamesInput = source.TagString.Split(",");
+            var tagNamesInput = string.IsNullOrEmpty(source.TagString) ? Enumerable.Empty<string>() : source.TagString.Split(",");
             foreach(var tagName in tagNamesInput)
             {
-                var tag = _repo.ListAsync(new TagsByTagNameSpecification(tagName)).Result.FirstOrDefault() ?? new Tag {  Name = tagName};
+                var tag = _repo.ListAsync(new TagsByTagNameSpecification(tagName)).Result.FirstOrDefault() ?? new Tag {  Name = tagName.Trim().ToLower()};
                 outputList.Add(tag);
             }
             return outputList;

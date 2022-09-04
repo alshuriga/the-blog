@@ -1,5 +1,6 @@
 using Blog.Application;
 using Blog.Infrastructure;
+using Blog.MVC.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.ConfigureApplication();
 builder.Services.ConfigureInfrastructure(builder.Configuration);
-
-
+builder.Services.AddTransient<ValidationExceptionFilter>();
+builder.Services.AddMvc(opts => opts.Filters.Add<ValidationExceptionFilter>());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,11 +22,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapDefaultControllerRoute();
+app.MapControllerRoute("default", "{controller=posts}/{action=list}");
 
 app.Run();

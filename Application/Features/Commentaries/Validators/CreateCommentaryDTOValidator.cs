@@ -12,7 +12,6 @@ public class CreateCommentaryDTOValidator : AbstractValidator<CreateCommentaryDT
 {
     public CreateCommentaryDTOValidator()
     {
-        RuleFor(c => c.Text).Length(1, 300);
-        RuleFor(c => c.PostId).GreaterThan(0);
+        RuleFor(c => c.Text).Length(1, 300).NotEmpty();
     }
 }

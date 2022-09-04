@@ -2,6 +2,8 @@
 using Ardalis.Specification;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities.Common;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Data
 {
@@ -49,7 +51,7 @@ namespace Blog.Infrastructure.Data
 
         public Task<IEnumerable<T>> ListAsync(ISpecification<T>? specification = null)
         {
-            var query = _db.Set<T>().AsQueryable();
+            var query = _db.Set<T>().OrderByDescending(e => e.Id).AsQueryable();
             if (specification != null) query = query.WithSpecification(specification);
             return Task.FromResult(query.AsEnumerable());
         }

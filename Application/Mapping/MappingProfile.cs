@@ -13,18 +13,17 @@ namespace Blog.Application.MappingProfiles;
 public class MappingProfile : Profile
 {
     public MappingProfile()
-    {
-        
+    {     
         CreateMap<Post, PostDTO>();
         CreateMap<IPostDTO, Post>().ForMember(dest => dest.Tags, opts => opts.MapFrom<TagStringToTagsResolver>());
         CreateMap<UpdatePostDto, Post>();
         CreateMap<Post, UpdatePostDto>().ForMember(dest => dest.TagString, opts => opts.MapFrom<TagToTagStringResolver>());
 
-        CreateMap<Post, PostListDTO>().ForMember(dest => dest.CommentariesCount, opts => opts.MapFrom<CommentsCountResolver>());
+        CreateMap<Post, PostListVM>().ForMember(dest => dest.CommentariesCount, opts => opts.MapFrom<CommentsCountResolver>());
 
         CreateMap<Tag, TagDTO>();
 
         CreateMap<Commentary, CommentaryDTO>();
-        CreateMap<Commentary, CreateCommentaryDTO>();
+        CreateMap<CreateCommentaryDTO, Commentary>();
     }
 }

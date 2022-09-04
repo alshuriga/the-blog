@@ -1,5 +1,6 @@
 ﻿
 using Blog.Application.MappingProfiles;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +12,7 @@ public static class Configuration
     {
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
         services.AddMediatR(typeof(Configuration).Assembly);
-
+        services.AddValidatorsFromAssemblyContaining(typeof(Configuration));
         return services;
     }
 }

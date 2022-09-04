@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blog.Application.Constants;
 using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Features.Posts.Specifications;
 using Blog.Application.Features.Posts.ViewModels;
@@ -12,6 +13,7 @@ namespace Blog.Application.Features.Posts.Requests.Queries
     {
         public int CurrentPage { get; set; }
         public string? TagName { get; set; }
+        public bool IsDraft { get; set; } 
 
         public class ListPostsPageQueryHandler : IRequestHandler<ListPostsPageQuery, PostsPageVM>
         {
@@ -24,13 +26,17 @@ namespace Blog.Application.Features.Posts.Requests.Queries
             }
             public async Task<PostsPageVM> Handle(ListPostsPageQuery request, CancellationToken cancellationToken)
             {
-                
-                var posts = await _repo.ListAsync(new PostsByPageSpecification(request.CurrentPage, request.TagName));
-                var dtos = _mapper.Map<IEnumerable<PostListDTO>>(posts);
+                var listedPosts = (await _repo
+                    .ListAsync(new PostsSpecification(currentPage: request.CurrentPage, tagName: request.TagName, isDraft: request.IsDraft)))
+                    .OrderByDescending(p => p.DateTime).ToList();
+
+                var dtos = _mapper.Map<IEnumerable<PostListVM>>(listedPosts);
+                var postsCount = await _repo.CountAsync(new PostsSpecification(isDraft: request.IsDraft, tagName: request.TagName));
                 PostsPageVM viewModel = new PostsPageVM
                 {
                     CurrentPage = request.CurrentPage,
-                    PostsCount = await _repo.CountAsync(),
+                    PageCount = (int)Math.Ceiling(postsCount/ ((double)PaginationConstants.POSTS_PER_PAGE)),
+                    PostsCount = postsCount,
                     Posts = dtos
                 };
                 return viewModel;

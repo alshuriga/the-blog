@@ -1,21 +1,21 @@
 ﻿@using Blog.Application.Features.Posts.DTO
-@model PostListDTO
+@model PostListVM
 
-@*@{
+@{
     string cardColor = @Model.IsDraft ? "border-warning" : string.Empty;
-}*@
-<div class="card mt-5 @*@cardColor*@">
+}
+<div class="card mt-5 @cardColor">
     <div class="card-body p-4 ">
         <div class="row">
-           @* <div class="col">
+            <div class="col">
                  @if (Model.IsDraft)
                 {
                     <span><i class="fa-solid fa-pencil me-2 mb-3"></i>Draft</span>
                 }
-                <a asp-page="SinglePost" asp-route-postid="@Model.Post.Id" class="text-black text-decoration-none"><h2 class="card-title text-truncate">@Model.Post.Header.ToString() 
+                <a asp-action="SinglePost" asp-route-postid="@Model.Id" class="text-black text-decoration-none"><h2 class="card-title text-truncate">@Model.Header.ToString() 
                
                </h2></a> 
-            </div>*@
+            </div>
             <div class="col">
                 <p class="text-end font-weight-light">@Model.DateTime.ToString("MMMM dd, yyyy"),
                     @Model.DateTime.ToShortTimeString()</p>
@@ -31,22 +31,19 @@
                 <h5>
                     @foreach (var tagName in Model.Tags.Select(t => t.Name))
                     {
-                        <a asp-page="List" asp-route-draft="@*@Model.IsDraft*@" asp-route-tagname="@tagName"
+                        <a asp-action="List" asp-route-isdraft="@Model.IsDraft" asp-route-tagname="@tagName"
                         class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@tagName</a>
                     }
                 </h5>
             </div>
             <div class="col-8 align-self-top">
-              @*  @if (@Model.CommentsButton)
-                {
                     <div class="float-end">
-                    <a asp-page="SinglePost" asp-route-postid="@Model.Post.Id" class="float-end btn btn-outline-secondary">
+                    <a asp-action="SinglePost" asp-route-postid="@Model.Id" class="float-end btn btn-outline-secondary">
                         Comments (@Model.CommentariesCount.ToString())<i class="fa-regular fa-comment-dots ms-2"></i>
                     </a>
                     </div>
-                }*@
 
-               @* @if (User.IsInRole(RolesConstants.ADMIN_ROLE))
+@*                @if (User.IsInRole(RolesConstants.ADMIN_ROLE))
                 {
                     <div class="btn-group float-end">
                         <div class="btn btn-outline-secondary dropdown-toggle me-2" data-bs-toggle="dropdown" aria-expanded="false">

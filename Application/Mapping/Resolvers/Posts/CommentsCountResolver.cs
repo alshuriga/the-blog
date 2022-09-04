@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Blog.Application.Features.Commentaries.Specifications;
 using Blog.Application.Features.Posts.DTO;
+using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,11 +11,17 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.Mapping.Resolvers.Posts
 {
-    public class CommentsCountResolver : IValueResolver<Post, PostListDTO, int>
+    public class CommentsCountResolver : IValueResolver<Post, PostListVM, int>
     {
-        public int Resolve(Post source, PostListDTO destination, int destMember, ResolutionContext context)
+        private readonly IBlogRepository<Commentary> _commentRepo;
+        public CommentsCountResolver(IBlogRepository<Commentary> commentRepo)
         {
-            return source.Commentaries.Count;
+            _commentRepo = commentRepo;
+        }
+
+        public int Resolve(Post source, PostListVM destination, int destMember, ResolutionContext context)
+        {
+            return  _commentRepo.CountAsync(new CommentariesByPostIdSpecification(source.Id)).Result;
         }
     }
 }

@@ -11,12 +11,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Blog.Application.csproj" />
     <ProjectReference Include="..\Blog.Infrastructure\Blog.Infrastructure.csproj" />
     <ProjectReference Include="..\Core\Blog.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\css\" />
   </ItemGroup>
 
 </Project>
