@@ -2,7 +2,7 @@
 using MediatR;
 using System;
 
-namespace Blog.Application.Features.Account.Commands;
+namespace Blog.Application.Features.User.Requests.Commands;
 
 public class SignOutCommand : IRequest<Unit>
 {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Application.Models
+namespace Blog.Application.Features.User.DTO
 {
-    public class User
-    {
+    public class UserListDTO
+    { 
         public string Id { get; set; } = null!;
         public string Username { get; set; } = null!;
         public string Email { get; set; } = null!;

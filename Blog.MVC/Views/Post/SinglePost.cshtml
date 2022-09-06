@@ -6,13 +6,10 @@
 @{
     ViewData["postId"] = Model.Post.Id;
 }
+
+
 <div class="card border-0 bg-light  p-4">
     <div class="row-cols-1">
-
-        @*    @if (Model.Post.IsDraft)
-        {
-        <span><i class="fa-solid fa-pencil me-2 mb-3"></i>Draft</span>
-        }*@
         <a asp-action="SinglePost" asp-route-postid="@Model.Post.Id" class="text-center text-black text-decoration-none">
             <h1>
                 @Model.Post.Header.ToString()
@@ -43,11 +40,6 @@
     </div>
 </div>
 
-@* <div class="row-cols-1 pt-5">
-    <h5>
-        @(Model.CommentariesCount == 0 ? "No comments. Be the first!" : $"{Model.PostPartial?.CommentariesCount} comment(s)")
-    </h5>
-</div>*@
 <div class="row mt-4">
 
     <div class="w-100 d-lg-none d-block"></div>
@@ -55,9 +47,16 @@
         <div class="row">
             <div class="col">
             </div>
-            <div class="float-middle">
-                <a class="btn btn-primary text-center mb-4" asp-action="Create" asp-controller="Commentary" asp-route-postid="@Model.Post.Id">Add comment</a>
-            </div>
+            <form data-ajax="true" data-ajax-method="post"
+                  data-ajax-mode="replace"
+                  data-ajax-update="#commentaryform"
+                  data-ajax-complete="completed"
+                  data-ajax-failure="failed"
+                  asp-action="Create" asp-controller="Commentary" >
+                <div id="commentaryform" class="mb-4">
+                    <partial name="../Commentary/Create" model="@(new CreateCommentaryDTO() { PostId = Model.Post.Id })" />
+                </div>
+            </form>
             <div>
                 @foreach (var com in @Model.Commentaries)
                 {
@@ -101,4 +100,18 @@
         </div>
     </div>
 </div>
-</div>
+
+<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+var completed = function(xhr) {
+    if (xhr.status == 308) {
+        console.log(xhr.responseText)
+        window.location.href = xhr.responseText;
+    }
+};
+        var failed = function(xhr) {
+            if (xhr.status == 401) {
+                window.location.href = "@(Url.Action("Login", "Account", new {returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}"}))";
+            }
+        };
+</script>

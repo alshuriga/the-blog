@@ -1,8 +1,10 @@
 ﻿@using Blog.Application.Features.Commentaries
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 @model CreateCommentaryDTO
-
+@{
+    Layout = null;
+}
 <div class="card border-light p-4 bg-primary bg-opacity-10">
-            <form method="post" asp-action="Create" asp-controller="Commentary">
                 <div class="text-danger" asp-validation-summary="All"></div>
                 <h5>Add new comment</h5>
                 <div class="row">
@@ -15,5 +17,4 @@
                         <button type="submit" class="btn btn-primary mt-2">Post comment</button>
                     </div>
                 </div>
-            </form>
 </div>

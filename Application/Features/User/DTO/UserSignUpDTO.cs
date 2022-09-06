@@ -1,4 +1,4 @@
-﻿namespace Blog.Application.Features.Account.DTO;
+﻿namespace Blog.Application.Features.User.DTO;
 
 public class UserSignUpDTO
 {

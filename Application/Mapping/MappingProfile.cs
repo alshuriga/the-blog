@@ -7,6 +7,8 @@ using Blog.Application.Features.Commentaries;
 using Blog.Application.Mapping.Resolvers.Posts;
 using Blog.Application.Features.Posts.DTO.Common;
 using Blog.Application.Interfaces.Common;
+using Blog.Application.Features.User.DTO;
+using Blog.Application.Models;
 
 namespace Blog.Application.MappingProfiles;
 
@@ -25,5 +27,7 @@ public class MappingProfile : Profile
 
         CreateMap<Commentary, CommentaryDTO>();
         CreateMap<CreateCommentaryDTO, Commentary>();
+
+        CreateMap<User, UserListDTO>();
     }
 }

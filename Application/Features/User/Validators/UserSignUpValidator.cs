@@ -1,4 +1,4 @@
-﻿using Blog.Application.Features.Account.DTO;
+﻿using Blog.Application.Features.User.DTO;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Application.Features.Account.Validators;
+namespace Blog.Application.Features.User.Validators;
 
 public class UserSignUpValidator : AbstractValidator<UserSignUpDTO>
 {

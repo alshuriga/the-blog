@@ -1,10 +1,10 @@
 ﻿using Ardalis.Specification;
-using Blog.Application.Features.Account.DTO;
+using Blog.Application.Features.User.DTO;
 using Blog.Application.Interfaces;
 using MediatR;
 using System;
 
-namespace Blog.Application.Features.Account.Commands;
+namespace Blog.Application.Features.User.Requests.Commands;
 
 public class SignInCommand : IRequest<Unit>
 {
