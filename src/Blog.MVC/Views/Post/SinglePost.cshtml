@@ -1,0 +1,117 @@
+﻿@using Blog.Application.Constants
+@using Blog.Application.Features.Commentaries
+@using Blog.Application.Features.Posts.ViewModels
+@model PostSingleVM
+
+@{
+    ViewData["postId"] = Model.Post.Id;
+}
+
+
+<div class="card border-0 bg-light  p-4">
+    <div class="row-cols-1">
+        <a asp-action="SinglePost" asp-route-postid="@Model.Post.Id" class="text-center text-black text-decoration-none">
+            <h1>
+                @Model.Post.Header.ToString()
+            </h1>
+        </a>
+    </div>
+    <div class="col">
+        <p class="text-center font-weight-light">
+            @Model.Post.DateTime.ToString("MMMM dd, yyyy"),
+            @Model.Post.DateTime.ToShortTimeString()
+        </p>
+    </div>
+
+    <div class="mt-4">
+        <p>@Model.Post.Text </p>
+    </div>
+
+    <div class="row my-1">
+        <div class="col-4">
+            <h5>
+                @foreach (var tagName in Model.Post.Tags.Select(t => t.Name))
+                {
+                    <a asp-action="List" asp-action-isdraft="@Model.Post." asp-route-tagname="@tagName"
+                   class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@tagName</a>
+                }
+            </h5>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+
+    <div class="w-100 d-lg-none d-block"></div>
+    <div class="col mt-4 mt-lg-0">
+        <div class="row">
+            <div class="col">
+            </div>
+            <form data-ajax="true" data-ajax-method="post"
+                  data-ajax-mode="replace"
+                  data-ajax-update="#commentaryform"
+                  data-ajax-complete="completed"
+                  data-ajax-failure="failed"
+                  asp-action="Create" asp-controller="Commentary" >
+                <div id="commentaryform" class="mb-4">
+                    <partial name="../Commentary/Create" model="@(new CreateCommentaryDTO() { PostId = Model.Post.Id })" />
+                </div>
+            </form>
+            <div>
+                @foreach (var com in @Model.Commentaries)
+                {
+                    <div class="card border-light  border-2  bg-light bg-opacity-10 mb-3">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col float-start">
+                                    <h4>@com.Username</h4>
+                                    <h6>@Html.DisplayFor(model => com.Email, "EmailAddress")</h6>
+                                </div>
+                                <div class="col float-end">
+                                    <p class="text-end font-weight-light">
+                                        @com.DateTime.ToString("MMMM dd, yyyy"),
+                                        @com.DateTime.ToShortTimeString()
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @com.Text
+                        </div>
+                        @if (User.IsInRole(RolesConstants.ADMIN_ROLE))
+                        {
+                            <div class="card-footer p-0">
+                                <form method="post" asp-action="Delete" asp-controller="Commentary" asp-route-returnId="@Model.Post.Id">
+                                    <input name="commentaryId" type="hidden" value="@com.Id">
+                                    <button class="btn m-2 btn-sm float-end btn-secondary" type="submit">
+                                        <i class="me-2 fa-solid fa-trash-can"></i>
+                                        Delete
+                                    </button>
+
+                                </form>
+                            </div>
+                        }
+                    </div>
+
+                }
+            </div>
+
+            <pagination current-page="@Model.CurrentPage" page-count="@Model.PageCount" query="@Context.Request.Query"></pagination>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+var completed = function(xhr) {
+    if (xhr.status == 308) {
+        console.log(xhr.responseText)
+        window.location.href = xhr.responseText;
+    }
+};
+        var failed = function(xhr) {
+            if (xhr.status == 401) {
+                window.location.href = "@(Url.Action("Login", "Account", new {returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}"}))";
+            }
+        };
+</script>
