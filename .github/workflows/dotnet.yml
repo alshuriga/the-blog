@@ -8,6 +8,7 @@ on:
 jobs:
   build:
 
+    working-directory: src
     runs-on: ubuntu-latest
 
     steps:
@@ -21,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test Application
-      run: dotnet test Blog.Tests/Blog.UnitTests.Application.csproj
+      run: dotnet test Blog.Tests
