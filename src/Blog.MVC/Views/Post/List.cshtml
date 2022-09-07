@@ -1,0 +1,19 @@
+﻿@using Blog.Application.Features.Posts.ViewModels
+@model PostsPageVM
+<div class="row" id="posts row">
+    <div class="display-6 mt-md-1 mt-0 mx-md-auto text-center text-md-start">
+
+     @Model.PostsCount post(s) @ViewData["header"]
+    </div>
+    <div class="col">
+        @foreach (var p in Model.Posts.OrderByDescending(p => p.DateTime))
+        {
+            await Html.RenderPartialAsync("_PostPartial", p);
+        }
+    </div>
+</div>
+<div class="row mt-4" id="pagination-row">
+        <div class="col">
+            <pagination current-page="@Model.CurrentPage" page-count="@Model.PageCount" query="@Context.Request.Query"></pagination>
+        </div>
+</div>
