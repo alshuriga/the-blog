@@ -1,2 +1,2 @@
-# mini-blog
-miniblog is the asp.net core practice project.
+# the-blog
+the is the asp.net core practice project.
