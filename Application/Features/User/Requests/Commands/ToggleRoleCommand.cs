@@ -5,8 +5,13 @@ namespace Blog.Application.Features.User.Requests.Commands
 {
     public class ToggleRoleCommand : IRequest<Unit>
     {
-        public string Id { get; set; } = null!;
-        public string Rolename { get; set; } = null!;
+        private readonly string _id;
+        private readonly string _rolename;
+        public ToggleRoleCommand(string id, string rolename)
+        {
+            _id = id;
+            _rolename = rolename;
+        }
 
         public class ToggleRoleCommandHandler : IRequestHandler<ToggleRoleCommand, Unit>
         {
@@ -19,18 +24,18 @@ namespace Blog.Application.Features.User.Requests.Commands
 
             public async Task<Unit> Handle(ToggleRoleCommand request, CancellationToken cancellationToken)
             {
-                var user = await _userService.GetUserByIdAsync(request.Id);
-                if (user.Roles.Contains(request.Rolename))
+                var user = await _userService.GetUserByIdAsync(request._id);
+                if (user.Roles.Contains(request._rolename))
                 {
-                    if ((await _userService.ListUsersAsync(request.Rolename)).Count() <= 1)
+                    if ((await _userService.ListUsersAsync(request._rolename)).Count() <= 1)
                     {
                         throw new ApplicationException("There must be at least one user with admin rights.");
                     }
-                    await _userService.RemoveFromRoleAsync(request.Id, request.Rolename);
+                    await _userService.RemoveFromRoleAsync(request._id, request._rolename);
                 }
                 else
                 {
-                    await _userService.AddToRoleAsync(request.Id, request.Rolename);
+                    await _userService.AddToRoleAsync(request._id, request._rolename);
                 }
                 return await Unit.Task;
             }

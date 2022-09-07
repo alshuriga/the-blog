@@ -8,7 +8,13 @@ namespace Blog.Application.Features.User.Requests.Commands;
 
 public class SignInCommand : IRequest<Unit>
 {
-    public UserSignInDTO User { get; set; } = null!;
+    private readonly UserSignInDTO _user;
+
+    public SignInCommand(UserSignInDTO user)
+    {
+        _user = user;
+    }
+  
     public class SignInCommandHandler : IRequestHandler<SignInCommand, Unit>
     {
         private readonly IUserService _userService;
@@ -20,7 +26,7 @@ public class SignInCommand : IRequest<Unit>
 
         public async Task<Unit> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
-            await _userService.SignInAsync(request.User.Username, request.User.Password);
+            await _userService.SignInAsync(request._user.Username, request._user.Password);
             return await Unit.Task;
         }
     }

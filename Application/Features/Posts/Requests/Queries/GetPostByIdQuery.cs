@@ -13,15 +13,21 @@ namespace Blog.Application.Features.Posts.Requests.Queries
 {
     public class GetPostByIdQuery : IRequest<PostSingleVM>
     {
-        public long Id { get; set; }
-        public int CurrentPage { get; set; }
+        private readonly long _id;
+        private readonly int _currentPage;
 
-        public class GetSinglePostQueryHandler : IRequestHandler<GetPostByIdQuery, PostSingleVM>
+        public GetPostByIdQuery(long id, int currentPage)
+        {
+            _id = id;
+            _currentPage = currentPage;
+        }
+
+        public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, PostSingleVM>
         {
             private readonly IBlogRepository<Post> _postRepo;
             private readonly IBlogRepository<Commentary> _commentRepo;
             private readonly IMapper _mapper;
-            public GetSinglePostQueryHandler(IBlogRepository<Post> postRepo, IBlogRepository<Commentary> commentRepo, IMapper mapper)
+            public GetPostByIdQueryHandler(IBlogRepository<Post> postRepo, IBlogRepository<Commentary> commentRepo, IMapper mapper)
             {
                 _postRepo = postRepo;
                 _commentRepo = commentRepo;
@@ -29,16 +35,16 @@ namespace Blog.Application.Features.Posts.Requests.Queries
             }
             public async Task<PostSingleVM> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
             {
-                Post? post =  await _postRepo.GetByIdAsync(request.Id);
+                Post? post =  await _postRepo.GetByIdAsync(request._id);
                 if (post == null) throw new NotFoundException();
                 PostDTO postDto = _mapper.Map<PostDTO>(post);
-                var commentaries = (await _commentRepo.ListAsync(new CommentariesByPostIdSpecification(request.Id, request.CurrentPage))).OrderByDescending(x => x.DateTime).ToList();
+                var commentaries = (await _commentRepo.ListAsync(new CommentariesByPostIdSpecification(request._id, request._currentPage))).OrderByDescending(x => x.DateTime).ToList();
                 var model = new PostSingleVM()
                 {
                     Post = postDto,
-                    CurrentPage = request.CurrentPage,
+                    CurrentPage = request._currentPage,
                     Commentaries = _mapper.Map<List<CommentaryDTO>>(commentaries),
-                    PageCount = (int)Math.Ceiling((await _commentRepo.CountAsync(new CommentariesByPostIdSpecification(request.Id))) / ((double)PaginationConstants.COMMENTARIES_PER_PAGE))
+                    PageCount = (int)Math.Ceiling((await _commentRepo.CountAsync(new CommentariesByPostIdSpecification(request._id))) / ((double)PaginationConstants.COMMENTARIES_PER_PAGE))
                 };
                 return model;
             }

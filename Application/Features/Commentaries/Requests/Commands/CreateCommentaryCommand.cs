@@ -13,9 +13,16 @@ namespace Blog.Application.Features.Posts.Requests.Commands
 {
     public class CreateCommentaryCommand : IRequest<long>
     {
-        public CreateCommentaryDTO CommentaryDTO { get; set; } = null!;
-        public long PostId { get; set; }
-        public string Username { get; set; } = null!;
+        private readonly CreateCommentaryDTO _commentaryDTO;
+        private readonly long _postId;
+        private readonly string _username;
+
+        public CreateCommentaryCommand(CreateCommentaryDTO commentaryDTO, long postId, string username)
+        {
+            _commentaryDTO = commentaryDTO;
+            _postId = postId;
+            _username = username;
+        }
 
         public class AddPostCommandHandler : IRequestHandler<CreateCommentaryCommand, long>
         {
@@ -33,10 +40,10 @@ namespace Blog.Application.Features.Posts.Requests.Commands
             }
             public async Task<long> Handle(CreateCommentaryCommand request, CancellationToken cancellationToken)
             {
-                _validator.ValidateAndThrow(request.CommentaryDTO);
-                var commentary = _mapper.Map<Commentary>(request.CommentaryDTO);
-                var userData = await _userService.GetUserByNameAsync(request.Username);
-                commentary.PostId = request.PostId;
+                await _validator.ValidateAndThrowAsync(request._commentaryDTO);
+                var commentary = _mapper.Map<Commentary>(request._commentaryDTO);
+                var userData = await _userService.GetUserByNameAsync(request._username);
+                commentary.PostId = request._postId;
                 commentary.Username =userData.Username;
                 commentary.Email = userData.Email;
                 var id = await _repo.CreateAsync(commentary);

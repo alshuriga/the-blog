@@ -27,13 +27,13 @@ public class PostController : Controller
     {
         if (isDraft && !User.IsInRole(RolesConstants.ADMIN_ROLE)) throw new ApplicationException("Access Denied");
         ViewData["header"] = tagName == null ? "" : $"with {tagName} tag";
-        var model = await _mediator.Send(new ListPostsPageQuery() {  CurrentPage = currentPage, IsDraft = isDraft, TagName = tagName});
+        var model = await _mediator.Send(new ListPostsPageQuery(currentPage, isDraft, tagName));
         return View(model);
     }
 
     public async Task<IActionResult> SinglePost(long postId, int currentPage = 0)
     {
-        var model = await _mediator.Send(new GetPostByIdQuery() { Id = postId, CurrentPage = currentPage });
+        var model = await _mediator.Send(new GetPostByIdQuery(postId, currentPage));
         return View(model);
     }
 
@@ -48,7 +48,7 @@ public class PostController : Controller
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Create(CreatePostDTO post)
     {
-        var id = await _mediator.Send(new CreatePostCommand() { PostDTO = post });
+        var id = await _mediator.Send(new CreatePostCommand(post));
         return RedirectToAction("SinglePost", new { postId = id });
     }
 }

@@ -19,14 +19,14 @@ public class ManageController : Controller
     [HttpPost]
     public async Task<IActionResult> ToggleAdminRole(string userId)
     {
-        await _mediator.Send(new ToggleRoleCommand() { Id = userId, Rolename = RolesConstants.ADMIN_ROLE });
+        await _mediator.Send(new ToggleRoleCommand(userId, RolesConstants.ADMIN_ROLE));
         return RedirectToAction(nameof(UserList));
     }
 
     [HttpPost]
     public async Task<IActionResult> DeleteUser(string userId)
     {
-        await _mediator.Send(new DeleteUserCommand() { Id = userId });
+        await _mediator.Send(new DeleteUserCommand(userId));
         return RedirectToAction(nameof(UserList));
     }
 

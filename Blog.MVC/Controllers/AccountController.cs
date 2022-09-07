@@ -22,7 +22,7 @@ namespace Blog.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromForm] UserSignInDTO user, string returnUrl = "/")
         {
-           await _mediator.Send(new SignInCommand() { User = user});
+           await _mediator.Send(new SignInCommand(user));
            return Redirect(returnUrl);
         }
 
@@ -41,7 +41,7 @@ namespace Blog.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp([FromForm]UserSignUpDTO user, string returnUrl = "/")
         {
-            await _mediator.Send(new SignUpCommand() {User = user});
+            await _mediator.Send(new SignUpCommand(user));
             return Redirect(returnUrl);
         }
 

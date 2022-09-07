@@ -10,7 +10,12 @@ namespace Blog.Application.Features.Posts.Requests.Commands
 {
     public class CreatePostCommand : IRequest<long>
     {
-        public CreatePostDTO PostDTO { get; set; } = null!;
+        private readonly CreatePostDTO _postDTO;
+
+        public CreatePostCommand(CreatePostDTO postDTO)
+        {
+            _postDTO = postDTO;
+        }
 
         public class AddPostCommandHandler : IRequestHandler<CreatePostCommand, long>
         {
@@ -26,8 +31,8 @@ namespace Blog.Application.Features.Posts.Requests.Commands
             }
             public Task<long> Handle(CreatePostCommand request, CancellationToken cancellationToken)
             {
-                _validator.ValidateAndThrow(request.PostDTO);
-                var post = _mapper.Map<Post>(request.PostDTO);
+                _validator.ValidateAndThrow(request._postDTO);
+                var post = _mapper.Map<Post>(request._postDTO);
                 var id = _repo.CreateAsync(post);
                 return id;
             }

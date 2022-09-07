@@ -10,7 +10,11 @@ namespace Blog.Application.Features.User.Requests.Commands
 {
     public class DeleteUserCommand : IRequest<Unit>
     {
-        public string Id { get; set; } = null!;
+        private readonly string _id;
+        public DeleteUserCommand(string id)
+        {
+            _id = id;
+        }
         
         public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Unit>
         {
@@ -24,7 +28,7 @@ namespace Blog.Application.Features.User.Requests.Commands
             {
                 if ((await _userService.ListUsersAsync()).Count() <= 1)
                     throw new ApplicationException("There must be at least one user.");
-                await _userService.DeleteUserAsync(request.Id);
+                await _userService.DeleteUserAsync(request._id);
                 return await Unit.Task;
             }
         }

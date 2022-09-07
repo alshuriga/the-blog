@@ -18,8 +18,8 @@ public class MappingProfile : Profile
     {     
         CreateMap<Post, PostDTO>();
         CreateMap<IPostDTO, Post>().ForMember(dest => dest.Tags, opts => opts.MapFrom<TagStringToTagsResolver>());
-        CreateMap<UpdatePostDto, Post>();
-        CreateMap<Post, UpdatePostDto>().ForMember(dest => dest.TagString, opts => opts.MapFrom<TagToTagStringResolver>());
+        CreateMap<UpdatePostDTO, Post>();
+        CreateMap<Post, UpdatePostDTO>().ForMember(dest => dest.TagString, opts => opts.MapFrom<TagToTagStringResolver>());
 
         CreateMap<Post, PostListVM>().ForMember(dest => dest.CommentariesCount, opts => opts.MapFrom<CommentsCountResolver>());
 

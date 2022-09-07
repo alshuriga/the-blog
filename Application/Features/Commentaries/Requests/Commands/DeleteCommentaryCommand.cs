@@ -12,7 +12,12 @@ namespace Blog.Application.Features.Posts.Requests.Commands
 {
     public class DeleteCommentaryCommand : IRequest<Unit>
     {
-        public long CommentaryId { get; set; }
+        private readonly long _commentaryId;
+
+        public DeleteCommentaryCommand(long commentaryId)
+        {
+            _commentaryId = commentaryId;
+        }
 
         public class DeleteCommentaryCommandHandler : IRequestHandler<DeleteCommentaryCommand, Unit>
         {
@@ -24,7 +29,7 @@ namespace Blog.Application.Features.Posts.Requests.Commands
             }
             public async Task<Unit> Handle(DeleteCommentaryCommand request, CancellationToken cancellationToken)
             {
-                await _repo.DeleteAsync(request.CommentaryId);
+                await _repo.DeleteAsync(request._commentaryId);
                 return await Unit.Task;
             }
         }

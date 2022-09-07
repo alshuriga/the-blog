@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Blog.Application.Features.Posts.Validators
 {
-    public class UpdatePostDTOValidator : AbstractValidator<CreatePostDTO>
+    public class UpdatePostDTOValidator : AbstractValidator<UpdatePostDTO>
     {
         public UpdatePostDTOValidator()
         {

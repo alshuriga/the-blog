@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Tests.Helpers
 {
-    public static class MockMapper
+    public static class MapperMock
     {
         public static IMapper GetMapperServiceMock(Action<IServiceCollection>? func = null)
         {

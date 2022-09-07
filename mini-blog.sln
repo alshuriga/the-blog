@@ -12,11 +12,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Core", "Core\Blog.Core
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Application", "Application\Blog.Application.csproj", "{1C01B7B2-7D29-4D6C-9800-A87943DBD14F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Tests", "Blog.Tests\Blog.Tests.csproj", "{D33FC581-2DBD-43DB-AD63-5DE800DBE990}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.UnitTests.Application", "Blog.Tests\Blog.UnitTests.Application.csproj", "{D33FC581-2DBD-43DB-AD63-5DE800DBE990}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Infrastructure", "Blog.Infrastructure\Blog.Infrastructure.csproj", "{0BDCF4AA-529E-4116-BECE-0094C417C289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Infrastructure", "Blog.Infrastructure\Blog.Infrastructure.csproj", "{0BDCF4AA-529E-4116-BECE-0094C417C289}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.MVC", "Blog.MVC\Blog.MVC.csproj", "{87113E7C-3597-4CF7-B957-7B55004FE19F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.MVC", "Blog.MVC\Blog.MVC.csproj", "{87113E7C-3597-4CF7-B957-7B55004FE19F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

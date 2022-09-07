@@ -2,7 +2,7 @@
 
 namespace Blog.Application.Features.Posts.DTO;
 
-public class UpdatePostDto : IPostDTO
+public class UpdatePostDTO : IPostDTO
 {
     public long PostId { get; set; }
     public string Text { get; set; } = null!;

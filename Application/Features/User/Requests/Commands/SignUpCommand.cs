@@ -7,7 +7,13 @@ namespace Blog.Application.Features.User.Requests.Commands;
 
 public class SignUpCommand : IRequest<Unit>
 {
-    public UserSignUpDTO User { get; set; } = null!;
+    private readonly UserSignUpDTO _user;
+
+    public SignUpCommand(UserSignUpDTO user)
+    {
+        _user = user;
+    }
+
     public class SignUpCommandHandler : IRequestHandler<SignUpCommand, Unit>
     {
         private readonly IUserService _userService;
@@ -20,8 +26,8 @@ public class SignUpCommand : IRequest<Unit>
 
         public async Task<Unit> Handle(SignUpCommand request, CancellationToken cancellationToken)
         {
-            _validator.ValidateAndThrow(request.User);
-            await _userService.SignUpAsync(request.User.Username, request.User.Email, request.User.Password);
+            _validator.ValidateAndThrow(request._user);
+            await _userService.SignUpAsync(request._user.Username, request._user.Email, request._user.Password);
             return await Unit.Task;
         }
     }

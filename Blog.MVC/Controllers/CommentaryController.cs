@@ -29,7 +29,7 @@ public class CommentaryController : Controller
     [Authorize]
     public async Task<IActionResult> Create([FromForm] CreateCommentaryDTO commentary)
     {
-        await _mediator.Send(new CreateCommentaryCommand() { CommentaryDTO = commentary, PostId = commentary.PostId, Username = User.Identity!.Name! });
+        await _mediator.Send(new CreateCommentaryCommand(commentary, commentary.PostId, User.Identity!.Name!));
         return StatusCode(StatusCodes.Status308PermanentRedirect, Url.Action("SinglePost", "Post", new { postId = commentary.PostId }) ?? "/");
     }
 
@@ -45,7 +45,7 @@ public class CommentaryController : Controller
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Delete([FromForm] long commentaryId, long returnId)
     {
-        await _mediator.Send(new DeleteCommentaryCommand() { CommentaryId = commentaryId });
+        await _mediator.Send(new DeleteCommentaryCommand(commentaryId));
         return RedirectToAction("SinglePost", "Post", new { postId = returnId });
     }
 

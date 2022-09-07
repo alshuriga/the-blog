@@ -20,5 +20,5 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test tests
+    - name: Test Application
+      run: dotnet test Blog.Tests/Blog.UnitTests.Application.csproj

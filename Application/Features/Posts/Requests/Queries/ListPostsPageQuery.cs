@@ -11,9 +11,16 @@ namespace Blog.Application.Features.Posts.Requests.Queries
 {
     public class ListPostsPageQuery : IRequest<PostsPageVM>
     {
-        public int CurrentPage { get; set; }
-        public string? TagName { get; set; }
-        public bool IsDraft { get; set; } 
+        private readonly int _currentPage;
+        private readonly string? _tagName;
+        private readonly bool _isDraft;
+
+        public ListPostsPageQuery(int currentPage, bool isDraft, string? tagName = null)
+        {
+            _currentPage = currentPage;
+            _isDraft = isDraft;
+            _tagName = tagName;
+        }
 
         public class ListPostsPageQueryHandler : IRequestHandler<ListPostsPageQuery, PostsPageVM>
         {
@@ -27,14 +34,14 @@ namespace Blog.Application.Features.Posts.Requests.Queries
             public async Task<PostsPageVM> Handle(ListPostsPageQuery request, CancellationToken cancellationToken)
             {
                 var listedPosts = (await _repo
-                    .ListAsync(new PostsSpecification(currentPage: request.CurrentPage, tagName: request.TagName, isDraft: request.IsDraft)))
+                    .ListAsync(new PostsSpecification(currentPage: request._currentPage, tagName: request._tagName, isDraft: request._isDraft)))
                     .OrderByDescending(p => p.DateTime).ToList();
 
                 var dtos = _mapper.Map<IEnumerable<PostListVM>>(listedPosts);
-                var postsCount = await _repo.CountAsync(new PostsSpecification(isDraft: request.IsDraft, tagName: request.TagName));
+                var postsCount = await _repo.CountAsync(new PostsSpecification(isDraft: request._isDraft, tagName: request._tagName));
                 PostsPageVM viewModel = new PostsPageVM
                 {
-                    CurrentPage = request.CurrentPage,
+                    CurrentPage = request._currentPage,
                     PageCount = (int)Math.Ceiling(postsCount/ ((double)PaginationConstants.POSTS_PER_PAGE)),
                     PostsCount = postsCount,
                     Posts = dtos
