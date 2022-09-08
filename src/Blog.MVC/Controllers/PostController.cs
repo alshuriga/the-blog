@@ -67,4 +67,11 @@ public class PostController : Controller
         await _mediator.Send(new UpdatePostCommand(post));
         return RedirectToAction("SinglePost", new { postId = post.PostId });
     }
+    [HttpPost]
+    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
+    public async Task<IActionResult> Delete(long postId)
+    {
+        await _mediator.Send(new DeletePostCommand(postId));
+        return RedirectToAction(nameof(List));
+    }
 }

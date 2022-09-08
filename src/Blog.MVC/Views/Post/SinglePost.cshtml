@@ -8,41 +8,50 @@
 }
 
 
-<div class="card border-0 bg-light  p-4">
-     <div class="card-body">
-    <div class="row-cols-1">
-        <a asp-action="SinglePost" asp-route-postid="@Model.Post.Id" class="text-center text-black text-decoration-none">
-            <h1>
-                @Model.Post.Header.ToString()
-            </h1>
-        </a>
-    </div>
-    <div class="col">
-        <p class="text-center font-weight-light">
-            @Model.Post.DateTime.ToString("MMMM dd, yyyy"),
-            @Model.Post.DateTime.ToShortTimeString()
-        </p>
-    </div>
-
-    <div class="mt-4">
-        <p>@Model.Post.Text </p>
-    </div>
-    </div>
-    <div class="card-footer">
-    <div class="row my-1">
-        <div class="col-4">
-            <h5>
-                @foreach (var tagName in Model.Post.Tags.Select(t => t.Name))
-                {
-                    <a asp-action="List" asp-action-isdraft="@Model.Post." asp-route-tagname="@tagName"
-                   class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@tagName</a>
-                }
-            </h5>
+<div class="card border-0 bg-light">
+    <div class="card-body">
+        <div class="row-cols-1">
+            <a asp-action="SinglePost" asp-route-postid="@Model.Post.Id" class="text-center text-black text-decoration-none">
+                <h1>
+                    @Model.Post.Header.ToString()
+                </h1>
+            </a>
         </div>
         <div class="col">
-            <a asp-action="Update" asp-route-postid="@Model.Post.Id" class="btn btn-outline-dark">Edit</a>
+            <p class="text-center font-weight-light">
+                @Model.Post.DateTime.ToString("MMMM dd, yyyy"),
+                @Model.Post.DateTime.ToShortTimeString()
+            </p>
+        </div>
+
+        <div class="mt-4">
+            <p>@Model.Post.Text </p>
         </div>
     </div>
+    <div class="card-footer">
+        <div class="row my-1">
+            <div class="col-4">
+                <h5>
+                    @foreach (var tagName in Model.Post.Tags.Select(t => t.Name))
+                    {
+                        <a asp-action="List" asp-action-isdraft="@Model.Post." asp-route-tagname="@tagName"
+                       class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@tagName</a>
+                    }
+                </h5>
+            </div>
+            <div class="col">
+                <div class="btn-group float-end">
+                    <modal body-text="Are you sure you want to delete this post?"
+                           button-text="Delete"
+                           header-text="Action confirmation"
+                           id="postdeletion">
+                        <form method="post" asp-action="Delete" asp-controller="Post" asp-route-postid="@Model.Post.Id">
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                        </form>
+                    </modal>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -58,8 +67,8 @@
                   data-ajax-update="#commentaryform"
                   data-ajax-complete="completed"
                   data-ajax-failure="failed"
-                  asp-action="Create" asp-controller="Commentary" >
-                <div id="commentaryform" class="mb-4">
+                  asp-action="Create" asp-controller="Commentary">
+                <div id="commentaryform" class="mb-3">
                     <partial name="../Commentary/Create" model="@(new CreateCommentaryDTO() { PostId = Model.Post.Id })" />
                 </div>
             </form>
@@ -86,15 +95,23 @@
                         </div>
                         @if (User.IsInRole(RolesConstants.ADMIN_ROLE))
                         {
-                            <div class="card-footer p-0">
-                                <form method="post" asp-action="Delete" asp-controller="Commentary" asp-route-returnId="@Model.Post.Id">
-                                    <input name="commentaryId" type="hidden" value="@com.Id">
-                                    <button class="btn m-2 btn-sm float-end btn-secondary" type="submit">
-                                        <i class="me-2 fa-solid fa-trash-can"></i>
-                                        Delete
-                                    </button>
+                            <div class="card-footer p-2">
+                                <div class="btn-group float-end">
+                                   <modal body-text="Are you sure you want to delete this commentary?"
+                                   button-text="Delete"
+                                   header-text="Action confirmation"
+                                   id="commentdeletion">
 
-                                </form>
+                                        <form method="post" asp-action="Delete" asp-controller="Commentary" asp-route-returnId="@Model.Post.Id">
+                                            <input name="commentaryId" type="hidden" value="@com.Id">
+                                            <button class="btn m-2 btn-secondary" type="submit">
+                                                <i class="me-2 fa-solid fa-trash-can"></i>
+                                                Delete
+                                            </button>
+                                        </form>
+
+                                    </modal>
+                            </div>
                             </div>
                         }
                     </div>
@@ -109,15 +126,15 @@
 
 <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
 <script>
-var completed = function(xhr) {
-    if (xhr.status == 308) {
-        console.log(xhr.responseText)
-        window.location.href = xhr.responseText;
-    }
-};
-        var failed = function(xhr) {
-            if (xhr.status == 401) {
-                window.location.href = "@(Url.Action("Login", "Account", new {returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}"}))";
-            }
-        };
+    var completed = function(xhr) {
+        if (xhr.status == 308) {
+            console.log(xhr.responseText)
+            window.location.href = xhr.responseText;
+        }
+    };
+    var failed = function(xhr) {
+        if (xhr.status == 401) {
+            window.location.href = "@(Url.Action("Login", "Account", new {returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}"}))";
+        }
+    };
 </script>
