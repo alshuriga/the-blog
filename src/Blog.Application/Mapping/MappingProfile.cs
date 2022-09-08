@@ -17,9 +17,11 @@ public class MappingProfile : Profile
     public MappingProfile()
     {     
         CreateMap<Post, PostDTO>();
-        CreateMap<IPostDTO, Post>().ForMember(dest => dest.Tags, opts => opts.MapFrom<TagStringToTagsResolver>());
-        CreateMap<UpdatePostDTO, Post>();
+        CreateMap<UpdatePostDTO, Post>().ForMember(dest => dest.Tags, opts => opts.MapFrom<TagStringToTagsResolver>());
         CreateMap<Post, UpdatePostDTO>().ForMember(dest => dest.TagString, opts => opts.MapFrom<TagToTagStringResolver>());
+
+        CreateMap<CreatePostDTO, Post>().ForMember(dest => dest.Tags, opts => opts.MapFrom<TagStringToTagsResolver>());
+        CreateMap<Post, CreatePostDTO>().ForMember(dest => dest.TagString, opts => opts.MapFrom<TagToTagStringResolver>());
 
         CreateMap<Post, PostListVM>().ForMember(dest => dest.CommentariesCount, opts => opts.MapFrom<CommentsCountResolver>());
 

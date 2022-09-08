@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using Blog.Application.Exceptions;
 using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
@@ -30,13 +31,15 @@ namespace Blog.Application.Features.Posts.Requests.Commands
                 _mapper = mapper;
                 _validator = validator;
             }
-            public Task<Unit> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
             {
                 _validator.ValidateAndThrow(request._postDTO);
-                var post = _mapper.Map<Post>(request._postDTO);
-                var id = _repo.UpdateAsync(post);
-
-                return Unit.Task;
+                //var post = _mapper.Map<Post>(request._postDTO);
+                var post = await _repo.GetByIdAsync(request._postDTO.PostId);
+                if (post == null) throw new NotFoundException();
+                _mapper.Map(request._postDTO, post);
+                await _repo.UpdateAsync(post);
+                return await Unit.Task;
             }
         }
     }

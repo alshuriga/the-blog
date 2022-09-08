@@ -44,11 +44,27 @@ public class PostController : Controller
         return View();
     }
 
+    [HttpGet]
+    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
+    public async Task<IActionResult> Update(long postId)
+    {
+        var model = await _mediator.Send(new GetPostToEditQuery(postId));
+        return View(model);
+    }
+
     [HttpPost]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Create(CreatePostDTO post)
     {
         var id = await _mediator.Send(new CreatePostCommand(post));
         return RedirectToAction("SinglePost", new { postId = id });
+    }
+
+    [HttpPost]
+    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
+    public async Task<IActionResult> Update(UpdatePostDTO post)
+    {
+        await _mediator.Send(new UpdatePostCommand(post));
+        return RedirectToAction("SinglePost", new { postId = post.PostId });
     }
 }

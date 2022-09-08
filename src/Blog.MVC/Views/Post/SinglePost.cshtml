@@ -9,6 +9,7 @@
 
 
 <div class="card border-0 bg-light  p-4">
+     <div class="card-body">
     <div class="row-cols-1">
         <a asp-action="SinglePost" asp-route-postid="@Model.Post.Id" class="text-center text-black text-decoration-none">
             <h1>
@@ -26,7 +27,8 @@
     <div class="mt-4">
         <p>@Model.Post.Text </p>
     </div>
-
+    </div>
+    <div class="card-footer">
     <div class="row my-1">
         <div class="col-4">
             <h5>
@@ -37,6 +39,10 @@
                 }
             </h5>
         </div>
+        <div class="col">
+            <a asp-action="Update" asp-route-postid="@Model.Post.Id" class="btn btn-outline-dark">Edit</a>
+        </div>
+    </div>
     </div>
 </div>
 
