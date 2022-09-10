@@ -15,11 +15,13 @@ namespace Blog.Application.Features.Posts.Requests.Queries
     {
         private readonly long _id;
         private readonly int _currentPage;
+        private readonly bool _includeDrafts;
 
-        public GetPostByIdQuery(long id, int currentPage)
+        public GetPostByIdQuery(long id, int currentPage, bool includeDrafts = false)
         {
             _id = id;
             _currentPage = currentPage;
+            _includeDrafts = includeDrafts;
         }
 
         public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, PostSingleVM>
@@ -36,7 +38,7 @@ namespace Blog.Application.Features.Posts.Requests.Queries
             public async Task<PostSingleVM> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
             {
                 Post? post =  await _postRepo.GetByIdAsync(request._id);
-                if (post == null) throw new NotFoundException();
+                if (post == null || (post.IsDraft && !request._includeDrafts)) throw new NotFoundException();
                 PostDTO postDto = _mapper.Map<PostDTO>(post);
                 var commentaries = (await _commentRepo.ListAsync(new CommentariesByPostIdSpecification(request._id, request._currentPage))).OrderByDescending(x => x.DateTime).ToList();
                 var model = new PostSingleVM()

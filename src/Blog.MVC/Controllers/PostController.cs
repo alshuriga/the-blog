@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.MVC.Controllers;
 
+[Route("[controller]/[action]")]
 public class PostController : Controller
 {
     private readonly IMediator _mediator;
@@ -22,7 +23,8 @@ public class PostController : Controller
         _validator = validator;
     }
 
-    [HttpGet("{currentPage:int?}")]
+    [HttpGet("/{currentPage:int?}")]
+    [HttpGet("/all/{currentPage:int?}")]
     public async Task<IActionResult> List(int currentPage = 0, bool isDraft = false, string? tagName = null)
     {
         if (isDraft && !User.IsInRole(RolesConstants.ADMIN_ROLE)) throw new ApplicationException("Access Denied");
@@ -31,11 +33,14 @@ public class PostController : Controller
         return View(model);
     }
 
+    [HttpGet("/post/{postId:long}")]
     public async Task<IActionResult> SinglePost(long postId, int currentPage = 0)
     {
-        var model = await _mediator.Send(new GetPostByIdQuery(postId, currentPage));
+        var includeDrafts = User.IsInRole(RolesConstants.ADMIN_ROLE);
+        var model = await _mediator.Send(new GetPostByIdQuery(postId, currentPage, includeDrafts));
         return View(model);
     }
+
 
     [HttpGet]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
@@ -44,7 +49,7 @@ public class PostController : Controller
         return View();
     }
 
-    [HttpGet]
+    [HttpGet("{postId:long}")]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Update(long postId)
     {
