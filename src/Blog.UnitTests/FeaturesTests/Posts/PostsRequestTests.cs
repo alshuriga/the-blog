@@ -104,7 +104,7 @@ namespace Blog.Tests.Features.Posts
         {      
             //arrange
             var mapper = MapperMock.GetMapperServiceMock();
-            var request = new GetPostByIdQuery(2, 0);
+            var request = new GetPostByIdQuery(6, 0);
             var handler = new GetPostByIdQueryHandler(_postsRepoMock.Object, _commentsRepoMock.Object, mapper);
 
             //act

@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Core", "Blog.Core\Blog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Application", "Blog.Application\Blog.Application.csproj", "{285AFEAA-486B-4E4D-8AFE-1D741167EB70}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.IntegrationTests.MVC", "Blog.IntegrationTests.MVC\Blog.IntegrationTests.MVC.csproj", "{74663F20-B47C-4327-B896-0E7AC6773F97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Tests.Integration.MVC", "Blog.IntegrationTests.MVC\Blog.Tests.Integration.MVC.csproj", "{74663F20-B47C-4327-B896-0E7AC6773F97}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.UnitTests.Application", "Blog.UnitTests\Blog.UnitTests.Application.csproj", "{6942E4FB-4148-44E9-9735-8E4E38F36B0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Tests.Unit.Application", "Blog.UnitTests\Blog.Tests.Unit.Application.csproj", "{6942E4FB-4148-44E9-9735-8E4E38F36B0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

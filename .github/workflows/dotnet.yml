@@ -20,4 +20,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore src
     - name: Test Application
-      run: dotnet test src/Blog.Tests
+      run: dotnet test src

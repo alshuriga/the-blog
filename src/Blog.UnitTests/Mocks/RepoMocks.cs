@@ -145,7 +145,6 @@ public static class RepoMocks
                 DateTime = DateTime.MinValue,
                 Commentaries = commentariesList,
                 IsDraft = false
-
             };
         };
 
