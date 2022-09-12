@@ -1,5 +1,6 @@
 using Blog.Application;
 using Blog.Infrastructure;
+using Blog.Infrastructure.DataSeed;
 using Blog.MVC.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,9 @@ if(!builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
+SeedData.EnsureSeedContent(app.Services);
+await SeedData.EnsureSeedIdentity(app.Services);
+
 if (!app.Environment.IsDevelopment())
 {
 
@@ -23,7 +27,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -31,6 +35,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute("default", "{controller=posts}/{action=list}");
+
 
 app.Run();
 

@@ -24,6 +24,17 @@ public static class Configuration
         });
         services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
         services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityEFContext>();
+
+        services.Configure<IdentityOptions>(opts =>
+        {
+            opts.Password.RequireDigit = false;
+            opts.Password.RequireUppercase = false;
+            opts.Password.RequireLowercase = false;
+            opts.Password.RequireNonAlphanumeric = false;
+            opts.Password.RequiredLength = 5;
+            opts.User.RequireUniqueEmail = true;
+        });
+
         services.AddScoped<IUserService, UserService>();
         return services;
     }
