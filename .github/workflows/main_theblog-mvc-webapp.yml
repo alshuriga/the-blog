@@ -52,6 +52,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'theblog-mvc-webapp'
-          slot-name: 'Azure'
+          slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0C671C1731904A55A99329739B32ABF2 }}
           package: .
