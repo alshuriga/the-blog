@@ -16,14 +16,14 @@ public class UserService : IUserService
         _signInManager = signInManager;
     }
 
-    public async Task<User> GetUserByIdAsync(string id)
+    public async Task<User?> GetUserByIdAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         var roles = (await _userManager.GetRolesAsync(user)).ToList();
         return new User() { Id = user.Id, Username = user.UserName, Email = user.Email, Roles = roles };
     }
 
-    public async Task<User> GetUserByNameAsync(string userName)
+    public async Task<User?> GetUserByNameAsync(string userName)
     {
         var user = await _userManager.FindByNameAsync(userName);
         var roles = (await _userManager.GetRolesAsync(user)).ToList();

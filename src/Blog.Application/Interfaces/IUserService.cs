@@ -9,8 +9,8 @@ namespace Blog.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<User> GetUserByIdAsync(string id);
-        Task<User> GetUserByNameAsync(string userName);
+        Task<User?> GetUserByIdAsync(string id);
+        Task<User?> GetUserByNameAsync(string userName);
         Task SignInAsync(string username, string password);
         Task SignOutAsync();
         Task SignUpAsync(string username, string email, string password);
