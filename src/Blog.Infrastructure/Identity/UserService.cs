@@ -43,8 +43,7 @@ public class UserService : IUserService
     public async Task SignUpAsync(string username, string email, string password)
     {
         var user = new IdentityUser() {UserName = username, Email = email };
-        await _userManager.CreateAsync(user);
-        await _userManager.AddPasswordAsync(user, password);
+        await _userManager.CreateAsync(user, password);
     }
 
 
