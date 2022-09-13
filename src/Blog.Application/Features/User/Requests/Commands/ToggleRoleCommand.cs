@@ -25,6 +25,9 @@ namespace Blog.Application.Features.User.Requests.Commands
             public async Task<Unit> Handle(ToggleRoleCommand request, CancellationToken cancellationToken)
             {
                 var user = await _userService.GetUserByIdAsync(request._id);
+
+                if (user == null) throw new ApplicationException("User not found in a database");
+
                 if (user.Roles.Contains(request._rolename))
                 {
                     if ((await _userService.ListUsersAsync(request._rolename)).Count() <= 1)

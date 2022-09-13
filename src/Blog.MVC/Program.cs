@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.ConfigureApplication();
 builder.Services.ConfigureInfrastructure(builder.Configuration);
-builder.Services.AddTransient<CustomExceptionFilter>();
 builder.Services.AddMvc(opts => opts.Filters.Add<CustomExceptionFilter>());
 if(!builder.Environment.IsDevelopment())
 {
@@ -22,7 +21,6 @@ await SeedData.EnsureSeedIdentity(app.Services);
 
 if (!app.Environment.IsDevelopment())
 {
-
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }

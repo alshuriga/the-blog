@@ -25,7 +25,7 @@ public class UserValidationTests
         {
            Username = "abcde",
            Password = "abcd",
-           RepeatPassword = "efgh",
+           RepeatPassword = "",
            Email = "test@example.com"
         };
 
@@ -35,7 +35,7 @@ public class UserValidationTests
         //assert
         res.ShouldHaveValidationErrorFor(t => t.Username);
         res.ShouldHaveValidationErrorFor(t => t.Password);
-        res.ShouldNotHaveValidationErrorFor(t => t.RepeatPassword);
+        res.ShouldHaveValidationErrorFor(t => t.RepeatPassword);
     }
 
     [Fact]

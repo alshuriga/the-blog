@@ -44,7 +44,7 @@ namespace Blog.Application.Features.Posts.Requests.Commands
                 var commentary = _mapper.Map<Commentary>(request._commentaryDTO);
                 var userData = await _userService.GetUserByNameAsync(request._username);
                 commentary.PostId = request._postId;
-                commentary.Username =userData.Username;
+                commentary.Username = userData!.Username;
                 commentary.Email = userData.Email;
                 var id = await _repo.CreateAsync(commentary);
                 return id;
