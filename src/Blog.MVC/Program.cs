@@ -10,19 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.ConfigureApplication();
 builder.Services.ConfigureInfrastructure(builder.Configuration);
-builder.Services.AddMvc(opts => opts.Filters.Add<CustomExceptionFilter>());
 if(!builder.Environment.IsDevelopment())
 {
     builder.Services.AddMvc(opts => opts.Filters.Add<CustomExceptionFilter>());
 }
-builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
 SeedData.EnsureSeedContent(app.Services);
 await SeedData.EnsureSeedIdentity(app.Services);
 
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
@@ -36,7 +34,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute("default", "{controller=posts}/{action=list}");
-app.MapRazorPages();
+
+app.Run();
 
 //for tests
 public partial class Program { }

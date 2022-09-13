@@ -1,17 +1,16 @@
-﻿using Blog.Application.Constants;
+﻿
 using Blog.Infrastructure.Data;
 using Blog.IntegrationTests.MVC.Mocks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MiniBlog.Infrastructure.Data;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
+
 
 namespace Blog.IntegrationTests.MVC
 {
@@ -19,6 +18,7 @@ namespace Blog.IntegrationTests.MVC
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.UseEnvironment("Production");
             builder.ConfigureServices(services =>
             {
                 var descriptor = services.SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<BlogEFContext>));

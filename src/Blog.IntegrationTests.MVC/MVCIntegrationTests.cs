@@ -1,13 +1,6 @@
 using Blog.Application.Constants;
-using Blog.Infrastructure.Data;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace Blog.IntegrationTests.MVC;
