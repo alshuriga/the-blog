@@ -39,7 +39,7 @@ public class UserValidationTests
     }
 
     [Fact]
-    public async Task CreatePostDTOValidator_ValidData()
+    public async Task UserSignUpValidator_ValidData()
     {
         var userServiceMock = new Mock<IUserService>();
         userServiceMock.Setup(s => s.GetUserByNameAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
@@ -62,4 +62,44 @@ public class UserValidationTests
         //assert
         res.ShouldNotHaveAnyValidationErrors();
     }
+
+    [Fact]
+    public async Task UserSignInValidator_InvalidData()
+    {
+        //arrange
+        var validator = new UserSignInValidator();
+        var testDTO = new UserSignInDTO()
+        {
+            Username = "",
+            Password = ""
+        };
+
+        //act
+        var res = await validator.TestValidateAsync(testDTO);
+
+        //assert
+        res.ShouldHaveValidationErrorFor(t => t.Username);
+        res.ShouldHaveValidationErrorFor(t => t.Password);
+    }
+
+    [Fact]
+    public async Task UserSignInValidator_ValidData()
+    {
+        //arrange
+        var validator = new UserSignInValidator();
+        var testDTO = new UserSignInDTO()
+        {
+            Username = "username",
+            Password = "password"
+        };
+
+        //act
+        var res = await validator.TestValidateAsync(testDTO);
+
+        //assert
+        res.ShouldNotHaveAnyValidationErrors();
+    }
+
+
+
 }
