@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 
 namespace Blog.MVC.Filters;
 
@@ -16,7 +18,7 @@ public class CustomExceptionFilter : ExceptionFilterAttribute
     }
     public override void OnException(ExceptionContext context)
     {
-        switch(context.Exception)
+        switch (context.Exception)
         {
             case ValidationException validationException:
                 {
@@ -36,8 +38,20 @@ public class CustomExceptionFilter : ExceptionFilterAttribute
 
                     break;
                 }
+            default:
+                {
+                    context.Result = new ViewResult()
+                    {
+                        ViewName = "Error",
+                        ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                        {
+                            Model = context.Exception.Message
+                        }
+                    };
+                    break;
+                }
         }
-       
+
         base.OnException(context);
     }
 }

@@ -1,0 +1,12 @@
+﻿@model string?
+
+@{
+    var message = Model ?? "An error occured.";
+}
+
+<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+
+<div class="container-fluid p-5">
+    <div class="position-relative translate-middle start-50 alert alert-danger text-center w-50">@message</div>
+    <a class="position-relative btn btn-primary translate-middle start-50 text-center" href="/">To Homepage</a>
+</div>
