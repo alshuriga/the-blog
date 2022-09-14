@@ -34,7 +34,6 @@ namespace Blog.Application.Features.Posts.Requests.Commands
             public async Task<Unit> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
             {
                 _validator.ValidateAndThrow(request._postDTO);
-                //var post = _mapper.Map<Post>(request._postDTO);
                 var post = await _repo.GetByIdAsync(request._postDTO.PostId);
                 if (post == null) throw new NotFoundException();
                 _mapper.Map(request._postDTO, post);

@@ -74,7 +74,7 @@ public class MVCIntegrationTests : IClassFixture<TestWebAppFactory<Program>>
 
     [Theory]
     [InlineData("/post/create")]
-    [InlineData("/post/update/1")]
+    [InlineData("/post/update?postId=1")]
     [InlineData("/manage/userlist")]
     public async Task GetAdminPageAdAdmin_ReturnsPage(string path)
     {

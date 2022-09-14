@@ -49,7 +49,14 @@ public class PostController : Controller
         return View();
     }
 
-    [HttpGet("{postId:long}")]
+    [HttpPost]
+    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
+    public async Task<IActionResult> Update(UpdatePostDTO post)
+    {
+        await _mediator.Send(new UpdatePostCommand(post));
+        return RedirectToAction("SinglePost", new { postId = post.PostId });
+    }
+
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Update(long postId)
     {
@@ -59,19 +66,13 @@ public class PostController : Controller
 
     [HttpPost]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
-    public async Task<IActionResult> Create(CreatePostDTO post)
+    public async Task<IActionResult> Create([FromForm] CreatePostDTO post)
     {
         var id = await _mediator.Send(new CreatePostCommand(post));
         return RedirectToAction("SinglePost", new { postId = id });
     }
 
-    [HttpPost]
-    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
-    public async Task<IActionResult> Update(UpdatePostDTO post)
-    {
-        await _mediator.Send(new UpdatePostCommand(post));
-        return RedirectToAction("SinglePost", new { postId = post.PostId });
-    }
+
     [HttpPost]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Delete(long postId)

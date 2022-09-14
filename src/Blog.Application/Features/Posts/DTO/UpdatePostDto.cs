@@ -8,4 +8,5 @@ public class UpdatePostDTO : IPostDTO
     public string Text { get; set; } = null!;
     public string Header { get; set; } = null!;
     public string TagString { get; set; } = null!;
+    public bool IsDraft { get; set; }   
 }

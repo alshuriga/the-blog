@@ -2,8 +2,6 @@ using Blog.Application;
 using Blog.Infrastructure;
 using Blog.Infrastructure.DataSeed;
 using Blog.MVC.Filters;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 

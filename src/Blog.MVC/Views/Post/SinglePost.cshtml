@@ -34,7 +34,7 @@
                 <h5>
                     @foreach (var tagName in Model.Post.Tags.Select(t => t.Name))
                     {
-                        <a asp-action="List" asp-action-isdraft="@Model.Post." asp-route-tagname="@tagName"
+                        <a asp-action="List" asp-action-isdraft="@Model.Post.IsDraft" asp-route-tagname="@tagName"
                        class="btn btn-secondary btn-sm text-light text-lowercase mt-2 mb-md-0">@tagName</a>
                     }
                 </h5>
@@ -42,7 +42,13 @@
             <div class="col">
                 @if(User.IsInRole(RolesConstants.ADMIN_ROLE))
                 {
-                    <div class="btn-group float-end">
+                    <div class="float-end">
+
+                        <a class="btn btn-outline-primary me-2"
+                       asp-action="Update" asp-controller="Post" asp-route-postId="@Model.Post.Id">
+                            Edit
+                        </a>
+
                         <modal body-text="Are you sure you want to delete this post?"
                            button-text="Delete"
                            header-text="Action confirmation"
@@ -100,6 +106,9 @@
                         {
                             <div class="card-footer p-2">
                                 <div class="btn-group float-end">
+
+                                    
+
                                    <modal body-text="Are you sure you want to delete this commentary?"
                                    button-text="Delete"
                                    header-text="Action confirmation"
