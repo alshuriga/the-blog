@@ -13,6 +13,13 @@ if(!builder.Environment.IsDevelopment())
     builder.Services.AddMvc(opts => opts.Filters.Add<CustomExceptionFilter>());
 }
 
+if(builder.Environment.EnvironmentName == "Azure")
+{
+    builder.Logging.ClearProviders();
+    builder.Logging.AddConsole();
+    builder.Logging.AddAzureWebAppDiagnostics();
+}
+
 var app = builder.Build();
 
 SeedData.EnsureSeedContent(app.Services);
