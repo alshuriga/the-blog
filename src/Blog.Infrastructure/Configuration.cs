@@ -22,7 +22,12 @@ public static class Configuration
         {
             opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase"));
         });
-        services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
+        //services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
+
+        //cached repository
+        services.AddScoped(typeof(IBlogRepository<>), typeof(CachedBlogRepository<>));
+        services.AddScoped(typeof(EFBlogRepository<>));
+
         services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityEFContext>();
 
         services.Configure<IdentityOptions>(opts =>
