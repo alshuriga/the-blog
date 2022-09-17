@@ -1,4 +1,5 @@
 ﻿
+using Blog.Application.Interfaces.Common;
 using Blog.Infrastructure.Data;
 using Blog.IntegrationTests.MVC.Mocks;
 using Microsoft.AspNetCore.Authentication;
@@ -26,6 +27,11 @@ namespace Blog.IntegrationTests.MVC
 
                 descriptor = services.SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<IdentityEFContext>));
                 if (descriptor != null) services.Remove(descriptor);
+
+                descriptor = services.SingleOrDefault(x => x.ServiceType == typeof(IBlogRepository<>));
+                if (descriptor != null) services.Remove(descriptor);
+
+                services.AddScoped(typeof(IBlogRepository<>), typeof(MemoryCachedBlogRepository<>));
 
                 services.AddDbContext<BlogEFContext>(opts => opts.UseInMemoryDatabase("BlogDB"));
                 services.AddDbContext<IdentityEFContext>(opts => opts.UseInMemoryDatabase("IdentityDB"));
