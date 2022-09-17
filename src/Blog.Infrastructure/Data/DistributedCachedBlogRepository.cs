@@ -4,6 +4,7 @@ using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities.Common;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using System.Text;
 
 namespace Blog.Infrastructure.Data
 {
@@ -13,7 +14,7 @@ namespace Blog.Infrastructure.Data
         private readonly EFBlogRepository<T> _repo;
         private readonly IDistributedCache _cache;
         private string _keyPrefix;
-        private MemoryCacheEntryOptions _cacheOptions;
+        private DistributedCacheEntryOptions _cacheOptions;
 
         public DistributedCachedBlogRepository(EFBlogRepository<T> repo, IDistributedCache cache)
         {
@@ -21,7 +22,7 @@ namespace Blog.Infrastructure.Data
             _cache = cache;
             _cacheOptions = new()
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(5)
             };
             _keyPrefix = typeof(T).ToString();
         }
@@ -29,10 +30,10 @@ namespace Blog.Infrastructure.Data
         public async Task<int> CountAsync(ISpecification<T>? specification = null)
         {
             var key = GetCountKey(specification);
-            return await _cache.GetOrCreateAsync(key, () =>
-            {
-                return _repo.CountAsync(specification);
-            });
+            var result = await _cache.GetOrCreateAsync(key, async() => 
+            await _repo.CountAsync(specification)
+            , _cacheOptions);
+            return result;
         }
 
         public async Task<long> CreateAsync(T entity)
@@ -57,7 +58,7 @@ namespace Blog.Infrastructure.Data
             return await _cache.GetOrCreateAsync(key, async () =>
             {
                 return await _repo.GetByIdAsync(Id);
-            });
+            }, _cacheOptions);
 
         }
 
@@ -67,7 +68,7 @@ namespace Blog.Infrastructure.Data
             var result = _cache.GetOrCreateAsync(key, async () =>
             {
                 return await _repo.ListAsync(specification);
-            });
+            }, _cacheOptions);
             return await result;
         }
 

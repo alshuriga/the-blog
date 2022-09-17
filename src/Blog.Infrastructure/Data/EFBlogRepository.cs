@@ -53,7 +53,7 @@ namespace Blog.Infrastructure.Data
         {
             var query = _db.Set<T>().OrderByDescending(e => e.Id).AsQueryable();
             if (specification != null) query = query.WithSpecification(specification);
-            return Task.FromResult(query.AsEnumerable());
+            return Task.FromResult(query.ToList().AsEnumerable());
         }
 
         public async Task UpdateAsync(T entity)
