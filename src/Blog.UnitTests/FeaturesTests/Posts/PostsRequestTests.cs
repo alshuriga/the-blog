@@ -1,5 +1,4 @@
 ﻿using Ardalis.Specification;
-using AutoMapper;
 using Blog.Application.Exceptions;
 using Blog.Application.Features.Commentaries.Specifications;
 using Blog.Application.Features.Posts.DTO;
@@ -101,14 +100,14 @@ namespace Blog.Tests.Features.Posts
 
         [Fact]
         public async Task GetPostByIdQuery_ReturnsCorrectViewModel()
-        {      
+        {
             //arrange
             var mapper = MapperMock.GetMapperServiceMock();
             var request = new GetPostByIdQuery(6, 0);
             var handler = new GetPostByIdQueryHandler(_postsRepoMock.Object, _commentsRepoMock.Object, mapper);
 
             //act
-            var result =await  handler.Handle(request, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             //assert
             Assert.Equal(3, result.Commentaries.Count);
@@ -126,7 +125,7 @@ namespace Blog.Tests.Features.Posts
             //act
 
             //assert
-            var ex =await Assert.ThrowsAsync<NotFoundException>(async () => await handler.Handle(request, CancellationToken.None));
+            var ex = await Assert.ThrowsAsync<NotFoundException>(async () => await handler.Handle(request, CancellationToken.None));
         }
 
         [Fact]

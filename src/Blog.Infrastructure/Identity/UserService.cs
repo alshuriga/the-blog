@@ -10,7 +10,7 @@ public class UserService : IUserService
     private readonly SignInManager<IdentityUser> _signInManager;
 
 
-    public UserService(UserManager<IdentityUser> userManager,  SignInManager<IdentityUser> signInManager)
+    public UserService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -27,7 +27,7 @@ public class UserService : IUserService
     {
         var user = await _userManager.FindByNameAsync(userName);
         var roles = (await _userManager.GetRolesAsync(user)).ToList();
-        return new User() {Id = user.Id, Username = user.UserName, Email = user.Email, Roles = roles };
+        return new User() { Id = user.Id, Username = user.UserName, Email = user.Email, Roles = roles };
     }
 
     public async Task<bool> SignInAsync(string username, string password)
@@ -35,7 +35,7 @@ public class UserService : IUserService
         var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
         return result.Succeeded;
     }
-    
+
 
     public async Task SignOutAsync()
     {
@@ -44,7 +44,7 @@ public class UserService : IUserService
 
     public async Task SignUpAsync(string username, string email, string password)
     {
-        var user = new IdentityUser() {UserName = username, Email = email };
+        var user = new IdentityUser() { UserName = username, Email = email };
         await _userManager.CreateAsync(user, password);
     }
 
@@ -71,18 +71,18 @@ public class UserService : IUserService
     public async Task DeleteUserAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
-        if(user != null)
+        if (user != null)
             await _userManager.DeleteAsync(user);
     }
 
     public async Task<List<User>> ListUsersAsync(string? rolename = null)
     {
         IEnumerable<IdentityUser> users;
-        if(rolename == null)
+        if (rolename == null)
         {
             users = _userManager.Users.ToList();
         }
-       else
+        else
         {
             users = (await _userManager.GetUsersInRoleAsync(rolename));
         }
@@ -94,9 +94,9 @@ public class UserService : IUserService
 
         var users = _userManager.Users.ToList();
         List<IdentityUser> noRoleUsers = new();
-        foreach(var user in users)
+        foreach (var user in users)
         {
-            if(!(await _userManager.GetRolesAsync(user)).Any())
+            if (!(await _userManager.GetRolesAsync(user)).Any())
             {
                 noRoleUsers.Add(user);
             }

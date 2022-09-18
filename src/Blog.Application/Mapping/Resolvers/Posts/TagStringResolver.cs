@@ -1,18 +1,12 @@
 ﻿using AutoMapper;
-using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Features.Posts.DTO.Common;
 using Blog.Application.Features.Tags.Specifications;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.Application.Mapping.Resolvers.Posts
 {
-    public class TagToTagStringResolver : IValueResolver<Post, IPostDTO , string>
+    public class TagToTagStringResolver : IValueResolver<Post, IPostDTO, string>
     {
         public string Resolve(Post source, IPostDTO destination, string destMember, ResolutionContext context)
         {
@@ -30,9 +24,9 @@ namespace Blog.Application.Mapping.Resolvers.Posts
         {
             var outputList = new List<Tag>();
             var tagNamesInput = string.IsNullOrEmpty(source.TagString) ? Enumerable.Empty<string>() : source.TagString.Split(",");
-            foreach(var tagName in tagNamesInput)
+            foreach (var tagName in tagNamesInput)
             {
-                var tag = _repo.ListAsync(new TagsByTagNameSpecification(tagName)).Result.FirstOrDefault() ?? new Tag {  Name = tagName.Trim().ToLower()};
+                var tag = _repo.ListAsync(new TagsByTagNameSpecification(tagName)).Result.FirstOrDefault() ?? new Tag { Name = tagName.Trim().ToLower() };
                 outputList.Add(tag);
             }
             return outputList;

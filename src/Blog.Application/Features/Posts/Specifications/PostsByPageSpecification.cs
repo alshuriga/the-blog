@@ -1,6 +1,6 @@
 ﻿using Ardalis.Specification;
+using Blog.Application.Constants;
 using Blog.Core.Entities;
-using Blog.Application.Constants; 
 
 namespace Blog.Application.Features.Posts.Specifications
 {

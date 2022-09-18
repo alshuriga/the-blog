@@ -1,9 +1,7 @@
 ﻿using Blog.Application.Constants;
-using Blog.Application.Features.Commentaries;
 using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Features.Posts.Requests.Commands;
 using Blog.Application.Features.Posts.Requests.Queries;
-using Blog.MVC.Filters;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

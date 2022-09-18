@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using StackExchange.Redis;
-using System.ComponentModel;
 
 namespace Microsoft.Extensions.Caching.Distributed;
 
@@ -25,7 +23,7 @@ public static class DistributedCacheExtensions
                 }
             }
         }
-        catch(RedisTimeoutException ex)
+        catch (RedisTimeoutException ex)
         { }
 
         result = await factory.Invoke();

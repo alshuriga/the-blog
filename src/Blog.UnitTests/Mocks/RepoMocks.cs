@@ -2,11 +2,6 @@
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.Tests.Mocks;
 

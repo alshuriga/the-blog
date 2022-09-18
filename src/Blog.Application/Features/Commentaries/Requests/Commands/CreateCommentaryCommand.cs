@@ -6,8 +6,6 @@ using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Application.Features.Posts.Requests.Commands
 {

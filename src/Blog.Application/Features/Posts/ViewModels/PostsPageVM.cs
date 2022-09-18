@@ -1,10 +1,4 @@
-﻿using Blog.Application.Constants;
-using Blog.Application.Features.Posts.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Blog.Application.Features.Posts.DTO;
 
 namespace Blog.Application.Features.Posts.ViewModels
 {

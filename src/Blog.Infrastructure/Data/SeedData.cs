@@ -1,9 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+using Blog.Application.Constants;
+using Blog.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using MiniBlog.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
-using Blog.Infrastructure.Data;
-using Blog.Application.Constants;
 
 namespace Blog.Infrastructure.DataSeed;
 

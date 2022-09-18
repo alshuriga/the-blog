@@ -42,7 +42,7 @@ namespace Blog.Application.Features.Posts.Requests.Queries
                 PostsPageVM viewModel = new PostsPageVM
                 {
                     CurrentPage = request._currentPage,
-                    PageCount = (int)Math.Ceiling(postsCount/ ((double)PaginationConstants.POSTS_PER_PAGE)),
+                    PageCount = (int)Math.Ceiling(postsCount / ((double)PaginationConstants.POSTS_PER_PAGE)),
                     PostsCount = postsCount,
                     Posts = dtos
                 };

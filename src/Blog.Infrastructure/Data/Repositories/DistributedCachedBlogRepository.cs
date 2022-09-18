@@ -4,7 +4,6 @@ using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities.Common;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
-using System.Text;
 
 namespace Blog.Infrastructure.Data.Repositories
 {

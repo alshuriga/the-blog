@@ -1,13 +1,13 @@
-﻿using Blog.Application.Features.Posts.DTO;
-using Blog.Application.Interfaces.Common;
-using MediatR;
-using Blog.Core.Entities;
-using AutoMapper;
-using Blog.Application.Features.Posts.ViewModels;
+﻿using AutoMapper;
+using Blog.Application.Constants;
 using Blog.Application.Exceptions;
 using Blog.Application.Features.Commentaries;
 using Blog.Application.Features.Commentaries.Specifications;
-using Blog.Application.Constants;
+using Blog.Application.Features.Posts.DTO;
+using Blog.Application.Features.Posts.ViewModels;
+using Blog.Application.Interfaces.Common;
+using Blog.Core.Entities;
+using MediatR;
 
 namespace Blog.Application.Features.Posts.Requests.Queries
 {
@@ -37,7 +37,7 @@ namespace Blog.Application.Features.Posts.Requests.Queries
             }
             public async Task<PostSingleVM> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
             {
-                Post? post =  await _postRepo.GetByIdAsync(request._id);
+                Post? post = await _postRepo.GetByIdAsync(request._id);
                 if (post == null || (post.IsDraft && !request._includeDrafts)) throw new NotFoundException();
                 PostDTO postDto = _mapper.Map<PostDTO>(post);
                 var commentaries = (await _commentRepo.ListAsync(new CommentariesByPostIdSpecification(request._id, request._currentPage))).OrderByDescending(x => x.DateTime).ToList();

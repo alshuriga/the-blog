@@ -1,10 +1,9 @@
 ﻿using Ardalis.Specification;
 using Blog.Core.Entities.Common;
-using System.Linq.Expressions;
 
 namespace Blog.Application.Interfaces.Common;
 
-public interface IBlogRepository<T> where T: BaseEntity
+public interface IBlogRepository<T> where T : BaseEntity
 {
     Task<T?> GetByIdAsync(long Id);
     Task<IEnumerable<T>> ListAsync(ISpecification<T>? specification = null);

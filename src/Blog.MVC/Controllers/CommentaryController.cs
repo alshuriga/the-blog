@@ -1,14 +1,10 @@
 ﻿using Blog.Application.Constants;
 using Blog.Application.Features.Commentaries;
 using Blog.Application.Features.Posts.Requests.Commands;
-using Blog.Application.Features.Posts.Requests.Queries;
-using Blog.MVC.Filters;
 using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace Blog.MVC.Controllers;
 
@@ -36,7 +32,7 @@ public class CommentaryController : Controller
     [Authorize]
     public IActionResult Create(long postId)
     {
-        return View(new CreateCommentaryDTO() {  PostId = postId});
+        return View(new CreateCommentaryDTO() { PostId = postId });
     }
 
 

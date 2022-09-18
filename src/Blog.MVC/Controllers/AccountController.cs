@@ -1,5 +1,5 @@
-﻿using Blog.Application.Features.User.Requests.Commands;
-using Blog.Application.Features.User.DTO;
+﻿using Blog.Application.Features.User.DTO;
+using Blog.Application.Features.User.Requests.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,8 +22,8 @@ namespace Blog.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromForm] UserSignInDTO user, string returnUrl = "/")
         {
-           await _mediator.Send(new SignInCommand(user));
-           return Redirect(returnUrl);
+            await _mediator.Send(new SignInCommand(user));
+            return Redirect(returnUrl);
         }
 
         public async Task<IActionResult> Logout(string returnUrl = "/")
@@ -39,7 +39,7 @@ namespace Blog.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignUp([FromForm]UserSignUpDTO user, string returnUrl = "/")
+        public async Task<IActionResult> SignUp([FromForm] UserSignUpDTO user, string returnUrl = "/")
         {
             await _mediator.Send(new SignUpCommand(user));
             return Redirect(returnUrl);

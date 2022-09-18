@@ -1,11 +1,6 @@
 ﻿using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.Application.Features.Commentaries.Validators;
 
@@ -18,7 +13,7 @@ public class CreateCommentaryDTOValidator : AbstractValidator<CreateCommentaryDT
 
         RuleFor(c => c.PostId).CustomAsync(async (id, context, cancelation) =>
         {
-            if(await _repo.GetByIdAsync(id) == null)
+            if (await _repo.GetByIdAsync(id) == null)
             {
                 context.AddFailure($"Post {id} not found");
             }

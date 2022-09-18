@@ -1,21 +1,18 @@
 ﻿using AutoMapper;
-using Blog.Core.Entities;
-using Blog.Application.Features;
+using Blog.Application.Features.Commentaries;
 using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Features.Tags.DTO;
-using Blog.Application.Features.Commentaries;
-using Blog.Application.Mapping.Resolvers.Posts;
-using Blog.Application.Features.Posts.DTO.Common;
-using Blog.Application.Interfaces.Common;
 using Blog.Application.Features.User.DTO;
+using Blog.Application.Mapping.Resolvers.Posts;
 using Blog.Application.Models;
+using Blog.Core.Entities;
 
 namespace Blog.Application.MappingProfiles;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
-    {     
+    {
         CreateMap<Post, PostDTO>();
         CreateMap<UpdatePostDTO, Post>().ForMember(dest => dest.Tags, opts => opts.MapFrom<TagStringToTagsResolver>());
         CreateMap<Post, UpdatePostDTO>().ForMember(dest => dest.TagString, opts => opts.MapFrom<TagToTagStringResolver>());

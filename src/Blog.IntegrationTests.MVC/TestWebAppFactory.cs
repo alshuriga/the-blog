@@ -1,6 +1,4 @@
-﻿
-using Blog.Application.Interfaces.Common;
-using Blog.Infrastructure.Data;
+﻿using Blog.Infrastructure.Data;
 using Blog.IntegrationTests.MVC.Mocks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;

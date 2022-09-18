@@ -1,6 +1,5 @@
 ﻿using Blog.Application.Interfaces;
 using MediatR;
-using System;
 
 namespace Blog.Application.Features.User.Requests.Commands;
 

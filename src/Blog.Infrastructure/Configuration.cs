@@ -1,13 +1,13 @@
-﻿using Blog.Infrastructure.Data;
+﻿using Blog.Application.Interfaces;
+using Blog.Application.Interfaces.Common;
+using Blog.Infrastructure.Data;
+using Blog.Infrastructure.Data.Repositories;
+using Blog.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Blog.Application.Interfaces.Common;
-using Blog.Application.Interfaces;
-using Blog.Infrastructure.Identity;
 using MiniBlog.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
-using Blog.Infrastructure.Data.Repositories;
 
 namespace Blog.Infrastructure;
 

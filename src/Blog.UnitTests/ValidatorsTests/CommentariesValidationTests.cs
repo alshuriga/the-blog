@@ -1,9 +1,5 @@
 ﻿using Blog.Application.Features.Commentaries;
 using Blog.Application.Features.Commentaries.Validators;
-using Blog.Application.Features.Posts.DTO;
-using Blog.Application.Features.Posts.Validators;
-using Blog.Application.Features.User.DTO;
-using Blog.Application.Features.User.Validators;
 using Blog.Tests.Mocks;
 using FluentValidation.TestHelper;
 namespace Blog.UnitTests.Application.ValidatorsTests;

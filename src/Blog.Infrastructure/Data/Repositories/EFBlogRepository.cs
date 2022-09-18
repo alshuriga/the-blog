@@ -1,9 +1,7 @@
-﻿using Ardalis.Specification.EntityFrameworkCore;
-using Ardalis.Specification;
+﻿using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities.Common;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Data.Repositories
 {

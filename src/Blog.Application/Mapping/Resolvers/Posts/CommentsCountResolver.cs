@@ -17,7 +17,7 @@ namespace Blog.Application.Mapping.Resolvers.Posts
 
         public int Resolve(Post source, PostListVM destination, int destMember, ResolutionContext context)
         {
-            return  _commentRepo.CountAsync(new CommentariesByPostIdSpecification(source.Id)).Result;
+            return _commentRepo.CountAsync(new CommentariesByPostIdSpecification(source.Id)).Result;
         }
     }
 }

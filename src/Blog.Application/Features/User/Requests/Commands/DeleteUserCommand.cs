@@ -1,10 +1,5 @@
 ﻿using Blog.Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.Application.Features.User.Requests.Commands
 {
@@ -15,7 +10,7 @@ namespace Blog.Application.Features.User.Requests.Commands
         {
             _id = id;
         }
-        
+
         public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Unit>
         {
             private readonly IUserService _userService;

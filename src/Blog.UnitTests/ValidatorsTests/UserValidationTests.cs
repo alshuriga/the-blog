@@ -1,6 +1,4 @@
-﻿using Blog.Application.Features.Posts.DTO;
-using Blog.Application.Features.Posts.Validators;
-using Blog.Application.Features.User.DTO;
+﻿using Blog.Application.Features.User.DTO;
 using Blog.Application.Features.User.Validators;
 using Blog.Application.Interfaces;
 using Blog.Application.Models;
@@ -23,10 +21,10 @@ public class UserValidationTests
         var validator = new UserSignUpValidator(userServiceMock.Object);
         var testDTO = new UserSignUpDTO()
         {
-           Username = "abcde",
-           Password = "abcd",
-           RepeatPassword = "",
-           Email = "test@example.com"
+            Username = "abcde",
+            Password = "abcd",
+            RepeatPassword = "",
+            Email = "test@example.com"
         };
 
         //act

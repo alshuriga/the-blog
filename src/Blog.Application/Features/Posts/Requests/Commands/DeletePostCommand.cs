@@ -1,9 +1,5 @@
-﻿
-using AutoMapper;
-using Blog.Application.Features.Posts.DTO;
-using Blog.Application.Interfaces.Common;
+﻿using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
-using FluentValidation;
 using MediatR;
 
 namespace Blog.Application.Features.Posts.Requests.Commands
@@ -32,4 +28,4 @@ namespace Blog.Application.Features.Posts.Requests.Commands
             }
         }
     }
-}   
+}

@@ -1,5 +1,4 @@
 ﻿using Blog.Application.Features.Posts.DTO.Common;
-using Blog.Application.Features.Tags.DTO;
 
 namespace Blog.Application.Features.Posts.DTO;
 

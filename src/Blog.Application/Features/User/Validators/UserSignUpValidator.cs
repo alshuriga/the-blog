@@ -1,5 +1,4 @@
-﻿using AutoMapper.Configuration;
-using Blog.Application.Features.User.DTO;
+﻿using Blog.Application.Features.User.DTO;
 using Blog.Application.Interfaces;
 using FluentValidation;
 

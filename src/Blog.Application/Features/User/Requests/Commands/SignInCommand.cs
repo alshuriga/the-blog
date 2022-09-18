@@ -4,7 +4,6 @@ using Blog.Application.Interfaces;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using System;
 
 namespace Blog.Application.Features.User.Requests.Commands;
 
@@ -16,7 +15,7 @@ public class SignInCommand : IRequest<Unit>
     {
         _user = user;
     }
-  
+
     public class SignInCommandHandler : IRequestHandler<SignInCommand, Unit>
     {
         private readonly IUserService _userService;
