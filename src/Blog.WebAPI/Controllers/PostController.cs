@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog.MVC.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("api/[controller]/[action]")]
 public class PostController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -39,7 +39,7 @@ public class PostController : ControllerBase
         return model;
     }
 
-    [HttpPost]
+    [HttpPut]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Update(UpdatePostDTO post)
     {
@@ -64,7 +64,7 @@ public class PostController : ControllerBase
     }
 
 
-    [HttpPost("{postId:long}")]
+    [HttpDelete("{postId:long}")]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Delete(long postId)
     {

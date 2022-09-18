@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog.WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("api/[controller]/[action]")]
 public class CommentaryController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -30,9 +30,9 @@ public class CommentaryController : ControllerBase
         return id;
     }
 
-    [HttpPost("{postId:long}")]
+    [HttpDelete("{commentaryId:long}")]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
-    public async Task<IActionResult> Delete([FromBody] long commentaryId, long returnId)
+    public async Task<IActionResult> Delete(long commentaryId)
     {
         await _mediator.Send(new DeleteCommentaryCommand(commentaryId));
         return Ok();

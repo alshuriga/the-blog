@@ -52,12 +52,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapControllerRoute("api", "api/{controller}/{action}/id");
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllers();
+app.MapControllerRoute("api", "api/{controller}/{action}/");
 
 app.Run();

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog.MVC.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("api/[controller]/[action]")]
 [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
 public class ManageController : Controller
 {
@@ -20,14 +20,14 @@ public class ManageController : Controller
         _mediator = mediator;
     }
 
-    [HttpPost("{userId}")]
+    [HttpPut("{userId}")]
     public async Task<IActionResult> ToggleAdminRole(string userId)
     {
         await _mediator.Send(new ToggleRoleCommand(userId, RolesConstants.ADMIN_ROLE));
         return Ok();
     }
 
-    [HttpPost("{userId}")]
+    [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUser(string userId)
     {
         await _mediator.Send(new DeleteUserCommand(userId));

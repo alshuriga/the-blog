@@ -14,7 +14,7 @@ namespace Blog.MVC.Controllers
 {
     
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     public class AccountController : ControllerBase
     {
         private readonly IMediator _mediator;
