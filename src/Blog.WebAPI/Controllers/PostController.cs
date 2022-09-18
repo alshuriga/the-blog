@@ -1,9 +1,8 @@
 ﻿using Blog.Application.Constants;
-using Blog.Application.Features.Commentaries;
 using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Features.Posts.Requests.Commands;
 using Blog.Application.Features.Posts.Requests.Queries;
-using Blog.MVC.Filters;
+using Blog.Application.Features.Posts.ViewModels;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,8 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.MVC.Controllers;
 
+[ApiController]
 [Route("[controller]/[action]")]
-public class PostController : Controller
+public class PostController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IValidator<CreatePostDTO> _validator;
@@ -23,30 +23,20 @@ public class PostController : Controller
         _validator = validator;
     }
 
-    [HttpGet("/{currentPage:int?}")]
-    [HttpGet("/all/{currentPage:int?}")]
-    public async Task<IActionResult> List(int currentPage = 0, bool isDraft = false, string? tagName = null)
+    [HttpGet("{currentPage:int?}")]
+    public async Task<PostsPageVM> List(int currentPage = 0, bool isDraft = false, string? tagName = null)
     {
         if (isDraft && !User.IsInRole(RolesConstants.ADMIN_ROLE)) throw new ApplicationException("Access Denied");
-        ViewData["header"] = tagName == null ? "" : $"with {tagName} tag";
         var model = await _mediator.Send(new ListPostsPageQuery(currentPage, isDraft, tagName));
-        return View(model);
+        return model;
     }
 
-    [HttpGet("/post/{postId:long}")]
-    public async Task<IActionResult> SinglePost(long postId, int currentPage = 0)
+    [HttpGet("{postId:long}")]
+    public async Task<PostSingleVM> SinglePost(long postId, int currentPage = 0)
     {
         var includeDrafts = User.IsInRole(RolesConstants.ADMIN_ROLE);
         var model = await _mediator.Send(new GetPostByIdQuery(postId, currentPage, includeDrafts));
-        return View(model);
-    }
-
-
-    [HttpGet]
-    [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
-    public IActionResult Create()
-    {
-        return View();
+        return model;
     }
 
     [HttpPost]
@@ -54,30 +44,31 @@ public class PostController : Controller
     public async Task<IActionResult> Update(UpdatePostDTO post)
     {
         await _mediator.Send(new UpdatePostCommand(post));
-        return RedirectToAction("SinglePost", new { postId = post.PostId });
+        return Ok();
     }
 
+    [HttpGet("{postId:long}")]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
-    public async Task<IActionResult> Update(long postId)
+    public async Task<UpdatePostDTO> Update(long postId)
     {
         var model = await _mediator.Send(new GetPostToEditQuery(postId));
-        return View(model);
+        return model;
     }
 
     [HttpPost]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
-    public async Task<IActionResult> Create([FromForm] CreatePostDTO post)
+    public async Task<long> Create([FromBody] CreatePostDTO post)
     {
         var id = await _mediator.Send(new CreatePostCommand(post));
-        return RedirectToAction("SinglePost", new { postId = id });
+        return id;
     }
 
 
-    [HttpPost]
+    [HttpPost("{postId:long}")]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Delete(long postId)
     {
         await _mediator.Send(new DeletePostCommand(postId));
-        return RedirectToAction(nameof(List));
+        return Ok();
     }
 }

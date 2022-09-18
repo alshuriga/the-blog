@@ -3,14 +3,14 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace Blog.MVC.Filters;
 
-public class CustomExceptionFilter : ExceptionFilterAttribute
+namespace Blog.API.Filters;
+
+public class ApiExceptionFilter : ExceptionFilterAttribute
 {
     private readonly IModelMetadataProvider _provider;
-    public CustomExceptionFilter(IModelMetadataProvider provider)
+    public ApiExceptionFilter(IModelMetadataProvider provider)
     {
         _provider = provider;
     }
@@ -20,11 +20,8 @@ public class CustomExceptionFilter : ExceptionFilterAttribute
         {
             case ValidationException validationException:
                 {
-                    foreach (var error in validationException.Errors)
-                    {
-                        context.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                    }
-                    context.Result = new ViewResult() { ViewData = new ViewDataDictionary(_provider, context.ModelState) };
+                    var valErrors = validationException.Errors.ToDictionary(v => v.PropertyName, v => v.ErrorMessage);
+                    context.Result = new JsonResult(valErrors) { StatusCode = StatusCodes.Status400BadRequest };
                     context.ExceptionHandled = true;
                     break;
                 }
@@ -33,23 +30,23 @@ public class CustomExceptionFilter : ExceptionFilterAttribute
                 {
                     context.Result = new NotFoundResult();
                     context.ExceptionHandled = true;
-
                     break;
                 }
             default:
                 {
-                    context.Result = new ViewResult()
-                    {
-                        ViewName = "Error",
-                        ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                        {
-                            Model = context.Exception.Message
-                        }
-                    };
+                    var error = new ErrorDetails() { Message = context.Exception.Message };
+                    context.Result = new JsonResult(error) { StatusCode = StatusCodes.Status400BadRequest };
+                    context.ExceptionHandled = true;
                     break;
                 }
         }
 
         base.OnException(context);
     }
+}
+
+public class ErrorDetails
+{
+        public string Message { get; set; } = null!;
+        
 }

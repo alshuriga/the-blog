@@ -33,7 +33,7 @@ public static class Configuration
 
 
         //cached repository
-        services.AddScoped(typeof(IBlogRepository<>), typeof(DistributedCachedBlogRepository<>));
+        services.AddScoped(typeof(IBlogRepository<>), typeof(DistributedCacheBlogRepository<>));
         services.AddScoped(typeof(EFBlogRepository<>));
 
         ////cached repository

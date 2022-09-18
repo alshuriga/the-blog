@@ -10,12 +10,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.ConfigureApplication();
 builder.Services.ConfigureInfrastructure(builder.Configuration);
 
-if (!builder.Environment.IsDevelopment())
+if(!builder.Environment.IsDevelopment())
 {
-    builder.Services.AddMvc(opts => opts.Filters.Add<CustomExceptionFilter>());
+    builder.Services.AddMvc(opts => opts.Filters.Add<MvcExceptionFilter>());
 }
 
-if (builder.Environment.EnvironmentName == "Azure")
+if(builder.Environment.EnvironmentName == "Azure")
 {
     builder.Logging.ClearProviders();
     builder.Logging.AddConsole();

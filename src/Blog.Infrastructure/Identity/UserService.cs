@@ -104,5 +104,11 @@ public class UserService : IUserService
         return noRoleUsers.Select(u => new User() { Id = u.Id, Username = u.UserName, Email = u.Email }).ToList();
     }
 
+    public async Task<bool> CheckPasswordAsync(string username, string password)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return false;
 
+        return await _userManager.CheckPasswordAsync(user, password);
+    }
 }
