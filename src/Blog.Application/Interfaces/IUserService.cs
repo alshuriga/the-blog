@@ -11,7 +11,7 @@ namespace Blog.Application.Interfaces
     {
         Task<User?> GetUserByIdAsync(string id);
         Task<User?> GetUserByNameAsync(string userName);
-        Task SignInAsync(string username, string password);
+        Task<bool> SignInAsync(string username, string password);
         Task SignOutAsync();
         Task SignUpAsync(string username, string email, string password);
         Task DeleteUserAsync(string Id);

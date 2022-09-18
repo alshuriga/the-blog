@@ -6,8 +6,10 @@ using Blog.MVC.Filters;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
 builder.Services.ConfigureApplication();
 builder.Services.ConfigureInfrastructure(builder.Configuration);
+
 if(!builder.Environment.IsDevelopment())
 {
     builder.Services.AddMvc(opts => opts.Filters.Add<CustomExceptionFilter>());

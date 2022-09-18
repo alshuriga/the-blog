@@ -14,6 +14,8 @@ namespace Blog.Application.Features.Tags.Specifications
         public TagsByTagNameSpecification(string tagName)
         {
             Query.Where(t => t.Name == tagName);
+
+            Query.EnableCache(nameof(TagsByTagNameSpecification), tagName);
         }
     }
 }

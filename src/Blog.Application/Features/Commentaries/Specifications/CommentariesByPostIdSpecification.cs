@@ -14,6 +14,8 @@ namespace Blog.Application.Features.Commentaries.Specifications
                 if (currentPage > 0) Query.Skip(PaginationConstants.COMMENTARIES_PER_PAGE * (int)currentPage);
                 Query.Take(PaginationConstants.COMMENTARIES_PER_PAGE);
             }
+            Query.EnableCache(nameof(CommentariesByPostIdSpecification), postId, currentPage!);
+
         }
     }
 }

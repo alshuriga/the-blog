@@ -14,6 +14,8 @@ namespace Blog.Application.Features.Posts.Specifications
             {
                 if (currentPage > 0) Query.Skip(PaginationConstants.POSTS_PER_PAGE * (int)currentPage);
                 Query.Take(PaginationConstants.POSTS_PER_PAGE);
+
+                Query.EnableCache(nameof(PostsSpecification), currentPage, tagName!, isDraft!);
             }
         }
     }

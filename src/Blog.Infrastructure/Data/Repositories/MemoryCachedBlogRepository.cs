@@ -1,12 +1,11 @@
-﻿using Ardalis.Specification.EntityFrameworkCore;
+﻿
 using Ardalis.Specification;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities.Common;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Blog.Infrastructure.Data
+namespace Blog.Infrastructure.Data.Repositories
 {
     public class MemoryCachedBlogRepository<T> : IBlogRepository<T> where T : BaseEntity
     {
@@ -39,9 +38,8 @@ namespace Blog.Infrastructure.Data
 
         public async Task<long> CreateAsync(T entity)
         {
-            var result =  await _repo.CreateAsync(entity);
+            var result = await _repo.CreateAsync(entity);
             var key = GetListKey(null);
-            _cache.Remove(key);
             return result;
 
         }
@@ -50,7 +48,6 @@ namespace Blog.Infrastructure.Data
         {
             await _repo.DeleteAsync(id);
             var key = GetSingleEntryKey(id);
-            _cache.Remove(key);
         }
 
         public async Task<T?> GetByIdAsync(long Id)

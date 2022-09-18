@@ -30,10 +30,12 @@ public class UserService : IUserService
         return new User() {Id = user.Id, Username = user.UserName, Email = user.Email, Roles = roles };
     }
 
-    public async Task SignInAsync(string username, string password)
+    public async Task<bool> SignInAsync(string username, string password)
     {
-        var res = await _signInManager.PasswordSignInAsync(username, password, false, false);
+        var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
+        return result.Succeeded;
     }
+    
 
     public async Task SignOutAsync()
     {

@@ -5,7 +5,7 @@ using Blog.Core.Entities.Common;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Blog.Infrastructure.Data
+namespace Blog.Infrastructure.Data.Repositories
 {
     public class EFBlogRepository<T> : IBlogRepository<T> where T : BaseEntity
     {

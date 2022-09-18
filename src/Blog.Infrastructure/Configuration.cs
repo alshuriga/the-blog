@@ -7,9 +7,7 @@ using Blog.Application.Interfaces;
 using Blog.Infrastructure.Identity;
 using MiniBlog.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using StackExchange.Redis;
-using Microsoft.Extensions.Caching.Distributed;
+using Blog.Infrastructure.Data.Repositories;
 
 namespace Blog.Infrastructure;
 
@@ -25,18 +23,21 @@ public static class Configuration
         {
             opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase"));
         });
-        //services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
+
         services.AddStackExchangeRedisCache(opts =>
         {
             opts.Configuration = configuration.GetConnectionString("RedisCache");
-            opts.InstanceName = "TheBlogCache";        
+            opts.InstanceName = "TheBlogCache";
         });
 
-      
+
 
         //cached repository
         services.AddScoped(typeof(IBlogRepository<>), typeof(DistributedCachedBlogRepository<>));
         services.AddScoped(typeof(EFBlogRepository<>));
+
+        ////cached repository
+        //services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
 
         services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityEFContext>();
 

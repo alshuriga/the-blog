@@ -3,11 +3,7 @@ using Blog.Application.Features.Commentaries.Specifications;
 using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Blog.Application.Mapping.Resolvers.Posts
 {

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
 
-namespace Blog.Infrastructure.Data
+namespace Blog.Infrastructure.Data.Repositories
 {
     public class DistributedCachedBlogRepository<T> : IBlogRepository<T> where T : BaseEntity
     {
@@ -22,7 +22,7 @@ namespace Blog.Infrastructure.Data
             _cache = cache;
             _cacheOptions = new()
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(5)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMilliseconds(500)
             };
             _keyPrefix = typeof(T).ToString();
         }
@@ -30,7 +30,7 @@ namespace Blog.Infrastructure.Data
         public async Task<int> CountAsync(ISpecification<T>? specification = null)
         {
             var key = GetCountKey(specification);
-            var result = await _cache.GetOrCreateAsync(key, async() => 
+            var result = await _cache.GetOrCreateAsync(key, async () =>
             await _repo.CountAsync(specification)
             , _cacheOptions);
             return result;
@@ -38,9 +38,7 @@ namespace Blog.Infrastructure.Data
 
         public async Task<long> CreateAsync(T entity)
         {
-            var result =  await _repo.CreateAsync(entity);
-            var key = GetListKey(null);
-            _cache.Remove(key);
+            var result = await _repo.CreateAsync(entity);
             return result;
 
         }
@@ -48,8 +46,6 @@ namespace Blog.Infrastructure.Data
         public async Task DeleteAsync(long id)
         {
             await _repo.DeleteAsync(id);
-            var key = GetSingleEntryKey(id);
-            _cache.Remove(key);
         }
 
         public async Task<T?> GetByIdAsync(long Id)
@@ -74,9 +70,7 @@ namespace Blog.Infrastructure.Data
 
         public async Task UpdateAsync(T entity)
         {
-            var key = GetSingleEntryKey(entity.Id);
             await _repo.UpdateAsync(entity);
-            _cache.Remove(key);
         }
 
         private string GetListKey(ISpecification<T>? specification) => $"{_keyPrefix}-{specification?.CacheKey}-list";
