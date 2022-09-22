@@ -21,20 +21,26 @@ public class ManageController : Controller
     }
 
     [HttpPut("{userId}")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> ToggleAdminRole(string userId)
     {
         await _mediator.Send(new ToggleRoleCommand(userId, RolesConstants.ADMIN_ROLE));
-        return Ok();
+        return NoContent();
     }
 
     [HttpDelete("{userId}")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteUser(string userId)
     {
         await _mediator.Send(new DeleteUserCommand(userId));
-        return Ok();
+        return NoContent();
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<UsersListVM> UserList()
     {
         var model = await _mediator.Send(new ListUsersQuery());

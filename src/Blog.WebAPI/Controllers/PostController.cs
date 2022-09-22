@@ -12,6 +12,7 @@ namespace Blog.MVC.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
+
 public class PostController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -23,14 +24,19 @@ public class PostController : ControllerBase
         _validator = validator;
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [HttpGet("{currentPage:int?}")]
-    public async Task<PostsPageVM> List(int currentPage = 0, bool isDraft = false, string? tagName = null)
+    public async Task<IActionResult> List(int currentPage = 0, bool isDraft = false, string? tagName = null)
     {
-        if (isDraft && !User.IsInRole(RolesConstants.ADMIN_ROLE)) throw new ApplicationException("Access Denied");
+        if (isDraft && !User.IsInRole(RolesConstants.ADMIN_ROLE)) return Unauthorized();
         var model = await _mediator.Send(new ListPostsPageQuery(currentPage, isDraft, tagName));
-        return model;
+        return Ok(model);
     }
 
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("{postId:long}")]
     public async Task<PostSingleVM> SinglePost(long postId, int currentPage = 0)
     {
@@ -39,15 +45,21 @@ public class PostController : ControllerBase
         return model;
     }
 
+
     [HttpPut]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Update(UpdatePostDTO post)
     {
         await _mediator.Send(new UpdatePostCommand(post));
-        return Ok();
+        return NoContent();
     }
 
+
     [HttpGet("{postId:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<UpdatePostDTO> Update(long postId)
     {
@@ -56,6 +68,8 @@ public class PostController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<long> Create([FromBody] CreatePostDTO post)
     {
@@ -65,10 +79,12 @@ public class PostController : ControllerBase
 
 
     [HttpDelete("{postId:long}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Delete(long postId)
     {
         await _mediator.Send(new DeletePostCommand(postId));
-        return Ok();
+        return NoContent();
     }
 }

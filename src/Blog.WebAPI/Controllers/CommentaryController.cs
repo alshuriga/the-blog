@@ -23,6 +23,8 @@ public class CommentaryController : ControllerBase
 
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [Authorize]
     public async Task<long> Create([FromBody] CreateCommentaryDTO commentary)
     {
@@ -31,11 +33,13 @@ public class CommentaryController : ControllerBase
     }
 
     [HttpDelete("{commentaryId:long}")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Delete(long commentaryId)
     {
         await _mediator.Send(new DeleteCommentaryCommand(commentaryId));
-        return Ok();
+        return NoContent();
     }
 
 }
