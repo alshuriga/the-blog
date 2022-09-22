@@ -60,3 +60,6 @@ app.UseAuthorization();
 app.MapControllerRoute("api", "api/{controller}/{action}/");
 
 app.Run();
+
+
+public partial class Program { }

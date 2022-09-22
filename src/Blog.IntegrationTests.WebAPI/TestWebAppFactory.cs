@@ -1,16 +1,13 @@
 ﻿using Blog.Infrastructure.Data;
-using Blog.IntegrationTests.MVC.Mocks;
-using Microsoft.AspNetCore.Authentication;
+using Blog.IntegrationTests.WebAPI.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MiniBlog.Infrastructure.Data;
-using System.Security.Claims;
 
-namespace Blog.IntegrationTests.MVC
+namespace Blog.IntegrationTests.WebAPI
 {
     public class TestWebAppFactory<TEntry> : WebApplicationFactory<TEntry> where TEntry : class
     {
@@ -46,28 +43,7 @@ namespace Blog.IntegrationTests.MVC
             base.ConfigureWebHost(builder);
         }
 
-        public HttpClient CreateClientWithAuth(Claim[] claims, WebApplicationFactoryClientOptions? options = null)
-        {
-            var factory = this.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.Configure<MockAuthClaimsOptions>(opts =>
-                    {
-                        opts.Claims = claims;
-                    });
-                    services.AddAuthentication(opts =>
-                    {
-                        opts.DefaultAuthenticateScheme = "Test";
-                    }).AddScheme<AuthenticationSchemeOptions, MockAuthHandler>("Test", options => { });
-                });
-            });
-
-            if (options != null)
-                return factory.CreateClient(options);
-
-            return factory.CreateClient();
-        }
+   
 
     }
 }
