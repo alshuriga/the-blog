@@ -2,12 +2,7 @@
 using Blog.Application.Features.User.DTO;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Blog.Application.Constants;
 using Blog.Application.Models;
 
 namespace Blog.MVC.Controllers

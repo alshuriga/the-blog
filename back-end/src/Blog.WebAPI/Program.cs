@@ -2,8 +2,10 @@ using Blog.API.Filters;
 using Blog.Application;
 using Blog.Application.Models;
 using Blog.Infrastructure;
+using Blog.Infrastructure.DataSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +36,7 @@ builder.Services.AddAuthentication(opts =>
         ValidIssuer = jwtOptions.Issuer,
         ValidAudience = jwtOptions.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
-
+        NameClaimType = ClaimTypes.NameIdentifier,
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = false,
@@ -46,10 +48,19 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+SeedData.EnsureSeedContent(app.Services);
+await SeedData.EnsureSeedIdentity(app.Services);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(opts =>
+    {
+        opts.AllowAnyOrigin();
+        opts.AllowAnyMethod();
+        opts.AllowAnyHeader();
+    });
 }
 
 

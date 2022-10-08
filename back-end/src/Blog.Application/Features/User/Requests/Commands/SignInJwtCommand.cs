@@ -12,10 +12,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using ValidationFailure = FluentValidation.Results.ValidationFailure;
+using Blog.WebAPI.Models;
 
 namespace Blog.Application.Features.User.Requests.Commands;
 
-public class SignInJwtCommand : IRequest<string>
+public class SignInJwtCommand : IRequest<JwtToken>
 {
     private readonly UserSignInDTO _user;
     
@@ -25,7 +26,7 @@ public class SignInJwtCommand : IRequest<string>
         _user = user;
     }
 
-    public class SignInJwtCommandHandler : IRequestHandler<SignInJwtCommand, string>
+    public class SignInJwtCommandHandler : IRequestHandler<SignInJwtCommand, JwtToken>
     {
         private readonly IUserService _userService;
         private readonly IValidator<UserSignInDTO> _validator;
@@ -40,7 +41,7 @@ public class SignInJwtCommand : IRequest<string>
         }
 
 
-        public async Task<string> Handle(SignInJwtCommand request, CancellationToken cancellationToken)
+        public async Task<JwtToken> Handle(SignInJwtCommand request, CancellationToken cancellationToken)
         {
             _validator.ValidateAndThrow(request._user);
             var result = await _userService.CheckPasswordAsync(request._user.Username, request._user.Password);
@@ -69,7 +70,7 @@ public class SignInJwtCommand : IRequest<string>
 
             var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
             var token = handler.CreateToken(decriptor);
-            return (handler.WriteToken(token));
+            return new JwtToken(handler.WriteToken(token));
         }
     }
 }
