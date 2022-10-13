@@ -20,7 +20,11 @@ public class ApiExceptionFilter : ExceptionFilterAttribute
         {
             case ValidationException validationException:
                 {
-                    var valErrors = validationException.Errors.ToDictionary(v => v.PropertyName, v => v.ErrorMessage);
+                    var valErrors = new Dictionary<string, string>();
+                    foreach (var error in validationException.Errors)
+                    {
+                        valErrors[error.PropertyName] = valErrors.ContainsKey(error.PropertyName) ? valErrors[error.PropertyName] + $"\n{error.ErrorMessage}" : error.ErrorMessage;
+                    }
                     context.Result = new JsonResult(valErrors) { StatusCode = StatusCodes.Status400BadRequest };
                     context.ExceptionHandled = true;
                     break;
