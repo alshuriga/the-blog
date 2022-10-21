@@ -26,11 +26,11 @@ public class PostController : ControllerBase
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [HttpGet("{currentPage:int?}")]
     public async Task<IActionResult> List(int currentPage = 0, bool isDraft = false, string? tagName = null)
     {
-        if (isDraft && !User.IsInRole(RolesConstants.ADMIN_ROLE)) return Unauthorized();
+        if (isDraft && !User.IsInRole(RolesConstants.ADMIN_ROLE)) return Forbid();
         var model = await _mediator.Send(new ListPostsPageQuery(currentPage, isDraft, tagName));
         return Ok(model);
     }
@@ -49,7 +49,7 @@ public class PostController : ControllerBase
 
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Update(UpdatePostDTO post)
     {
@@ -60,7 +60,7 @@ public class PostController : ControllerBase
 
     [HttpGet("{postId:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<UpdatePostDTO> Update(long postId)
     {
@@ -70,7 +70,7 @@ public class PostController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<long> Create([FromBody] CreatePostDTO post)
     {
@@ -81,7 +81,7 @@ public class PostController : ControllerBase
 
     [HttpDelete("{postId:long}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
     public async Task<IActionResult> Delete(long postId)
     {

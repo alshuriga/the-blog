@@ -6,9 +6,9 @@ using Blog.Core.Entities;
 
 namespace Blog.Application.Mapping.Resolvers.Posts
 {
-    public class TagToTagStringResolver : IValueResolver<Post, IPostDTO, string>
+    public class TagToTagStringResolver : IValueResolver<Post, IPostDTO, string?>
     {
-        public string Resolve(Post source, IPostDTO destination, string destMember, ResolutionContext context)
+        public string Resolve(Post source, IPostDTO destination, string? destMember, ResolutionContext context)
         {
             return string.Join(",", source.Tags.Select(t => t.Name));
         }

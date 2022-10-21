@@ -25,6 +25,7 @@ public class CommentaryController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [Authorize]
     public async Task<long> Create([FromBody] CreateCommentaryDTO commentary)
     {

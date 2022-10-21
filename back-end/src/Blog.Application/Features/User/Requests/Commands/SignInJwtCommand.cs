@@ -44,10 +44,10 @@ public class SignInJwtCommand : IRequest<JwtToken>
         public async Task<JwtToken> Handle(SignInJwtCommand request, CancellationToken cancellationToken)
         {
             _validator.ValidateAndThrow(request._user);
-            var result = await _userService.CheckPasswordAsync(request._user.Username, request._user.Password);
+            var result = await _userService.CheckPasswordAsync(request._user.Username!, request._user.Password!);
             if (!result) throw new ValidationException(new ValidationFailure[] { new("", "Username or/and password is incorrect") });
             var userRoles = string.Join(",", 
-                (await _userService.GetUserByNameAsync(request._user.Username))?.Roles ?? Enumerable.Empty<string>());
+                (await _userService.GetUserByNameAsync(request._user.Username!))?.Roles ?? Enumerable.Empty<string>());
             
             var issuer = _jwtOptions.Issuer;
             var audience = _jwtOptions.Audience;
@@ -58,7 +58,7 @@ public class SignInJwtCommand : IRequest<JwtToken>
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim("Id", Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, request._user.Username),
+                    new Claim(JwtRegisteredClaimNames.Sub, request._user.Username!),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(ClaimTypes.Role, userRoles)
                 }),

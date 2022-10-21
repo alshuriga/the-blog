@@ -25,7 +25,7 @@ public class ApiExceptionFilter : ExceptionFilterAttribute
                     {
                         valErrors[error.PropertyName] = valErrors.ContainsKey(error.PropertyName) ? valErrors[error.PropertyName] + $"\n{error.ErrorMessage}" : error.ErrorMessage;
                     }
-                    context.Result = new JsonResult(valErrors) { StatusCode = StatusCodes.Status400BadRequest };
+                    context.Result = new JsonResult(valErrors) { StatusCode = StatusCodes.Status422UnprocessableEntity };
                     context.ExceptionHandled = true;
                     break;
                 }

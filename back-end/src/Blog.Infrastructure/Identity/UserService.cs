@@ -8,12 +8,13 @@ public class UserService : IUserService
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-
-    public UserService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public UserService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
     }
 
     public async Task<User?> GetUserByIdAsync(string id)
@@ -86,7 +87,7 @@ public class UserService : IUserService
         {
             users = (await _userManager.GetUsersInRoleAsync(rolename));
         }
-        return users.Select(u => new User() { Id = u.Id, Username = u.UserName, Email = u.Email }).ToList();
+        return users.Select(u => new User() { Id = u.Id, Username = u.UserName, Email = u.Email, Roles = _userManager.GetRolesAsync(u).Result.ToList() }).ToList();
     }
 
     public async Task<List<User>> ListNoRoleUsersAsync()
@@ -101,7 +102,7 @@ public class UserService : IUserService
                 noRoleUsers.Add(user);
             }
         }
-        return noRoleUsers.Select(u => new User() { Id = u.Id, Username = u.UserName, Email = u.Email }).ToList();
+        return noRoleUsers.Select(u => new User() { Id = u.Id, Username = u.UserName, Email = u.Email, Roles = _userManager.GetRolesAsync(u).Result.ToList() }).ToList();
     }
 
     public async Task<bool> CheckPasswordAsync(string username, string password)

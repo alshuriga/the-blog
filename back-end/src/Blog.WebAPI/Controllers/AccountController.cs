@@ -21,7 +21,7 @@ namespace Blog.MVC.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Login([FromBody] UserSignInDTO user)
         {
            var token = await _mediator.Send(new SignInJwtCommand(user));
@@ -39,7 +39,7 @@ namespace Blog.MVC.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> SignUp([FromBody]UserSignUpDTO user)
         {
             await _mediator.Send(new SignUpCommand(user));

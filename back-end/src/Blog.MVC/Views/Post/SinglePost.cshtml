@@ -13,7 +13,7 @@
         <div class="row-cols-1">
             <a asp-action="SinglePost" asp-route-postid="@Model.Post.Id" class="text-center text-black text-decoration-none">
                 <h1>
-                    @Model.Post.Header.ToString()
+                    @Model.Post.Header?.ToString()
                 </h1>
             </a>
         </div>
