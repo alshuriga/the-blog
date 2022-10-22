@@ -22,7 +22,7 @@ public static class Configuration
         services.AddDbContext<IdentityEFContext>(opts =>
         {
             opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase"));
-        });
+        }, ServiceLifetime.Transient);
 
         //services.AddStackExchangeRedisCache(opts =>
         //{

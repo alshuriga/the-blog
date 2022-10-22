@@ -54,7 +54,7 @@ public class PostController : Controller
     public async Task<IActionResult> Update(UpdatePostDTO post)
     {
         await _mediator.Send(new UpdatePostCommand(post));
-        return RedirectToAction("SinglePost", new { postId = post.PostId });
+        return RedirectToAction("SinglePost", new { postId = post.Id });
     }
 
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]

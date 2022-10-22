@@ -1,4 +1,5 @@
-﻿using Blog.Application.Interfaces;
+﻿using AutoMapper;
+using Blog.Application.Interfaces;
 using Blog.Application.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -27,6 +28,7 @@ public class UserService : IUserService
     public async Task<User?> GetUserByNameAsync(string userName)
     {
         var user = await _userManager.FindByNameAsync(userName);
+        if (user == null) return null;
         var roles = (await _userManager.GetRolesAsync(user)).ToList();
         return new User() { Id = user.Id, Username = user.UserName, Email = user.Email, Roles = roles };
     }
@@ -87,7 +89,14 @@ public class UserService : IUserService
         {
             users = (await _userManager.GetUsersInRoleAsync(rolename));
         }
-        return users.Select(u => new User() { Id = u.Id, Username = u.UserName, Email = u.Email, Roles = _userManager.GetRolesAsync(u).Result.ToList() }).ToList();
+        List<User> list = new List<User>(); 
+        foreach(var u in users)
+        {
+            var user = new User() { Id = u.Id, Username = u.UserName, Email = u.Email };
+            user.Roles = (await _userManager.GetRolesAsync(u)).ToList();
+            list.Add(user);
+        }
+        return list;
     }
 
     public async Task<List<User>> ListNoRoleUsersAsync()
@@ -102,7 +111,7 @@ public class UserService : IUserService
                 noRoleUsers.Add(user);
             }
         }
-        return noRoleUsers.Select(u => new User() { Id = u.Id, Username = u.UserName, Email = u.Email, Roles = _userManager.GetRolesAsync(u).Result.ToList() }).ToList();
+        return noRoleUsers.Select(u => new User() { Id = u.Id, Username = u.UserName, Email = u.Email, Roles = new List<string>() }).ToList();
     }
 
     public async Task<bool> CheckPasswordAsync(string username, string password)

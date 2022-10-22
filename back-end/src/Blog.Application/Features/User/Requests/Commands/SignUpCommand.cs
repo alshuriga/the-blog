@@ -26,7 +26,8 @@ public class SignUpCommand : IRequest<Unit>
 
         public async Task<Unit> Handle(SignUpCommand request, CancellationToken cancellationToken)
         {
-            await _validator.ValidateAndThrowAsync(request._user);
+            var user = request._user ?? throw new ArgumentNullException(nameof(request._user));
+            await _validator.ValidateAndThrowAsync(user, cancellationToken);
             await _userService.SignUpAsync(request._user.Username!, request._user.Email!, request._user.Password!);
             return await Unit.Task;
         }
