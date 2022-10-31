@@ -24,7 +24,9 @@ public static class DistributedCacheExtensions
             }
         }
         catch (RedisTimeoutException ex)
-        { }
+        {  
+
+        }
 
         result = await factory.Invoke();
 

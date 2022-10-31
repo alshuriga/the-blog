@@ -41,9 +41,10 @@ namespace Blog.Application.Features.Posts.Requests.Commands
                 await _validator.ValidateAndThrowAsync(request._commentaryDTO);
                 var commentary = _mapper.Map<Commentary>(request._commentaryDTO);
                 var userData = await _userService.GetUserByNameAsync(request._username);
+                if(userData == null) throw new ApplicationException("User not found");
                 commentary.PostId = request._postId;
-                commentary.Username = userData!.Username;
-                commentary.Email = userData.Email;
+                commentary.Username = userData.Username!;
+                commentary.Email = userData.Email!;
                 var id = await _repo.CreateAsync(commentary);
                 return id;
             }

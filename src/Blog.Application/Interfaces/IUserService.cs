@@ -14,5 +14,6 @@ namespace Blog.Application.Interfaces
         Task RemoveFromRoleAsync(string Id, string rolename);
         Task<List<User>> ListUsersAsync(string? rolename = null);
         Task<List<User>> ListNoRoleUsersAsync();
+        Task<bool> CheckPasswordAsync(string username, string password);
     }
 }

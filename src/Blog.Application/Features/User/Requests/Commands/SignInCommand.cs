@@ -30,7 +30,7 @@ public class SignInCommand : IRequest<Unit>
         public async Task<Unit> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
             _validator.ValidateAndThrow(request._user);
-            var result = await _userService.SignInAsync(request._user.Username, request._user.Password);
+            var result = await _userService.SignInAsync(request._user.Username!, request._user.Password!);
             if (!result) throw new ValidationException(new ValidationFailure[] { new("", "Username or/and password is incorrect") });
             return await Unit.Task;
         }

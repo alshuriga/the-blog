@@ -4,9 +4,9 @@ namespace Blog.Application.Features.Posts.DTO;
 
 public class UpdatePostDTO : IPostDTO
 {
-    public long PostId { get; set; }
-    public string Text { get; set; } = null!;
-    public string Header { get; set; } = null!;
-    public string TagString { get; set; } = null!;
+    public long Id { get; set; }
+    public string? Text { get; set; }
+    public string? Header { get; set; }
+    public string? TagString { get; set; }
     public bool IsDraft { get; set; }
 }

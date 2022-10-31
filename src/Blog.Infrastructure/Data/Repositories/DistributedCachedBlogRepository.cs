@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Blog.Infrastructure.Data.Repositories
 {
-    public class DistributedCachedBlogRepository<T> : IBlogRepository<T> where T : BaseEntity
+    public class DistributedCacheBlogRepository<T> : IBlogRepository<T> where T : BaseEntity
     {
 
         private readonly EFBlogRepository<T> _repo;
@@ -15,7 +15,7 @@ namespace Blog.Infrastructure.Data.Repositories
         private string _keyPrefix;
         private DistributedCacheEntryOptions _cacheOptions;
 
-        public DistributedCachedBlogRepository(EFBlogRepository<T> repo, IDistributedCache cache)
+        public DistributedCacheBlogRepository(EFBlogRepository<T> repo, IDistributedCache cache)
         {
             _repo = repo;
             _cache = cache;
