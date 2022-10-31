@@ -53,18 +53,18 @@ await SeedData.EnsureSeedIdentity(app.Services);
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseCors(opts =>
-    {
-        opts.AllowAnyOrigin();
-        opts.AllowAnyMethod();
-        opts.AllowAnyHeader();
-    });
+    app.UseHttpsRedirection();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseCors(opts =>
+{
+    opts.AllowAnyOrigin();
+    opts.AllowAnyMethod();
+    opts.AllowAnyHeader();
 
-app.UseHttpsRedirection();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
