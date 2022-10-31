@@ -1,0 +1,53 @@
+<div class="col col-lg-8 mx-auto">
+<div class="card py-4 px-lg-5 px-4">
+<h4 class="text-center mb-3">Sign Up</h4>
+    <form [formGroup]="signupForm">
+    <div class="form-group mb-2">
+        <label class="mb-2" asp-for="Username">Username</label>
+
+        <input formControlName="username" class="form-control"
+        [ngClass]="{'is-invalid': (validErrors$ | async)?.Username}" />
+
+        <div class="invalid-feedback" *ngIf="(validErrors$ | async)?.Username">
+            {{ (validErrors$ | async).Username }}
+        </div>
+    </div>
+    <div class="form-group mb-2">
+        <label class="mb-2" asp-for="Email">Email</label>
+
+        <input formControlName="email" class="form-control"
+        [ngClass]="{'is-invalid': (validErrors$ | async)?.Email}" />
+
+        <div class="invalid-feedback" *ngIf="(validErrors$ | async)?.Email">
+            {{ (validErrors$ | async).Email }}
+        </div>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Password" class="mb-2">Password</label>
+
+        <input type="password" formControlName="password" class="form-control"
+        [ngClass]="{'is-invalid': (validErrors$ | async)?.Password}" />
+
+        <div class="invalid-feedback" *ngIf="(validErrors$ | async)?.Password">
+            {{ (validErrors$ | async).Password }}
+        </div>
+
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="RepeatPassword" class="mb-2">Confirm password</label>
+        
+        <input type="password" formControlName="repeatPassword" class="form-control"
+        [ngClass]="{'is-invalid': (validErrors$ | async)?.ConfirmPassword}" />
+
+        <div class="invalid-feedback" *ngIf="(validErrors$ | async)?.RepeatPassword">
+            {{ (validErrors$ | async).RepeatPassword }}
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a class="btn btn-secondary mx-1">Back</a>
+        <button class="btn btn-primary mx-1" (click)="onSubmit()">Sign Up</button> 
+    </div>
+</form>
+
+</div>
+</div>

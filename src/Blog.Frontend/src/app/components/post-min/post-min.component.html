@@ -1,0 +1,36 @@
+<div *ngIf="post" class="card mt-5">
+    <div class="card-body p-4 ">
+        <div class="row">
+            <div class="col">
+
+                <span *ngIf="post?.isDraft"><i class="fa-solid fa-pencil me-2 mb-3"></i>Draft</span>
+
+                <a class="text-black text-decoration-none"  routerLink="/post/{{post.id}}">
+                    <h2 class="card-title text-truncate"> {{ post.header }}</h2>
+                </a>
+            </div>
+            <div class="col">
+                <p class="text-end font-weight-light">{{ post.dateTime | date }}</p>
+            </div>
+        </div>
+        <div class="mt-4">
+            <p>{{ post.text }}</p>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row my-1">
+            <div class="col-4">
+                <h5>
+                    <a *ngFor="let tag of post.tags" (click)="clickTag(tag.name)"
+                        class="btn btn-secondary btn-sm text-light text-lowercase me-2  mb-md-2">{{ tag.name }}</a>
+                </h5>
+            </div>
+            <div class="col-8 align-self-top">
+                <div class="float-end">
+                    <a class="float-end btn btn-outline-secondary" routerLink="/post/{{post.id}}">
+                        Commentaries ({{ post.commentariesCount }})<fa-icon [icon]="faCommentDots" class="ms-2">
+                        </fa-icon>
+                    </a>
+                </div>
+                <app-post-opts [postId]='post.id' (onDelete)="clickDelete()"></app-post-opts>
+            </div>

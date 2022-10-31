@@ -1,0 +1,9 @@
+<div *ngIf="isLoggedIn" class="text-end text-white-50">
+    Logged as <span class="text-white"> {{ claims?.username }} </span>
+    <a class="btn btn-outline-secondary text-white" (click)="onLogOutClick()">Log out</a>
+</div>
+<div *ngIf="!isLoggedIn" class="text-end text-white-50">
+    <a class="btn btn-outline-secondary  text-white" routerLink="signin">Log in</a>
+    or
+    <a class="btn btn-outline-secondary text-white" routerLink="signup">Sign Up</a>
+</div>

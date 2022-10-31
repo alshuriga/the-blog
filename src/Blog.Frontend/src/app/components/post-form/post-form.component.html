@@ -1,0 +1,53 @@
+<div class="row pt-5">
+    <p class="display-6">New post</p>
+    <form [formGroup]="postForm">
+        <div class="form-group mt-2">
+            <div class="col">
+                <label for="Header" class="form-label">Header:</label>
+
+                <input for="Header" class="form-control" formControlName="header"
+                [ngClass]="{'is-invalid': (validErrors$ | async)?.Header}">
+
+                <div class="invalid-feedback" *ngIf="(validErrors$ | async)?.Header">
+                        {{ (validErrors$ | async).Header }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group mt-2">
+            <div class="col">
+                <label asp-for="Text" class="form-label">Text:</label>
+
+                <textarea rows="10" cols="200" asp-for="Text" class="form-control" formControlName="text"
+                [ngClass]="{'is-invalid': (validErrors$ | async)?.Text}"></textarea>
+                
+                <div class="invalid-feedback" *ngIf="(validErrors$ | async)?.Text">
+                    {{ (validErrors$ | async).Text }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group mt-2">
+            <div class="col">
+                <label classs="form-label">Tags (optional):</label>
+                <input class="form-control mt-1" formControlName="tagString"
+                [ngClass]="{'is-invalid': (validErrors$ | async)?.TagString}">
+
+                <div class="invalid-feedback" *ngIf="(validErrors$ | async)?.TagString">
+                    {{ (validErrors$ | async).TagString }}
+                </div>
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" formControlName="isDraft">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Publish / Save as draft</label>
+              </div>
+        </div>
+        <div class="float-start">
+            <a class="btn btn-primary mt-4">Back</a>
+        </div>
+        <div class=" float-end">
+            <button class="btn btn-primary mt-4" (click)="onSubmit()">Save</button>
+        </div>
+    </form>
+
+</div>

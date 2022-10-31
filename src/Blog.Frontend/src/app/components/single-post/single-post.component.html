@@ -1,0 +1,86 @@
+<div *ngIf="postVM">
+    <div class="card border-0 bg-light">
+        <div class="card-body">
+            <div class="row-cols-1">
+                <a class="text-center text-black text-decoration-none">
+                    <h1>
+                        {{postVM.post.header}}
+                    </h1>
+                </a>
+            </div>
+            <div class="col">
+                <p class="text-center font-weight-light">
+                    {{postVM.post.dateTime | date}}
+                </p>
+            </div>
+
+            <div class="mt-4">
+                <p>{{postVM.post.text}}</p>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row my-1">
+                <div class="col-4">
+                    <h5>
+                        <a *ngFor="let tag of postVM.post.tags" routerLink="/list/{{tag.name}}"
+                            class="btn btn-secondary btn-sm text-light text-lowercase me-2  mb-md-2">{{ tag.name }}</a>
+                    </h5>
+                </div>
+                <div class="col">
+
+                    <app-post-opts [postId]='postVM.post.id' (onDelete)="clickDelete()"></app-post-opts>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="w-100 d-lg-none d-block"></div>
+        <div class="col mt-4 mt-lg-0">
+            <div class="row">
+                <div class="col">
+                </div>
+
+                <div class="mb-4">
+                    <app-commentary-form [postId]="postVM.post.id" (addComment)="updateComments()"></app-commentary-form>
+                </div>
+
+                <div *ngIf="postVM.commentaries">
+                    <div *ngFor="let com of postVM.commentaries"
+                        class="card border-light  border-2  bg-light bg-opacity-10 mb-3">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col float-start">
+                                    <h4>{{com.username}}</h4>
+                                    <h6>{{com.email}}</h6>
+                                </div>
+                                <div class="col float-end">
+                                    <p class="text-end font-weight-light">
+                                        {{ com.dateTime | date }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {{ com.text }}
+                        </div>
+                        <div class="card-footer p-2">
+                            <div class="btn-group float-end">
+
+                                <form method="post">
+                                    <input name="commentaryId" type="hidden" value="@com.Id">
+                                    <button class="btn m-2 btn-secondary" type="submit">
+                                        <i class="me-2 fa-solid fa-trash-can"></i>
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

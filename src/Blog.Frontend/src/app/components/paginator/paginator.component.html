@@ -1,0 +1,10 @@
+<ul class="pagination justify-content-center">
+    <li class="page-item"
+    *ngFor="let button of buttons"
+    [ngClass]="{
+        'disabled': button.disabled,
+        'active': button.active
+    }">
+        <button class="page-link" id="{{button.page}}" (click)="pageButtonClick($event)">{{button.text}}</button>
+    </li>
+</ul>
