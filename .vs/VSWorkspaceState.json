@@ -1,12 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\back-end",
-    "\\back-end\\src",
-    "\\back-end\\src\\Blog.Infrastructure",
-    "\\back-end\\src\\Blog.Infrastructure\\Identity",
-    "\\front-end"
+    ""
   ],
-  "SelectedNode": "\\back-end\\src\\Blog.Infrastructure\\Identity\\UserService.cs",
+  "SelectedNode": "\\blog.sln",
   "PreviewInSolutionExplorer": false
 }
