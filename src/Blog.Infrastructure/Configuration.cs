@@ -24,20 +24,20 @@ public static class Configuration
             opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase"));
         }, ServiceLifetime.Transient);
 
-        //services.AddStackExchangeRedisCache(opts =>
-        //{
-        //    opts.Configuration = configuration.GetConnectionString("RedisCache");
-        //    opts.InstanceName = "TheBlogCache";
-        //});
+        services.AddStackExchangeRedisCache(opts =>
+        {
+           opts.Configuration = configuration.GetConnectionString("RedisCache");
+           opts.InstanceName = "TheBlogCache";
+        });
 
 
 
-        //cached repository
-        //services.AddScoped(typeof(IBlogRepository<>), typeof(DistributedCacheBlogRepository<>));
-        //services.AddScoped(typeof(EFBlogRepository<>));
+        // cached repository
+        services.AddScoped(typeof(IBlogRepository<>), typeof(DistributedCacheBlogRepository<>));
+        services.AddScoped(typeof(EFBlogRepository<>));
 
 
-        services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
+        // services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
 
         services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityEFContext>();
 

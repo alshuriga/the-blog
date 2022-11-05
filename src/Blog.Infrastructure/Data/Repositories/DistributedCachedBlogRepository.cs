@@ -21,7 +21,7 @@ namespace Blog.Infrastructure.Data.Repositories
             _cache = cache;
             _cacheOptions = new()
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMilliseconds(500)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMilliseconds(1000)
             };
             _keyPrefix = typeof(T).ToString();
         }

@@ -18,7 +18,8 @@ const routes: Routes = [
   { path: 'new', component: PostFormComponent },
   { path: 'access-denied', component: AccessDeniedComponent },
   { path: 'admin-panel', component: AdminPanelComponent },
-  { path: 'signup', component: SignUpFormComponent }
+  { path: 'signup', component: SignUpFormComponent },
+  
 ];
 
 @NgModule({

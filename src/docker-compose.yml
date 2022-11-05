@@ -7,13 +7,19 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis_image
     environment:
       ASPNETCORE_ENVIRONMENT: "Docker"     
+      
   db:
     image: "mcr.microsoft.com/mssql/server"
     environment:
       SA_PASSWORD: "secretPassword123"
       ACCEPT_EULA: "Y"
+
+  redis_image:
+    image: "redis:latest"
+
   ui:
     build:
       context: ./Blog.Frontend
