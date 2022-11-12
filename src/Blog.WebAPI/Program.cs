@@ -63,7 +63,6 @@ app.UseCors(opts =>
     opts.AllowAnyOrigin();
     opts.AllowAnyMethod();
     opts.AllowAnyHeader();
-
 });
 
 app.UseAuthentication();
