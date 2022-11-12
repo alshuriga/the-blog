@@ -25,6 +25,6 @@ services:
       context: ./Blog.Frontend
       dockerfile: Dockerfile.UI
     ports: 
-      - "5006:80"
+      - "5006:5007"
     depends_on:
       - api
