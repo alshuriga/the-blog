@@ -19,7 +19,6 @@ export class AuthInterceptor implements HttpInterceptor {
     if(jwt && exp) {
       exp = Number.parseInt(exp);
       if(exp * 1000 >= Date.now()) {
-        let cloned = request.clone();
         request = request.clone({
           setHeaders: { 'Authorization': `Bearer ${jwt}`}
         });
