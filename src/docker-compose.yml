@@ -20,11 +20,11 @@ services:
   redis_image:
     image: "redis:latest"
 
-  ui:
-    build:
-      context: ./Blog.Frontend
-      dockerfile: Dockerfile.UI
-    ports: 
-      - "5006:5007"
-    depends_on:
-      - api
+  # ui:
+  #   build:
+  #     context: ./Blog.Frontend
+  #     dockerfile: Dockerfile.UI
+  #   ports: 
+  #     - "5006:5007"
+  #   depends_on:
+  #     - api
