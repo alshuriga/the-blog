@@ -18,12 +18,9 @@ jobs:
 
     - name: Install dependencies
       run: cd src/Blog.Frontend && npm install
-
-    - name: Run tests
-      run: npm run test:headless
-
+      
     - name: Build
-      run: npm run build:prod
+      run: src/Blog.Frontend npm run build:prod
 
     - name: Deploy
       if: success()
