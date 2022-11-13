@@ -22,6 +22,9 @@ jobs:
     - name: Build
       run: cd src/Blog.Frontend && npm run build --   --configuration=production
 
+    - name: Copy index.html to 404.html
+      run: cd src/Blog.Frontend/dist/the-blog-front && cp index.html 404.html
+      
     - name: Deploy
       if: success()
       uses: peaceiris/actions-gh-pages@v3.9.0
