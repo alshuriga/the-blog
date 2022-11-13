@@ -20,7 +20,7 @@ jobs:
       run: cd src/Blog.Frontend && npm install
       
     - name: Build
-      run: src/Blog.Frontend && npm run build:prod
+      run: cd src/Blog.Frontend && npm run build:prod
 
     - name: Deploy
       if: success()
