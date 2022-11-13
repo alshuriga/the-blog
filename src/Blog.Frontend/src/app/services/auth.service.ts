@@ -16,7 +16,6 @@ export class AuthService {
 
   constructor(private api: BlogService, private router: Router) { 
     this.authCheck();
-    console.log('auth service')
   }
 
   logIn(user: User) {

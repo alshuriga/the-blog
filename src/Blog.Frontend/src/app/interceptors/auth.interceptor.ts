@@ -19,16 +19,13 @@ export class AuthInterceptor implements HttpInterceptor {
     if(jwt && exp) {
       exp = Number.parseInt(exp);
       if(exp * 1000 >= Date.now()) {
-        console.log('token has not expired. exp time: ' +  new Date(exp * 1000));
         let cloned = request.clone();
         request = request.clone({
           setHeaders: { 'Authorization': `Bearer ${jwt}`}
         });
-        console.log(request.headers);
       }
       else{
         localStorage.removeItem('auth-token');
-        console.log('token has expired and removed.');
       }
     }
     return next.handle(request);

@@ -57,7 +57,6 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     for (const key in err.error) {
       if (Object.prototype.hasOwnProperty.call(err.error, key)) {
         errors[key] = err.error[key];
-        console.log(`${key}: ${err.error[key]}`);
       }
       this.valdation.addServerErrors(errors);
     }
