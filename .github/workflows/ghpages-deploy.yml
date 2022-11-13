@@ -16,9 +16,8 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Change directory
-      run: cd src/Blog.Frontend
     - name: Install dependencies
+    - working-directory: src/Blog.Frontend
       run: npm install
 
     - name: Run tests
