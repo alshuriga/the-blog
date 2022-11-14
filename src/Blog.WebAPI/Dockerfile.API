@@ -15,4 +15,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR Blog.WebAPI
 COPY --from=build-env /app/out .
 ENV ASPNETCORE_URLS=http://+:8000 
+ENV ASPNETCORE_ENVIRONMENT=PRODUCTION
 ENTRYPOINT ["dotnet", "Blog.WebAPI.dll"]
