@@ -16,7 +16,11 @@ services:
     environment:
       SA_PASSWORD: "secretPassword123"
       ACCEPT_EULA: "Y"
-    mem_limit: 3G
+    deploy:
+      resources:
+        limits:
+          memory: 3.5G
+          memswap_limit: 3G
 
   redis_image:
     image: "redis:latest"
