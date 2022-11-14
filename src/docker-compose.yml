@@ -20,7 +20,6 @@ services:
       resources:
         limits:
           memory: 3.5G
-      memswap_limit: 3G
 
   redis_image:
     image: "redis:latest"
