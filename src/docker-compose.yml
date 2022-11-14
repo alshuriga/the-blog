@@ -16,6 +16,7 @@ services:
     environment:
       SA_PASSWORD: "secretPassword123"
       ACCEPT_EULA: "Y"
+    command: --memory 3.5G --memory-swap 3G
 
   redis_image:
     image: "redis:latest"
