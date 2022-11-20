@@ -1,9 +1,21 @@
 <div *ngIf="page">
-    <h3>{{page.postsCount}} post(s) <span *ngIf="tagName">with <strong>{{tagName | lowercase}}</strong> tag</span></h3> 
-<app-post-min *ngFor="let post of page.posts" [post]="post" (byTag)="filterByTag($event)" (onDelete)="onClickDelete()"></app-post-min>
-<div class="row mt-4" id="pagination-row">
-    <div class="col">
-        <app-paginator [currentPage]="page.currentPage" [pageCount]="page.pageCount" (toPage)="changePage($event)"></app-paginator>
+
+    <div *ngIf="page.pageCount">
+        <h3>{{page.postsCount}} post(s) <span *ngIf="tagName">with <strong>{{tagName | lowercase}}</strong> tag</span>
+        </h3>
+        <app-post-min *ngFor="let post of page.posts" [post]="post" (byTag)="filterByTag($event)"
+            (onDelete)="onClickDelete()"></app-post-min>
+        <div class="row mt-4" id="pagination-row">
+            <div class="col">
+                <app-paginator [currentPage]="page.currentPage" [pageCount]="page.pageCount"
+                    (toPage)="changePage($event)"></app-paginator>
+            </div>
+        </div>
     </div>
-</div>
+
+    <div *ngIf="!page.pageCount">
+        <h3>There is no posts yet.</h3>
+        <a class="btn btn-primary mt-3" routerLink="/new">New post</a>
+    </div>
+
 </div>

@@ -1,5 +1,5 @@
 <div asp-validation-summary="All" class="text-danger"></div>
-<table class="table table-sm table-bordered table-striped">
+<table  *ngIf="userListVm" class="table table-sm table-bordered table-striped">
     <thead>
         <tr>
             <th>Name</th>
@@ -14,20 +14,22 @@
         <tr>
             <th colspan="5" class="text-center p-3">Basic Users</th>
         </tr>
+            <tr *ngFor="let user of userListVm.normalUsers">
+                <td>{{user.username}}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.roles.join(',')}}</td>
+                <td class="text-center">
+                    <button type="submit" class="btn btn-sm btn-danger" (click)="onClickDelete(user.id)">Delete</button>
+                </td>
+                <td class="text-center">
+                    <button type="submit" class="btn btn-sm btn-primary" (click)="onClickToggle(user.id)">Assign Admin Rights</button>
+                </td>
+            </tr>
         <tr>
             <td colspan="5" *ngIf="!userListVm.normalUsers" class="text-center">No users found</td>
         </tr>
-        <tr *ngFor="let user of userListVm.normalUsers">
-            <td>{{user.username}}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.roles.join(',')}}</td>
-            <td class="text-center">
-                <button type="submit" class="btn btn-sm btn-danger" (click)="onClickDelete(user.id)">Delete</button>
-            </td>
-            <td class="text-center">
-                <button type="submit" class="btn btn-sm btn-primary" (click)="onClickToggle(user.id)">Assign Admin Rights</button>
-            </td>
-        </tr>
+   
+
         <tr>
             <th colspan="5" class="text-center p-3">Admin Users</th>
         </tr>
