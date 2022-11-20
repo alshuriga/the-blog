@@ -20,7 +20,7 @@ jobs:
       run: cd src/Blog.Frontend && npm install
       
     - name: Build
-      run: cd src/Blog.Frontend && npm run build --   --configuration=production
+      run: cd src/Blog.Frontend && npm run build --   --configuration=production --base-href="/the-blog/"
 
     - name: Copy index.html to 404.html
       run: cd src/Blog.Frontend/dist/the-blog-front && cp index.html 404.html
