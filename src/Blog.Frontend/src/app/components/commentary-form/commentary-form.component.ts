@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { faThinkPeaks } from '@fortawesome/free-brands-svg-icons';
+import { Observable, Observer } from 'rxjs';
 import { BlogService } from 'src/app/services/blog.service';
 import { ServerValidationService } from 'src/app/services/server-validation.service';
 
@@ -29,17 +30,19 @@ export class CommentaryFormComponent implements OnInit {
   }
 
   onSubmit() {
+    const obs = {
+      next: () => {
+        this.addComment.emit();
+        this.commentForm.reset(); 
+      },
+      complete: () => {
+        this.buttonState = true;
+      }
+    }
     this.buttonState = false;
     console.log(this.postId.toString());
     console.log(this.commentForm.value.text);
-    this.blog.createCommentary(this.commentForm.value.text, this.postId).subscribe(() => 
-      {
-        this.addComment.emit();
-        this.commentForm.reset();
-      }
-    );
-    this.buttonState = true;
-
+    this.blog.createCommentary(this.commentForm.value.text, this.postId).subscribe(obs);
   }
 
 }
