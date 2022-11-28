@@ -13,6 +13,8 @@ export class CommentaryFormComponent implements OnInit {
   @Input() postId: number;
   @Output() addComment = new EventEmitter();
 
+  buttonState: boolean = true;
+
   validErrors$: Observable<any> = this.validation.serverErrors$;
 
   commentForm = new FormGroup({
@@ -27,13 +29,17 @@ export class CommentaryFormComponent implements OnInit {
   }
 
   onSubmit() {
+    this.buttonState = false;
     console.log(this.postId.toString());
     console.log(this.commentForm.value.text);
     this.blog.createCommentary(this.commentForm.value.text, this.postId).subscribe(() => 
       {
         this.addComment.emit();
+        this.commentForm.reset();
       }
     );
+    this.buttonState = true;
+
   }
 
 }

@@ -6,6 +6,7 @@ import { BlogService } from 'src/app/services/blog.service';
 import { Observable } from 'rxjs';
 import {  } from '@angular/common/http';
 import { ServerValidationService } from 'src/app/services/server-validation.service';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-post-form',
@@ -15,6 +16,7 @@ import { ServerValidationService } from 'src/app/services/server-validation.serv
 export class PostFormComponent implements OnInit {
   validErrors$: Observable<any> = this.validation.serverErrors$;
   private edit: boolean;
+  buttonState: boolean = true;
 
   postForm = new FormGroup({
     'id': new FormControl(),
@@ -34,12 +36,14 @@ export class PostFormComponent implements OnInit {
       const data = this.getPostForUpdate();
       if(data) this.postForm.setValue(data);
     }
-    console.log(this.postForm.value);
   }
 
   onSubmit() {
+   this.buttonState = false;
    if(this.edit) this.updatePost();
    else this.createPost();
+   this.postForm.reset();
+   this.buttonState = true;
   }
 
   getPostForUpdate(): UpdatePostDTO | null {

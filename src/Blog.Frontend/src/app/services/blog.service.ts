@@ -77,4 +77,9 @@ export class BlogService {
     const url = `${this.url}Post/Delete/${postId}`;
     return this.http.delete(url);
   }
+
+  deleteCommentary(commentaryId: number): Observable<any> {
+    const url = `${this.url}Commentary/Delete/${commentaryId}`;
+    return this.http.delete(url);
+  }
 }

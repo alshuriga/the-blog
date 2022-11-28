@@ -46,7 +46,7 @@
             <a class="btn btn-primary mt-4">Back</a>
         </div>
         <div class=" float-end">
-            <button class="btn btn-primary mt-4" (click)="onSubmit()">Save</button>
+            <button type="submit" [attr.disabled]="!buttonState ? true : null" class="btn btn-primary mt-4"  (click)="onSubmit()">Save</button>
         </div>
     </form>
 

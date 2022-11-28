@@ -10,7 +10,7 @@
                 [ngClass]="{'is-invalid': (validErrors$ | async)?.Text}"></textarea>
                 <div class="invalid-feedback" *ngIf="(validErrors$ | async)?.Text"> {{ (validErrors$ | async).Text }}</div>
             </div>
-            <button type="submit" (click)="onSubmit()" class="btn btn-primary mt-2">Post comment</button>
+            <button type="submit" [disabled]="!buttonState" (click)="onSubmit()" class="btn btn-primary mt-2">Post comment</button>
         </form>
         </div>  
     </div>

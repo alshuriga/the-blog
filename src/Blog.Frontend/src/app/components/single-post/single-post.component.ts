@@ -29,4 +29,11 @@ export class SinglePostComponent implements OnInit {
     this.router.navigate(['list']);
   }
 
+  clickDeleteCommentary(id: number)
+  {
+    this.service.deleteCommentary(id).subscribe(p => {
+      this.updateComments();
+    });
+  }
+
 }
