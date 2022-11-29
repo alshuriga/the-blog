@@ -39,6 +39,7 @@ export class PaginatorComponent implements OnInit, OnChanges {
   private generatePageButtons(): PageButton[] {
 
     let buttons: PageButton[] = [];
+    if(this.pageCount <= 1) return buttons;
     let from = this.currentPage <= 0 ? 0 : this.currentPage - 1;
     let to = this.currentPage >= this.pageCount - 1 ? this.currentPage : this.currentPage + 1;
     buttons.push({
