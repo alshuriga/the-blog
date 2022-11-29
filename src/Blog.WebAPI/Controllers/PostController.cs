@@ -7,7 +7,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Blog.WebAPI.Models;
 
 namespace Blog.MVC.Controllers;
 

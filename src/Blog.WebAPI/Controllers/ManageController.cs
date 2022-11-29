@@ -3,7 +3,6 @@ using Blog.Application.Features.User.Requests.Commands;
 using Blog.Application.Features.User.Requests.Queries;
 using Blog.Application.Features.ViewModels;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
