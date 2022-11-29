@@ -22,7 +22,7 @@
             <div class="row my-1">
                 <div class="col-4">
                     <h5>
-                        <a *ngFor="let tag of postVM.post.tags" routerLink="/list/{{tag.name}}"
+                        <a *ngFor="let tag of postVM.post.tags" routerLink="/list" [queryParams]="{tag: tag.name}"
                             class="btn btn-secondary btn-sm text-light text-lowercase me-2  mb-md-2">{{ tag.name }}</a>
                     </h5>
                 </div>

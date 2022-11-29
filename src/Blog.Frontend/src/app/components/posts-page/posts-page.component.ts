@@ -25,9 +25,10 @@ export class PostsPageComponent implements OnInit {
       this.isDraft = this.route.snapshot.url[0].path === 'drafts';
       this.blogService.getPostsPage(this.pageNum, this.isDraft, this.tagName)
       .subscribe(page => this.page = page);
-
-      this.route.paramMap.subscribe(p => {
-        if(p.get('tag')) this.filterByTag(p.get('tag')!);
+  
+      this.route.queryParamMap.subscribe(p => {
+        if(p.get('tag')) 
+        this.filterByTag(p.get('tag')!);
       });
     };
   
