@@ -7,6 +7,7 @@ import { PostsPageComponent } from './components/posts-page/posts-page.component
 import { SignInFormComponent } from './components/sign-in-form/sign-in-form.component';
 import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.component';
 import { SinglePostComponent } from './components/single-post/single-post.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
   { path: 'list', component: PostsPageComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'access-denied', component: AccessDeniedComponent },
   { path: 'admin-panel', component: AdminPanelComponent },
   { path: 'signup', component: SignUpFormComponent },
+  { path: 'not-found', component: NotFoundComponent }
   
 ];
 

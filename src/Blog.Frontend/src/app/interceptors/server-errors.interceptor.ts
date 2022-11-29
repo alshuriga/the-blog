@@ -42,6 +42,11 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
               alert(err.error.message)
               break;
             }
+          case 404:
+            {
+              this.router.navigate(['not-found']);
+              break;
+            }
           default: {
             break
           }

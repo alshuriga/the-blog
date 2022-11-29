@@ -22,6 +22,7 @@ import { AccessDeniedComponent } from './components/access-denied/access-denied.
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 import { PostOptsComponent } from './components/post-opts/post-opts.component';
 import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.comp
     AccessDeniedComponent,
     AdminPanelComponent,
     PostOptsComponent,
-    SignUpFormComponent
+    SignUpFormComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
