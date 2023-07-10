@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: ./Blog.WebAPI/Dockerfile.API
     ports:
-      - "5000:8000"
+      - "8000:8000"
     depends_on:
       - db
       - redis_image
@@ -12,7 +12,7 @@ services:
       ASPNETCORE_ENVIRONMENT: "Docker"     
       
   db:
-    image: "justin2004/mssql_server_tiny"
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
     environment:
       SA_PASSWORD: "secretPassword123"
       ACCEPT_EULA: "Y"
@@ -20,11 +20,11 @@ services:
   redis_image:
     image: "redis:latest"
 
-  # ui:
-  #   build:
-  #     context: ./Blog.Frontend
-  #     dockerfile: Dockerfile.UI
-  #   ports: 
-  #     - "5006:5007"
-  #   depends_on:
-  #     - api
+  ui:
+     build:
+       context: ./Blog.Frontend
+       dockerfile: Dockerfile.UI
+     ports: 
+       - "5006:80"
+     depends_on:
+       - api

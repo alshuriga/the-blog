@@ -1,1 +1,1 @@
-export const url: string = 'https://theblog.alshuriga.ink/api/';
+export const url: string = 'http://localhost:8000/api/';
