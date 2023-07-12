@@ -13,20 +13,20 @@ public static class SeedData
         var appDb = services.CreateScope().ServiceProvider.GetRequiredService<BlogEFContext>();
         appDb.Database.EnsureCreated();
 
-        //if (appDb.Database.IsRelational() && appDb.Database.GetPendingMigrations().Any())
+        //if (appdb.database.isrelational() && appdb.database.getpendingmigrations().any())
         //{
-        //    appDb.Database.Migrate();
+        //    appdb.database.migrate();
         //}
 
-        //if (!appDb.Posts.Any() && !appDb.Commentaries.Any() && !appDb.Tags.Any())
+        //if (!appdb.posts.any() && !appdb.commentaries.any() && !appdb.tags.any())
         //{
-        //    Console.WriteLine("Started seeding database with SQL query...");
-        //    using var file = File.Open("../../seedqueries/MiniBlog.sql", FileMode.Open);
-        //    using var reader = new StreamReader(file);
-        //    using var transaction = appDb.Database.BeginTransaction();
-        //    appDb.Database.ExecuteSqlRaw(reader.ReadToEnd());
-        //    transaction.Commit();
-        //    Console.WriteLine("Finished seeding database.");
+        //    console.writeline("started seeding database with sql query...");
+        //    using var file = file.open("../../seedqueries/miniblog.sql", filemode.open);
+        //    using var reader = new streamreader(file);
+        //    using var transaction = appdb.database.begintransaction();
+        //    appdb.database.executesqlraw(reader.readtoend());
+        //    transaction.commit();
+        //    console.writeline("finished seeding database.");
         //}
     }
 

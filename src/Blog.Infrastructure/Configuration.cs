@@ -5,6 +5,8 @@ using Blog.Infrastructure.Data.Repositories;
 using Blog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MiniBlog.Infrastructure.Data;
@@ -17,11 +19,12 @@ public static class Configuration
     {
         services.AddDbContext<BlogEFContext>(opts =>
         {
-            opts.UseSqlServer(configuration.GetConnectionString("BlogDatabase"));
+            opts.UseSqlite("DataSource=db1.db");
+
         });
         services.AddDbContext<IdentityEFContext>(opts =>
         {
-            opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase"));
+            opts.UseSqlite("DataSource=db2.db");
         }, ServiceLifetime.Transient);
 
         services.AddStackExchangeRedisCache(opts =>
