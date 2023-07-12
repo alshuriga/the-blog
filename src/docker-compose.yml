@@ -6,7 +6,6 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
       - redis_image
     environment:
       ASPNETCORE_ENVIRONMENT: "Docker"     
