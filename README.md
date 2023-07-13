@@ -2,12 +2,18 @@
 
 The-Blog is a blog web application developed using ASP.NET Core, aimed at learning .NET development. This project utilizes various technologies, including Entity Framework Core, Microsoft SQL for the database, Redis for caching, Angular for the frontend, and JWT for authentication. The architecture of the project follows the principles of Clean Architecture and SOLID principles, emphasizing maintainability and extensibility.
 
+<kbd>
+  <img src="https://user-images.githubusercontent.com/8162224/253225123-5aea76c8-9f75-4f46-ad49-4bd1a37e3130.png">
+</kbd>
+
+
 ## Features ✨
 
 - **User Accounts**: The blog supports two types of accounts - normal and admin accounts. Normal accounts can leave comments under posts, while admin accounts have additional privileges.
 - **Admin Privileges**: Admin accounts have the ability to create posts, publish them, or save them as drafts. They can also edit or delete posts and delete commentaries.
 - **Admin Tools**: Admin accounts have access to admin tools, where they can assign admin rights to normal accounts. It is also possible to delete user accounts; however, the deletion of all admin accounts is restricted.
-- **Post Management**: Each post consists of a header, text, and optional tags. Posts can be filtered by tags by clicking on them.
+- **Post Management**: Each post consists of a header, text, and option!
+al tags. Posts can be filtered by tags by clicking on them.
 
 ## Technologies Used 🛠️
 
