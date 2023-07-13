@@ -26,3 +26,7 @@ The project has been structured following the principles of Clean Architecture a
 - **Application Layer**: The application layer handles the business logic and orchestrates the interaction between the presentation and domain layers.
 - **Domain Layer**: This layer contains the core business entities, such as posts, comments, and user accounts.
 - **Infrastructure Layer**: The infrastructure layer includes implementations of data access, caching, and external services. It also provides support for authentication and authorization.
+
+## Demo 🌐
+
+Check out the live demo of The-Blog hosted at [https://the-blog.alshuriga.ink/](https://the-blog.alshuriga.ink/).
