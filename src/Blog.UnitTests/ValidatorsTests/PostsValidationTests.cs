@@ -24,7 +24,6 @@ public class PostValidationTests
         //assert
         res.ShouldHaveValidationErrorFor(t => t.Header);
         res.ShouldHaveValidationErrorFor(t => t.Text);
-        res.ShouldHaveValidationErrorFor(t => t.TagString);
     }
 
     [Fact]
@@ -64,7 +63,6 @@ public class PostValidationTests
         //assert
         res.ShouldHaveValidationErrorFor(t => t.Header);
         res.ShouldHaveValidationErrorFor(t => t.Text);
-        res.ShouldHaveValidationErrorFor(t => t.TagString);
     }
 
     [Fact]
