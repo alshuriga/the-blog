@@ -42,7 +42,7 @@ export class PostFormComponent implements OnInit {
    this.buttonState = false;
    if(this.edit) this.updatePost();
    else this.createPost();
-   this.postForm.reset();
+  // this.postForm.reset();
    this.buttonState = true;
   }
 
@@ -64,6 +64,7 @@ export class PostFormComponent implements OnInit {
     }
     this.blog.createPost(postData).subscribe(res => this.router.navigate([`post/${res}`]));
   }
+
   private updatePost() {
     let postData: UpdatePostDTO = {
       id: this.postForm.value.id!,

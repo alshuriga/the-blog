@@ -24,8 +24,10 @@ namespace Blog.Application.Mapping.Resolvers.Posts
         {
             var outputList = new List<Tag>();
             var tagNamesInput = string.IsNullOrEmpty(source.TagString) ? Enumerable.Empty<string>() : source.TagString.Split(",");
-            foreach (var tagName in tagNamesInput)
+            foreach (var tn in tagNamesInput)
             {
+                var tagName = tn.Trim().ToLower();
+                if (string.IsNullOrWhiteSpace(tagName) || outputList.Any(t => t.Name == tagName)) continue;
                 var tag = _repo.ListAsync(new TagsByTagNameSpecification(tagName)).Result.FirstOrDefault() ?? new Tag { Name = tagName.Trim().ToLower() };
                 outputList.Add(tag);
             }

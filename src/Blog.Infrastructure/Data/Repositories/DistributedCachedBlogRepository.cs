@@ -70,6 +70,8 @@ namespace Blog.Infrastructure.Data.Repositories
         public async Task UpdateAsync(T entity)
         {
             await _repo.UpdateAsync(entity);
+            var key = GetSingleEntryKey(entity.Id);
+            await _cache.RemoveFromCacheAsync<T>(key);
         }
 
         private string GetListKey(ISpecification<T>? specification) => $"{_keyPrefix}-{specification?.CacheKey}-list";

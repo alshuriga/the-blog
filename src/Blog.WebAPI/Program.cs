@@ -11,6 +11,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 
+
 builder.Services.AddControllers(opts =>
 {
     opts.Filters.Add<ApiExceptionFilter>();
@@ -53,17 +54,17 @@ await SeedData.EnsureSeedIdentity(app.Services);
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseHttpsRedirection();
+    app.UseCors(opts =>
+    {
+        opts.AllowAnyOrigin()
+      .AllowAnyHeader()
+      .AllowAnyMethod();
+    });
 }
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseCors(opts =>
-{
-    opts.AllowAnyOrigin();
-    opts.AllowAnyMethod();
-    opts.AllowAnyHeader();
-});
+
 
 app.UseAuthentication();
 app.UseAuthorization();

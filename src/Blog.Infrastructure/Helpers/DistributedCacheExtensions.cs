@@ -34,4 +34,9 @@ public static class DistributedCacheExtensions
 
         return result;
     }
+
+    public static async Task RemoveFromCacheAsync<TEntry>(this IDistributedCache cache, string key, DistributedCacheEntryOptions? options = null)
+    {
+        await cache.RemoveAsync(key);
+    }
 }
