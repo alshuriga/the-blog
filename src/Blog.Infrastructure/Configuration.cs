@@ -30,7 +30,7 @@ public static class Configuration
             if (configuration.GetValue<bool>("SQLite"))
                 opts.UseSqlite("DataSource=db2.db");
             else
-                opts.UseSqlServer(configuration.GetConnectionString("BlogDatabase")!);
+                opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase")!);
         }, ServiceLifetime.Transient);
 
 
