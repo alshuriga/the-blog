@@ -1,6 +1,7 @@
-# The-Blog 👨‍💻
+﻿# the-blog
+the-blog is the asp.net core practice project.
 
-The-Blog is a blog web application developed using ASP.NET Core, aimed at learning .NET development. This project utilizes various technologies, including Entity Framework Core, Microsoft SQL for the database, Redis for caching, Angular for the frontend, and JWT for authentication. The architecture of the project follows the principles of Clean Architecture and SOLID principles, emphasizing maintainability and extensibility.
+Preview - https://alshuriga.github.io/the-blog
 
 <kbd>
   <img src="https://user-images.githubusercontent.com/8162224/253225123-5aea76c8-9f75-4f46-ad49-4bd1a37e3130.png">
