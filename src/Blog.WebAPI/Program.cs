@@ -6,6 +6,7 @@ using Blog.Infrastructure.DataSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.Design;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

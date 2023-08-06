@@ -20,22 +20,25 @@ public static class Configuration
         services.AddDbContext<BlogEFContext>(opts =>
         {
             if (configuration.GetValue<bool>("SQLite"))
-                opts.UseSqlite(configuration.GetConnectionString("BlogDatabase"));
+                opts.UseSqlite("DataSource=db1.db");
             else
-                opts.UseSqlServer(configuration.GetConnectionString("BlogDatabase"));
+                opts.UseSqlServer(configuration.GetConnectionString("BlogDatabase")!);
+
         });
         services.AddDbContext<IdentityEFContext>(opts =>
         {
             if (configuration.GetValue<bool>("SQLite"))
-                opts.UseSqlite(configuration.GetConnectionString("BlogDatabase"));
+                opts.UseSqlite("DataSource=db2.db");
             else
-                opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase"));
-        });
+                opts.UseSqlServer(configuration.GetConnectionString("BlogDatabase")!);
+        }, ServiceLifetime.Transient);
+
+
 
         services.AddStackExchangeRedisCache(opts =>
         {
-           opts.Configuration = configuration.GetConnectionString("RedisCache");
-           opts.InstanceName = "TheBlogCache";
+            opts.Configuration = configuration.GetConnectionString("RedisCache");
+            opts.InstanceName = "TheBlogCache";
         });
 
 
