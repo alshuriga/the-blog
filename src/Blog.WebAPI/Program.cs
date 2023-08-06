@@ -53,15 +53,13 @@ var app = builder.Build();
 SeedData.EnsureSeedContent(app.Services);
 await SeedData.EnsureSeedIdentity(app.Services);
 
-if (app.Environment.IsDevelopment())
-{
     app.UseCors(opts =>
     {
         opts.AllowAnyOrigin()
       .AllowAnyHeader()
       .AllowAnyMethod();
-    });
-}
+  });
+
 
 app.UseSwagger();
 app.UseSwaggerUI();
