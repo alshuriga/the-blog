@@ -1,1 +1,3 @@
-export const url: string = 'https://the-blog-api.alshuriga.ink/api/';
+import { environment } from "src/environments/environment";
+
+export const url: string = environment.production ? "https://the-blog-api.alshuriga.ink/api/" : "https://localhost:80/api/"

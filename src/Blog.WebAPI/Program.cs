@@ -53,7 +53,7 @@ var app = builder.Build();
 SeedData.EnsureSeedContent(app.Services);
 await SeedData.EnsureSeedIdentity(app.Services);
 
-    app.UseCors(opts =>
+app.UseCors(opts =>
     {
         opts.AllowAnyOrigin()
       .AllowAnyHeader()
