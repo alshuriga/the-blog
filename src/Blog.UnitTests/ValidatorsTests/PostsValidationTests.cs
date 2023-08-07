@@ -15,7 +15,6 @@ public class PostValidationTests
         {
             Header = "",
             Text = "",
-            TagString = "**IN==VALID++tagstring"
         };
 
         //act
@@ -53,8 +52,7 @@ public class PostValidationTests
         var testDTO = new UpdatePostDTO()
         {
             Header = "",
-            Text = "",
-            TagString = "**IN==VALID++tagstring"
+            Text = ""
         };
 
         //act
@@ -74,7 +72,7 @@ public class PostValidationTests
         {
             Header = "Header",
             Text = "Text",
-            TagString = "abcd,efgh"
+            TagString = "abcd,efgh,7ag"
         };
 
         //act
