@@ -5,8 +5,6 @@ using Blog.Infrastructure.Data.Repositories;
 using Blog.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Sqlite;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MiniBlog.Infrastructure.Data;
@@ -19,16 +17,16 @@ public static class Configuration
     {
         services.AddDbContext<BlogEFContext>(opts =>
         {
-            if (configuration.GetValue<bool>("SQLite"))
-                opts.UseSqlite("DataSource=db1.db");
+            if (configuration.GetValue<bool>("UseInMemoryDatabase"))
+                opts.UseInMemoryDatabase("BlogDatabase");
             else
                 opts.UseSqlServer(configuration.GetConnectionString("BlogDatabase")!);
 
         });
         services.AddDbContext<IdentityEFContext>(opts =>
         {
-            if (configuration.GetValue<bool>("SQLite"))
-                opts.UseSqlite("DataSource=db2.db");
+            if (configuration.GetValue<bool>("UseInMemoryDatabase"))
+                opts.UseInMemoryDatabase("IdentityDatabase");
             else
                 opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase")!);
         }, ServiceLifetime.Transient);
