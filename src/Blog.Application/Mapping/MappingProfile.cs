@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Application.Features.Commentaries;
+using Blog.Application.Features.Likes;
 using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Features.Tags.DTO;
 using Blog.Application.Features.User.DTO;
@@ -28,5 +29,8 @@ public class MappingProfile : Profile
         CreateMap<CreateCommentaryDTO, Commentary>();
 
         CreateMap<User, UserListDTO>();
+
+        CreateMap<Like, LikeDTO>();
+        CreateMap<CreateDeleteLikeDTO, Like>();
     }
 }

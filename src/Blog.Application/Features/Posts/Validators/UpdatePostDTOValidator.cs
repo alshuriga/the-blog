@@ -7,7 +7,7 @@ namespace Blog.Application.Features.Posts.Validators
     {
         public UpdatePostDTOValidator()
         {
-            Include(new IPostDTOValidator());
+            Include(new WritablePostDTOValidator());
         }
     }
 }

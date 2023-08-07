@@ -6,21 +6,21 @@ using Blog.Core.Entities;
 
 namespace Blog.Application.Mapping.Resolvers.Posts
 {
-    public class TagToTagStringResolver : IValueResolver<Post, IPostDTO, string?>
+    public class TagToTagStringResolver : IValueResolver<Post, WritablePostDTO, string?>
     {
-        public string Resolve(Post source, IPostDTO destination, string? destMember, ResolutionContext context)
+        public string Resolve(Post source, WritablePostDTO destination, string? destMember, ResolutionContext context)
         {
             return string.Join(",", source.Tags.Select(t => t.Name));
         }
     }
-    public class TagStringToTagsResolver : IValueResolver<IPostDTO, Post, ICollection<Tag>>
+    public class TagStringToTagsResolver : IValueResolver<WritablePostDTO, Post, ICollection<Tag>>
     {
         private readonly IBlogRepository<Tag> _repo;
         public TagStringToTagsResolver(IBlogRepository<Tag> repo)
         {
             _repo = repo;
         }
-        public ICollection<Tag> Resolve(IPostDTO source, Post destination, ICollection<Tag> destMember, ResolutionContext context)
+        public ICollection<Tag> Resolve(WritablePostDTO source, Post destination, ICollection<Tag> destMember, ResolutionContext context)
         {
             var outputList = new List<Tag>();
             var tagNamesInput = string.IsNullOrEmpty(source.TagString) ? Enumerable.Empty<string>() : source.TagString.Split(",");

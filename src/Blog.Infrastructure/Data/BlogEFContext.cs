@@ -9,12 +9,14 @@ namespace Blog.Infrastructure.Data
         public DbSet<Post> Posts => Set<Post>();
         public DbSet<Commentary> Commentaries => Set<Commentary>();
         public DbSet<Tag> Tags => Set<Tag>();
+        public DbSet<Like> Like => Set<Like>();
 
         public BlogEFContext(DbContextOptions<BlogEFContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Post>().Navigation(p => p.Tags).AutoInclude();
+            modelBuilder.Entity<Post>().Navigation(p => p.Likes).AutoInclude();
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -22,7 +24,7 @@ namespace Blog.Infrastructure.Data
 
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.State == EntityState.Added && entry.Entity is AddibleEntity addible)
+                if (entry.State == EntityState.Added && entry.Entity is AuditableEntity addible)
                 {
                     addible.DateTime = DateTime.Now;
                 }
