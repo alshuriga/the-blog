@@ -1,5 +1,6 @@
 import { Tag } from "./TagModels";
 import { CommentaryDTO } from "./CommentaryModels";
+import { Like } from "./LikeModels";
 export type PostList = {
     id: number;
     text: string;
@@ -8,6 +9,7 @@ export type PostList = {
     dateTime: string;
     commentariesCount: number;
     isDraft: boolean;
+    likes: Like[];
 }
 
 export type PostsPage = {
@@ -24,11 +26,12 @@ export type PostDTO = {
     tags: Tag[];
     dateTime: string;
     isDraft: boolean;
+    likes: Like[];
 }
 
 export type PostSingleVM = {
     post: PostDTO;
-    commentaries: CommentaryDTO[];
+    commentaries: CommentaryDTO[];  
     currentPage: number;
     pageCount: number;
 }

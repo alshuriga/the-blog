@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Blog.Application.Features.Likes.Specifications;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
+using FluentValidation;
 using MediatR;
 
 namespace Blog.Application.Features.Likes.Requests.Commands
@@ -17,22 +19,23 @@ namespace Blog.Application.Features.Likes.Requests.Commands
 
         public class LikePostCommandHandler : IRequestHandler<LikePostCommand, Unit>
         {
-            private readonly IBlogRepository<Post> _repo;
+            private readonly IBlogRepository<Like> _repo;
             private readonly IMapper _mapper;
+            IValidator<CreateDeleteLikeDTO> _validator;
 
-            public LikePostCommandHandler(IBlogRepository<Post> repo, IMapper mapper)
+            public LikePostCommandHandler(IBlogRepository<Like> repo, IMapper mapper, IValidator<CreateDeleteLikeDTO> validator)
             {
                 _repo = repo;
                 _mapper = mapper;
+                _validator = validator; 
             }   
 
             public async Task<Unit> Handle(LikePostCommand request, CancellationToken cancellationToken)
             {
-                var post = await _repo.GetByIdAsync(request._createLikeDTO.PostId);
-                if (post == null) return await Unit.Task;
+                var likes = await _repo.ListAsync(new LikesByUsernameSpecification(request._createLikeDTO.Username));
+                if (likes.Any(l => l.PostId == request._createLikeDTO.PostId)) return await Unit.Task;
                 var like = _mapper.Map<Like>(request._createLikeDTO);
-                post.Likes.Add(like);
-                await _repo.UpdateAsync(post);
+                await _repo.CreateAsync(like);
                 return await Unit.Task;
             }
         }
