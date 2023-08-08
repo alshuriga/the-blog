@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PostList } from 'src/app/models/PostModels';
 import { faCommentDots } from '@fortawesome/free-regular-svg-icons';
+
 import { Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -11,6 +12,7 @@ import { Output, EventEmitter } from '@angular/core';
 export class PostMinComponent implements OnInit {
   
   faCommentDots = faCommentDots;
+
 
   @Input() post: PostList | undefined;
   @Output() byTag = new EventEmitter<string>();

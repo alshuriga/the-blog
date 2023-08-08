@@ -82,4 +82,16 @@ export class BlogService {
     const url = `${this.url}Commentary/Delete/${commentaryId}`;
     return this.http.delete(url);
   }
+
+  likePost(postId: number): Observable<any> {
+    console.log('liking post...');
+    const url = `${this.url}Post/Like/${postId}`;
+    return this.http.post(url, null);
+  }
+
+  unLikePost(postId: number): Observable<any> {
+    console.log('unliking post...');
+    const url = `${this.url}Post/UnLike/${postId}`;
+    return this.http.delete(url);
+  }
 }

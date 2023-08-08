@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Blog.Application.Features.Posts.Validators
 {
-    public class IPostDTOValidator : AbstractValidator<IPostDTO>
+    public class WritablePostDTOValidator : AbstractValidator<WritablePostDTO>
     {
-        public IPostDTOValidator()
+        public WritablePostDTOValidator()
         {
             RuleFor(p => p.Header).Length(1, 100).NotNull().NotEmpty();
             RuleFor(p => p.Text).Length(1, 2000).NotNull().NotEmpty();

@@ -129,9 +129,14 @@ public static class SeedData
                     p.Tags.Add(tags[tagIndex]);
             }
 
-            appDb.Posts.Add(p);
-            appDb.SaveChanges();
+            var likesCount = random.Next(0, 100);
+            for(int i = 0; i < likesCount; i++)
+            {
+                p.Likes.Add(new Like() { Username = $"User_{random.Next(999)}", DateTime = DateTime.Now });
+            }
+            appDb.Posts.Add(p);   
         }
+        appDb.SaveChanges();
     }
 
 

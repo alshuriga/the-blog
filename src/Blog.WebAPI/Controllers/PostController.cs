@@ -1,4 +1,6 @@
 ﻿using Blog.Application.Constants;
+using Blog.Application.Features.Likes;
+using Blog.Application.Features.Likes.Requests.Commands;
 using Blog.Application.Features.Posts.DTO;
 using Blog.Application.Features.Posts.Requests.Commands;
 using Blog.Application.Features.Posts.Requests.Queries;
@@ -87,4 +89,6 @@ public class PostController : ControllerBase
         await _mediator.Send(new DeletePostCommand(postId));
         return NoContent();
     }
+
+
 }

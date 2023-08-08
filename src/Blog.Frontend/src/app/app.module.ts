@@ -23,6 +23,7 @@ import { AdminPanelComponent } from './components/admin-panel/admin-panel.compon
 import { PostOptsComponent } from './components/post-opts/post-opts.component';
 import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { LikeButtonComponent } from './like-button/like-button.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AdminPanelComponent,
     PostOptsComponent,
     SignUpFormComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    LikeButtonComponent
   ],
   imports: [
     BrowserModule,

@@ -46,7 +46,7 @@ public static class Configuration
         services.AddScoped(typeof(EFBlogRepository<>));
 
 
-        // services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
+        //services.AddScoped(typeof(IBlogRepository<>), typeof(EFBlogRepository<>));
 
         services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityEFContext>();
 

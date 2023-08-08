@@ -15,7 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(opts =>
 {
-    opts.Filters.Add<ApiExceptionFilter>();
+    if(!builder.Environment.IsDevelopment())
+        opts.Filters.Add<ApiExceptionFilter>();
 });
 builder.Services.ConfigureApplication();
 builder.Services.ConfigureInfrastructure(builder.Configuration);

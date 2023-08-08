@@ -31,6 +31,9 @@
                         Commentaries ({{ post.commentariesCount }})<fa-icon [icon]="faCommentDots" class="ms-2">
                         </fa-icon>
                     </a>
+                    <div class="float-end me-2">
+                        <app-like-button [post]="post"></app-like-button>
+                    </div>
                 </div>
                 <app-post-opts [postId]='post.id' (onDelete)="clickDelete()"></app-post-opts>
             </div>
