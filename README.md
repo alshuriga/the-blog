@@ -1,4 +1,4 @@
-[![Tests](https://github.com/alshuriga/the-blog/actions/workflows/tests.yml/badge.svg)](https://github.com/alshuriga/the-blog/actions/workflows/tests.yml) [![Build Status](https://jenkins.alshuriga.ink/buildStatus/icon?job=the-blog)](https://jenkins.alshuriga.ink/view/all/job/the-blog/)
+[![Tests](https://github.com/alshuriga/the-blog/actions/workflows/tests.yml/badge.svg)](https://github.com/alshuriga/the-blog/actions/workflows/tests.yml) 
 # The-Blog 👨‍💻
 
 The-Blog is a blog web application developed using ASP.NET Core, aimed at learning .NET development. This project utilizes various technologies, including Entity Framework Core, Microsoft SQL for the database, Redis for caching, Angular for the frontend, and JWT for authentication. The architecture of the project follows the principles of Clean Architecture and SOLID principles, emphasizing maintainability and extensibility.
