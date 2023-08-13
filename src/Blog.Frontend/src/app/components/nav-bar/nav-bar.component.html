@@ -1,22 +1,20 @@
 <div class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a routerLink="" class="navbar-brand"><fa-icon [icon]="faBook" class="me-2"></fa-icon>TheBlog</a>
-        <ul *ngIf="isAdminLoggedIn" class="navbar-nav me-auto">
+    <div class="container-md">
+        <a href="/" class="navbar-brand"><fa-icon [icon]="faBook" class="me-2"></fa-icon>TheBlog</a>
+            <ul class="navbar-nav me-auto">
+                <ng-container  *ngIf="isAdminLoggedIn">
                 <li class="nav-item ms-1">
-                    <a class="nav-link text-info" routerLink="admin-panel" >Admin tools</a>
+                    <a class="nav-link text-info" routerLink="admin-panel">Admin tools</a>
                 </li>
-
                 <li class="nav-item ms-1">
                     <a class="nav-link" routerLink="new">New Post</a>
                 </li>
-
-                <li class="nav-item ms-1" >
+                <li class="nav-item ms-1">
                     <a class="nav-link" routerLink="drafts">Drafts</a>
                 </li>
-        </ul>
-        <div class="float-end me-auto ms-5">
+            </ng-container>
+            </ul>   
             <app-user-panel></app-user-panel>
-        </div>
     </div>
-  
+
 </div>
