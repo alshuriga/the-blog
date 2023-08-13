@@ -111,8 +111,7 @@ public static class SeedData
         foreach(Post p in posts)
         {
             var random = new Random();
-            p.Commentaries = new List<Commentary>();
-            var commentCount = random.Next(0, 7);
+            var commentCount = random.Next(5, 10);
             for (int i = 0; i < commentCount; i++)
                 p.Commentaries.Add(new Commentary()
                     { Text = neutralCommentaries[random.Next(0, neutralCommentaries.Count - 1)],

@@ -15,7 +15,7 @@ public static class RepoMocks
         postRepoMock.Setup(r => r.CreateAsync(It.IsAny<Post>())).ReturnsAsync(DEFAULT_CREATED_ID);
         postRepoMock.Setup(r => r.ListAsync(It.IsAny<ISpecification<Post>>())).ReturnsAsync((ISpecification<Post> spec) => spec.Evaluate(SeedPosts()));
         postRepoMock.Setup(r => r.CountAsync(It.IsAny<ISpecification<Post>>())).ReturnsAsync((ISpecification<Post> spec) => spec.Evaluate(SeedPosts()).Count());
-        postRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<long>())).ReturnsAsync((long id) => SeedPosts().Where(p => p.Id == id).FirstOrDefault());
+        postRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<long>(), It.IsAny<ISpecification<Post>?>())).ReturnsAsync((long id, ISpecification<Post> specification) => SeedPosts().Where(p => p.Id == id).FirstOrDefault());
         postRepoMock.Setup(r => r.DeleteAsync(It.IsAny<long>())).Callback((long id) => SeedPosts().Remove(SeedPosts().Where(p => p.Id == id).FirstOrDefault()!));
         postRepoMock.Setup(r => r.UpdateAsync(It.IsAny<Post>())).Callback((Post upd) =>
         {

@@ -5,6 +5,7 @@ using Blog.Application.Features.Commentaries;
 using Blog.Application.Features.Commentaries.Specifications;
 using Blog.Application.Features.Likes;
 using Blog.Application.Features.Posts.DTO;
+using Blog.Application.Features.Posts.Specifications;
 using Blog.Application.Features.Posts.ViewModels;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
@@ -38,15 +39,14 @@ namespace Blog.Application.Features.Posts.Requests.Queries
             }
             public async Task<PostSingleVM> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
             {
-                Post? post = await _postRepo.GetByIdAsync(request._id);
+                Post? post = await _postRepo.GetByIdAsync(request._id, new PostWithCommentariesSpecification(pageNumber: request._currentPage, commentariesPerPage: PaginationConstants.COMMENTARIES_PER_PAGE));
                 if (post == null || (post.IsDraft && !request._includeDrafts)) throw new NotFoundException();
-                PostDTO postDto = _mapper.Map<PostDTO>(post);
-                var commentaries = (await _commentRepo.ListAsync(new CommentariesByPostIdSpecification(request._id, request._currentPage))).OrderByDescending(x => x.DateTime).ToList();
+                PostDTO postDto = _mapper.Map<PostDTO>(post);    
                 var model = new PostSingleVM()
                 {
                     Post = postDto,
                     CurrentPage = request._currentPage,
-                    Commentaries = _mapper.Map<List<CommentaryDTO>>(commentaries),
+                    Commentaries = _mapper.Map<List<CommentaryDTO>>(post.Commentaries),
                     PageCount = (int)Math.Ceiling((await _commentRepo.CountAsync(new CommentariesByPostIdSpecification(request._id))) / ((double)PaginationConstants.COMMENTARIES_PER_PAGE))
                 };
                 return model;

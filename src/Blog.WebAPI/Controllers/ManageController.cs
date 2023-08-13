@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog.MVC.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/Users")]
 [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
 public class ManageController : Controller
 {
@@ -19,6 +19,10 @@ public class ManageController : Controller
         _mediator = mediator;
     }
 
+
+    ///  <summary>
+    ///  give/suspend admin rights from a user by user id
+    ///  </summary>
     [HttpPut("{userId}")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -28,6 +32,9 @@ public class ManageController : Controller
         return NoContent();
     }
 
+    ///  <summary>
+    ///  delete user by user id
+    ///  </summary>
     [HttpDelete("{userId}")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -37,6 +44,10 @@ public class ManageController : Controller
         return NoContent();
     }
 
+
+    ///  <summary>
+    ///  list all the users
+    ///  </summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]

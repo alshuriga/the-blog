@@ -8,14 +8,14 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class NavBarComponent implements OnInit {
   
-  isLoggedIn: boolean;
+  isAdminLoggedIn: boolean;
 
   faBook = faBook;
 
   constructor(private auth: AuthService) { }
 
   ngOnInit(): void {
-    this.auth.isLoggedIn.subscribe((res) => this.isLoggedIn = res)
+    this.auth.claims.subscribe((res) => this.isAdminLoggedIn = res ? res!.role.includes("Admin") : false);
   }
 
 }

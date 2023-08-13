@@ -1,7 +1,9 @@
-import { JsonPipe } from '@angular/common';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { BlogService } from '../../services/blog.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Observable } from 'rxjs';
+import { UserClaims } from 'src/app/models/UserModels';
 
 @Component({
   selector: 'app-post-opts',
@@ -13,10 +15,11 @@ export class PostOptsComponent implements OnInit {
   @Input() postId: number;
   @Output() onDelete = new EventEmitter();
   @Output() onEdit = new EventEmitter();
-
-  constructor(private blog: BlogService, private router: Router) { }
+  isAdmin: boolean = false;
+  constructor(private blog: BlogService, private router: Router, private _auth: AuthService) { }
 
   ngOnInit(): void {
+    this._auth.claims.subscribe((res) => this.isAdmin = res ? res.role.includes("Admins") : false);
   }
 
   onClickDelete() {

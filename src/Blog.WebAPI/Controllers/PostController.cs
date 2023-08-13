@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog.MVC.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 
 public class PostController : ControllerBase
 {
@@ -26,9 +26,13 @@ public class PostController : ControllerBase
         _validator = validator;
     }
 
+
+    ///  <summary>
+    ///  list multiple posts (optional filtering by tag or draft) - paginated
+    ///  </summary>
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [HttpGet("{currentPage:int?}")]
+    [HttpGet("list/{currentPage:int?}")]
     public async Task<IActionResult> List(int currentPage = 0, bool isDraft = false, string? tagName = null)
     {
         if (isDraft && !User.IsInRole(RolesConstants.ADMIN_ROLE)) return Forbid();
@@ -36,7 +40,9 @@ public class PostController : ControllerBase
         return Ok(model);
     }
 
-
+    ///  <summary>
+    ///  get a single post with commentaries
+    ///  </summary>
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("{postId:long}")]
@@ -47,7 +53,9 @@ public class PostController : ControllerBase
         return model;
     }
 
-
+    ///  <summary>
+    ///  update a post
+    ///  </summary>
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -58,8 +66,10 @@ public class PostController : ControllerBase
         return NoContent();
     }
 
-
-    [HttpGet("{postId:long}")]
+    ///  <summary>
+    ///  get a post for updating (without commentaries)
+    ///  </summary>
+    [HttpGet("edit/{postId:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
@@ -69,6 +79,10 @@ public class PostController : ControllerBase
         return model;
     }
 
+
+    ///  <summary>
+    ///  create a post
+    ///  </summary>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -79,8 +93,10 @@ public class PostController : ControllerBase
         return id;
     }
 
-
-    [HttpDelete("{postId:long}")]
+    ///  <summary>
+    ///  delete a post by id
+    ///  </summary>
+    [HttpDelete("/{postId:long}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]

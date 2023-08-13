@@ -9,7 +9,7 @@ namespace Blog.MVC.Controllers
 {
     
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,7 +19,11 @@ namespace Blog.MVC.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost]
+
+        ///  <summary>
+        ///  sign in to an account
+        ///  </summary>
+        [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Login([FromBody] UserSignInDTO user)
@@ -28,7 +32,11 @@ namespace Blog.MVC.Controllers
            return Ok(token);
         }
 
-        [HttpPost]
+
+        ///  <summary>
+        ///  sign out of an account
+        ///  </summary>
+        [HttpPost("logout")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Logout()
@@ -37,7 +45,11 @@ namespace Blog.MVC.Controllers
             return NoContent();
         }
 
-        [HttpPost]
+
+        ///  <summary>
+        ///  create new account
+        ///  </summary>
+        [HttpPost("signup")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> SignUp([FromBody]UserSignUpDTO user)

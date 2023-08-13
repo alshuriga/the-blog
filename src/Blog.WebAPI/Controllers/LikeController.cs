@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/Post/[action]")]
+[Route("api/Like/")]
 public class LikeController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -17,6 +17,10 @@ public class LikeController : ControllerBase
         _mediator = mediator;
     }
 
+
+    ///  <summary>
+    ///  like a post (author is a user that is logged in)
+    ///  </summary>
     [HttpPost("{postId:long}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [Authorize]
@@ -27,6 +31,9 @@ public class LikeController : ControllerBase
         return NoContent();
     }
 
+    ///  <summary>
+    ///  delete a like of logged in user from a post
+    ///  </summary>
     [HttpDelete("{postId:long}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [Authorize]

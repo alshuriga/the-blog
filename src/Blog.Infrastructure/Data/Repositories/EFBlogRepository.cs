@@ -2,6 +2,7 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Data.Repositories
 {
@@ -17,7 +18,7 @@ namespace Blog.Infrastructure.Data.Repositories
 
         public Task<int> CountAsync(ISpecification<T>? specification = null)
         {
-            var query = _db.Set<T>().AsQueryable();
+            var query = _db.Set<T>().AsQueryable().AsNoTracking();
 
             if (specification != null)
                 query = query.WithSpecification(specification);
@@ -42,14 +43,16 @@ namespace Blog.Infrastructure.Data.Repositories
             }
         }
 
-        public async Task<T?> GetByIdAsync(long Id)
+        public async Task<T?> GetByIdAsync(long Id, ISpecification<T>? specification = null)
         {
-            return await _db.Set<T>().FindAsync(Id);
+            var query = _db.Set<T>().AsQueryable();
+            if (specification != null) query = query.WithSpecification(specification);
+            return await query.AsNoTracking().Where(e => e.Id == Id).FirstAsync();
         }
 
         public Task<IEnumerable<T>> ListAsync(ISpecification<T>? specification = null)
         {
-            var query = _db.Set<T>().OrderByDescending(e => e.Id).AsQueryable();
+            var query = _db.Set<T>().OrderByDescending(e => e.Id).AsQueryable().AsNoTracking();
             if (specification != null) query = query.WithSpecification(specification);
             return Task.FromResult(query.ToList().AsEnumerable());
         }

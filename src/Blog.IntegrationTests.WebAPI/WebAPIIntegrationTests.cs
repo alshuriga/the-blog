@@ -18,14 +18,25 @@ public class WebApiIntegrationTests : IClassFixture<TestWebAppFactory<Program>>
     }
 
     [Fact]
-    public async Task GetDraftPostAsAnonymous_ReturnsNotFound()
+    public async Task GetNoDraftPost_ReturnCorrectPost()
     {
-        var response = await _client.GetAsync("api/post/singlepost/1");
+        var response = await _client.GetAsync("api/post/1");
         var postVM = JsonConvert.DeserializeObject<PostSingleVM>(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
         Assert.Equal(1, postVM?.Post.Id);
         Assert.Equal("Post 1", postVM?.Post.Header);
+    }
+
+    [Fact]
+    public async Task GetDraftPostAsAnonymous_ReturnNotFoundStatus()
+    {
+        var response = await _client.GetAsync("api/post/3");
+        var postVM = JsonConvert.DeserializeObject<PostSingleVM>(await response.Content.ReadAsStringAsync());
+
+        Assert.Equal(StatusCodes.Status404NotFound, (int)response.StatusCode);
+        Assert.Null(postVM!.Post);
+        Assert.Null(postVM!.Commentaries);
     }
 
 }

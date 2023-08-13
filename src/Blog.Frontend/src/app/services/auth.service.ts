@@ -60,6 +60,7 @@ export class AuthService {
       }
       return;
     }
+    this._claims.next(undefined);
 
     this._isLoggedIn.next(false);
 

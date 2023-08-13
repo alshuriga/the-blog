@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { faHeart as notLikedIcon } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as likedIcon } from '@fortawesome/free-solid-svg-icons';
-import { PostList } from '../models/PostModels';
+import { PostDTO, PostList } from '../models/PostModels';
 import { AuthService } from '../services/auth.service';
 import { BlogService } from '../services/blog.service';
 import { UserClaims } from '../models/UserModels';
@@ -16,7 +16,8 @@ export class LikeButtonComponent implements OnInit {
   claims: UserClaims | undefined;
   isLikedbyCurrentUser: boolean;
   likesNumber: number;
-  @Input() post: PostList;
+  isLoggedIn: boolean;
+  @Input() post: PostDTO;
   likedIcon = likedIcon;
   notLikedIcon = notLikedIcon;
 
@@ -28,6 +29,7 @@ export class LikeButtonComponent implements OnInit {
       this.claims = cl;
       this.isLikedbyCurrentUser = this.post.likes.some(l => l.username == this.claims?.username);
     });
+    this.auth.isLoggedIn.subscribe((res) => this.isLoggedIn = res);
   }
 
   onClick(): void {

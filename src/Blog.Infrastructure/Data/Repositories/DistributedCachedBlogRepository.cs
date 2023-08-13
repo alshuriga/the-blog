@@ -47,12 +47,12 @@ namespace Blog.Infrastructure.Data.Repositories
             await _repo.DeleteAsync(id);
         }
 
-        public async Task<T?> GetByIdAsync(long Id)
+        public async Task<T?> GetByIdAsync(long Id, ISpecification<T>? specification = null)
         {
             var key = GetSingleEntryKey(Id);
             return await _cache.GetOrCreateAsync(key, async () =>
             {
-                return await _repo.GetByIdAsync(Id);
+                return await _repo.GetByIdAsync(Id, specification);
             }, _cacheOptions);
 
         }

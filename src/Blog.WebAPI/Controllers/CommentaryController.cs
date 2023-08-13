@@ -8,8 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.WebAPI.Controllers;
 
+
+///  <summary>
+///  Commentaries creation/deletion (administrator role only)
+///  </summary>
+
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class CommentaryController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -22,6 +27,9 @@ public class CommentaryController : ControllerBase
     }
 
 
+    ///  <summary>
+    ///  create commentary (author is a user that logged in)
+    ///  </summary>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -33,6 +41,10 @@ public class CommentaryController : ControllerBase
         return id;
     }
 
+
+    ///  <summary>
+    ///  delete commentary by id
+    ///  </summary>
     [HttpDelete("{commentaryId:long}")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

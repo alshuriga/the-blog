@@ -29,7 +29,7 @@
                 <div class="col">
 
                     <app-post-opts [postId]='postVM.post.id' (onDelete)="clickDelete()"></app-post-opts>
-
+                    <app-like-button [post]="postVM.post"></app-like-button>
 
                 </div>
             </div>
@@ -71,7 +71,7 @@
 
                                 <form method="post">
                                     <input name="commentaryId" type="hidden" value="@com.Id">
-                                    <button class="btn m-2 btn-secondary" (click)="clickDeleteCommentary(com.id)">
+                                    <button *ngIf="isAdmin" class="btn m-2 btn-secondary" (click)="clickDeleteCommentary(com.id)">
                                         <i class="me-2 fa-solid fa-trash-can"></i>
                                         Delete
                                     </button>
