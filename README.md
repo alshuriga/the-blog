@@ -4,12 +4,13 @@
 The-Blog is a blog web application developed using ASP.NET Core, aimed at learning .NET development. This project utilizes various technologies, including Entity Framework Core, Microsoft SQL for the database, Redis for caching, Angular for the frontend, and JWT for authentication. The architecture of the project follows the principles of Clean Architecture and SOLID principles, emphasizing maintainability and extensibility.
 
 <kbd>
+
   <img src="https://github.com/alshuriga/the-blog/assets/8162224/8a84a28a-51c4-4fe2-b0b1-9cf94bcd8ce5">
 </kbd>
 
 <details>
   <summary><h1>Click to see API Endpoints</h1></summary>
-  <img src="https://github.com/alshuriga/the-blog/assets/8162224/707c93c0-015d-4c40-88e3-fa3c4f235c3f">
+  <img src="https://github.com/alshuriga/the-blog/assets/8162224/447aabdc-eac8-41fb-8753-885aae217f14">
 </details>
 
 ## Features 
