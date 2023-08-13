@@ -10,7 +10,7 @@ The-Blog is a blog web application developed using ASP.NET Core, aimed at learni
 
 <details>
   <summary><h1>Click to see API Endpoints</h1></summary>
-  <img src="https://github.com/alshuriga/the-blog/assets/8162224/447aabdc-eac8-41fb-8753-885aae217f14">
+  <img src="https://github.com/alshuriga/the-blog/assets/8162224/20b67d0b-b9c4-48d8-a68b-bd2138377032">
 </details>
 
 ## Features 
