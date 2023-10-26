@@ -62,19 +62,17 @@ await SeedData.EnsureSeedIdentity(app.Services);
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors(opts =>
+{
+    opts.AllowAnyOrigin();
+    opts.AllowAnyMethod();
+    opts.AllowAnyHeader();
+});
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute("api", "api/{controller}/{action}/");
-
-if(builder.Environment.IsDevelopment()) 
-{
-app.UseCors(opts =>
-    {
-        opts.WithOrigins("http://localhost:4200");
-    });
-}
-
 
 
 
