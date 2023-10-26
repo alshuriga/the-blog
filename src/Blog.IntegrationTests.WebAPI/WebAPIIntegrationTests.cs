@@ -53,7 +53,7 @@ public class WebApiIntegrationTests : IClassFixture<TestWebAppFactory<Program>>
 
         var post = new UpdatePostDTO()
         {
-            Id = 1,
+            Id = 2,
             TagString = "updating, post, test",
             Text = "This is the post updating test.",
             Header = "Post updating test"
@@ -69,7 +69,7 @@ public class WebApiIntegrationTests : IClassFixture<TestWebAppFactory<Program>>
 
         //act
         var response = await _client.SendAsync(request);
-        var updatedPostResponse = await _client.GetAsync("api/post/1");
+        var updatedPostResponse = await _client.GetAsync("api/post/2");
         var updatedPost = (await updatedPostResponse.Content.ReadFromJsonAsync<PostSingleVM>())?.Post;
 
 
