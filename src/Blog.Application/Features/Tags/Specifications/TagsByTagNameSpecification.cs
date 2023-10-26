@@ -8,8 +8,7 @@ namespace Blog.Application.Features.Tags.Specifications
 
         public TagsByTagNameSpecification(string tagName)
         {
-            Query.Where(t => t.Name == tagName);
-
+            Query.Where(t => t.Name.Trim().ToLower() == tagName.Trim().ToLower());
             Query.EnableCache(nameof(TagsByTagNameSpecification), tagName);
         }
     }

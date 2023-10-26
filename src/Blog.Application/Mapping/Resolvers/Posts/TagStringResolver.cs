@@ -23,7 +23,9 @@ namespace Blog.Application.Mapping.Resolvers.Posts
         public ICollection<Tag> Resolve(WritablePostDTO source, Post destination, ICollection<Tag> destMember, ResolutionContext context)
         {
             var outputList = new List<Tag>();
+
             var tagNamesInput = string.IsNullOrEmpty(source.TagString) ? Enumerable.Empty<string>() : source.TagString.Split(",");
+
             foreach (var tn in tagNamesInput)
             {
                 var tagName = tn.Trim().ToLower();
@@ -31,6 +33,7 @@ namespace Blog.Application.Mapping.Resolvers.Posts
                 var tag = _repo.ListAsync(new TagsByTagNameSpecification(tagName)).Result.FirstOrDefault() ?? new Tag { Name = tagName.Trim().ToLower() };
                 outputList.Add(tag);
             }
+
             return outputList;
         }
     }

@@ -47,12 +47,13 @@ namespace Blog.Infrastructure.Data.Repositories
         {
             var query = _db.Set<T>().AsQueryable();
             if (specification != null) query = query.WithSpecification(specification);
-            return await query.AsNoTracking().Where(e => e.Id == Id).FirstAsync();
+            return await query.Where(e => e.Id == Id).FirstAsync();
         }
 
         public Task<IEnumerable<T>> ListAsync(ISpecification<T>? specification = null)
         {
-            var query = _db.Set<T>().OrderByDescending(e => e.Id).AsQueryable().AsNoTracking();
+            var query = _db.Set<T>().OrderByDescending(e => e.Id).AsQueryable();
+
             if (specification != null) query = query.WithSpecification(specification);
             return Task.FromResult(query.ToList().AsEnumerable());
         }

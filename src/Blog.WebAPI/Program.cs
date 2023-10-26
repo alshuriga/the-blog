@@ -6,7 +6,6 @@ using Blog.Infrastructure.DataSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore.Design;
 using System.Text;
 using System.Reflection;
 
@@ -60,14 +59,6 @@ var app = builder.Build();
 SeedData.EnsureSeedContent(app.Services);
 await SeedData.EnsureSeedIdentity(app.Services);
 
-app.UseCors(opts =>
-    {
-        opts.AllowAnyOrigin()
-      .AllowAnyHeader()
-      .AllowAnyMethod();
-  });
-
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -75,6 +66,17 @@ app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute("api", "api/{controller}/{action}/");
+
+if(builder.Environment.IsDevelopment()) 
+{
+app.UseCors(opts =>
+    {
+        opts.WithOrigins("http://localhost:4200");
+    });
+}
+
+
+
 
 app.Run();
 

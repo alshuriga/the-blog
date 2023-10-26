@@ -2,6 +2,7 @@
 using AutoMapper;
 using Blog.Application.Exceptions;
 using Blog.Application.Features.Posts.DTO;
+using Blog.Application.Features.Tags.Specifications;
 using Blog.Application.Interfaces.Common;
 using Blog.Core.Entities;
 using FluentValidation;
@@ -36,7 +37,9 @@ namespace Blog.Application.Features.Posts.Requests.Commands
                 _validator.ValidateAndThrow(request._postDTO);
                 var post = await _repo.GetByIdAsync(request._postDTO.Id);
                 if (post == null) throw new NotFoundException();
-                _mapper.Map(request._postDTO, post);
+
+                post = _mapper.Map(request._postDTO, post);
+
                 await _repo.UpdateAsync(post);
                 return await Unit.Task;
             }

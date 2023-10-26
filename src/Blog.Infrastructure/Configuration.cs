@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MiniBlog.Infrastructure.Data;
 
 namespace Blog.Infrastructure;
@@ -21,6 +22,10 @@ public static class Configuration
                 opts.UseInMemoryDatabase("BlogDatabase");
             else
                 opts.UseSqlServer(configuration.GetConnectionString("BlogDatabase")!);
+
+            opts.LogTo(Console.WriteLine,
+                      new[] { DbLoggerCategory.Database.Command.Name },
+                      LogLevel.Debug);
 
         });
         services.AddDbContext<IdentityEFContext>(opts =>
