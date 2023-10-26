@@ -47,7 +47,7 @@ namespace Blog.Infrastructure.Data.Repositories
         {
             var query = _db.Set<T>().AsQueryable();
             if (specification != null) query = query.WithSpecification(specification);
-            return await query.Where(e => e.Id == Id).FirstAsync();
+            return await query.Where(e => e.Id == Id).SingleOrDefaultAsync();
         }
 
         public Task<IEnumerable<T>> ListAsync(ISpecification<T>? specification = null)

@@ -44,12 +44,10 @@ public class WebApiIntegrationTests : IClassFixture<TestWebAppFactory<Program>>
     }
 
     [Fact]
-    public async Task UpdatePost_ReturnNoContentAndPostUpdatesSuccessfully()
+    public async Task UpdatePostAsAdmin_ReturnNoContentAndPostUpdatesSuccessfully()
     {
         //arrange
-        var jwtResponse = await _client.PostAsJsonAsync("api/account/login", new UserSignInDTO() { Username = "admin", Password = "admin" });
-        var jwt = (await jwtResponse.Content.ReadFromJsonAsync<JwtToken>())?.Token;
-        if (jwt == null) throw new Exception("sign in has failed");
+        var jwt = await GetJwt(isAdmin: true);
 
         var post = new UpdatePostDTO()
         {
@@ -79,8 +77,91 @@ public class WebApiIntegrationTests : IClassFixture<TestWebAppFactory<Program>>
         Assert.Equal(post.Id, updatedPost?.Id);
         Assert.Equal(post.Text, updatedPost?.Text);
         Assert.Equal(post.Header, updatedPost?.Header);
-        Assert.Equal(post.TagString.Split(',').Select(t => t.Trim().ToLower()),
-            updatedPost?.Tags.Select(t => t.Name.Trim().ToLower()));
+        Assert.Equal(post.TagString.Split(',').OrderBy(t => t).Select(t => t.Trim().ToLower()),
+            updatedPost?.Tags.OrderBy(t => t.Name).Select(t => t.Name.Trim().ToLower()));
     }
+
+    [Fact]
+    public async Task DeletePostAsAdmin_ReturnsNoContentAndNotFoundForPost()
+    {
+        var jwt = await GetJwt(isAdmin: true);
+
+        var postIdForDeletion = 3;
+
+        var request = new HttpRequestMessage()
+        {
+            RequestUri = new Uri($"http://localhost/api/post/{postIdForDeletion}"),
+            Method = HttpMethod.Delete
+        };
+        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", jwt);
+
+        //act
+        var response = await _client.SendAsync(request);
+        var deletedPostResponse = await _client.GetAsync($"api/post/{postIdForDeletion}");
+
+
+        //assert
+        Assert.Equal(StatusCodes.Status204NoContent, (int)response.StatusCode);
+        Assert.Equal(StatusCodes.Status404NotFound, (int)deletedPostResponse.StatusCode);
+    }
+
+
+    [Fact]
+    public async Task CreatePostAsAdmin_ReturnNoContentAndPostCreatesSuccessfully()
+    {
+        var jwt = await GetJwt(isAdmin: true);
+
+        var post = new UpdatePostDTO()
+        {
+            TagString = "updating, post, test",
+            Text = "This is the post updating test.",
+            Header = "Post updating test"
+        };
+
+        var request = new HttpRequestMessage()
+        {
+            RequestUri = new Uri("http://localhost/api/post"),
+            Content = JsonContent.Create(post),
+            Method = HttpMethod.Post
+        };
+        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", jwt);
+
+        //act
+        var response = await _client.SendAsync(request);
+        var newPostId = long.Parse(await response.Content.ReadAsStringAsync());
+        var createdPostResponse = await _client.GetAsync($"api/post/{newPostId}");
+        var createdPost = (await createdPostResponse.Content.ReadFromJsonAsync<PostSingleVM>())?.Post;
+
+
+        //assert
+        Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
+        Assert.Equal(StatusCodes.Status200OK, (int)createdPostResponse.StatusCode);
+        Assert.Equal(newPostId, createdPost?.Id);
+        Assert.Equal(post.Text, createdPost?.Text);
+        Assert.Equal(post.Header, createdPost?.Header);
+        Assert.Equal(post.TagString.Split(',').OrderBy(t => t).Select(t => t.Trim().ToLower()),
+            createdPost?.Tags.OrderBy(t => t.Name).Select(t => t.Name.Trim().ToLower()));
+    }
+
+
+
+
+
+
+    private async Task<string> GetJwt(bool isAdmin)
+    {
+        var creds = isAdmin ?
+            new UserSignInDTO() { Username = "admin", Password = "admin" } :
+            new UserSignInDTO() { Username = "normal", Password = "12345" };
+
+        var jwtResponse = await _client.PostAsJsonAsync("api/account/login", creds);
+        var jwt = (await jwtResponse.Content.ReadFromJsonAsync<JwtToken>())?.Token;
+
+        if (jwt == null) 
+            throw new Exception("Error getting jwt");
+
+        return jwt;
+    }
+
 }
 

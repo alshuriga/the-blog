@@ -96,7 +96,7 @@ public class PostController : ControllerBase
     ///  <summary>
     ///  delete a post by id
     ///  </summary>
-    [HttpDelete("/{postId:long}")]
+    [HttpDelete("{postId:long}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [Authorize(Roles = RolesConstants.ADMIN_ROLE)]
