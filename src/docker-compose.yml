@@ -18,6 +18,7 @@ services:
 
   db:
     container_name: the-blog_db
+    
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     environment:
       SA_PASSWORD: "secretPassword123"
@@ -31,11 +32,12 @@ services:
 
   ui:
     container_name: the-blog_ui
+
     build:
        context: ./Blog.Frontend
        dockerfile: Dockerfile.UI
-     ports: 
+    ports: 
        - "5006:80"
-     depends_on:
+    depends_on:
        - api
     restart: always
