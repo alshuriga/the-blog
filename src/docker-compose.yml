@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+    container_name: the-blog_api
   api:
     build:
       context: .
@@ -12,6 +13,7 @@ services:
       - redis_image
     environment:
       ASPNETCORE_ENVIRONMENT: "Docker"     
+    restart: always
 
   db:
     container_name: the-blog_db
@@ -19,15 +21,20 @@ services:
     environment:
       SA_PASSWORD: "secretPassword123"
       ACCEPT_EULA: "Y"    
+    restart: always
 
   redis_image:
+    container_name: the-blog_redis
     image: "redis:latest"
+    restart: always
 
   ui:
-     build:
+    container_name: the-blog_ui
+    build:
        context: ./Blog.Frontend
        dockerfile: Dockerfile.UI
      ports: 
        - "5006:80"
      depends_on:
        - api
+    restart: always
