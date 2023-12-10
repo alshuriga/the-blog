@@ -14,6 +14,7 @@ services:
       ASPNETCORE_ENVIRONMENT: "Docker"     
 
   db:
+    container_name: the-blog_db
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     environment:
       SA_PASSWORD: "secretPassword123"
