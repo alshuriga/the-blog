@@ -11,7 +11,8 @@ namespace Blog.Infrastructure.Data
         public DbSet<Tag> Tags => Set<Tag>();
         public DbSet<Like> Like => Set<Like>();
 
-        public BlogEFContext(DbContextOptions<BlogEFContext> options) : base(options) { }
+        public BlogEFContext(DbContextOptions<BlogEFContext> options) : base(options) {
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

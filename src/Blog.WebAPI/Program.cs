@@ -56,7 +56,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-SeedData.EnsureSeedContent(app.Services);
+//SeedData.EnsureSeedContent(app.Services);
 await SeedData.EnsureSeedIdentity(app.Services);
 
 app.UseSwagger();

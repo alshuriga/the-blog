@@ -10,20 +10,21 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      # - db
       - redis_image
     environment:
       ASPNETCORE_ENVIRONMENT: "Docker"     
-    restart: always
+      ConnectionStrings__BlogDatabase: ${PSQL_CONN}
+      ConnectionStrings__IdentityDatabase: ${PSQL_CONN}
 
-  db:
-    container_name: the-blog_db
+  # db:
+  #   container_name: the-blog_db
     
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
-    environment:
-      SA_PASSWORD: "secretPassword123"
-      ACCEPT_EULA: "Y"    
-    restart: always
+  #   image: "mcr.microsoft.com/mssql/server:2022-latest"
+  #   environment:
+  #     SA_PASSWORD: "secretPassword123"
+  #     ACCEPT_EULA: "Y"    
+  #   restart: always
 
   redis_image:
     container_name: the-blog_redis

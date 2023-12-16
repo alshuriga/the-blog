@@ -16,12 +16,13 @@ public static class Configuration
 {
     public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+
         services.AddDbContext<BlogEFContext>(opts =>
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
                 opts.UseInMemoryDatabase("BlogDatabase");
             else
-                opts.UseSqlServer(configuration.GetConnectionString("BlogDatabase")!);
+                opts.UseNpgsql(configuration.GetConnectionString("BlogDatabase")!);
 
             opts.LogTo(Console.WriteLine,
                       new[] { DbLoggerCategory.Database.Command.Name },
@@ -33,9 +34,11 @@ public static class Configuration
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
                 opts.UseInMemoryDatabase("IdentityDatabase");
             else
-                opts.UseSqlServer(configuration.GetConnectionString("IdentityDatabase")!);
+                opts.UseNpgsql(configuration.GetConnectionString("IdentityDatabase")!);
         }, ServiceLifetime.Transient);
 
+        if (!configuration.GetValue<bool>("UseInMemoryDatabase"))
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 
         services.AddStackExchangeRedisCache(opts =>
