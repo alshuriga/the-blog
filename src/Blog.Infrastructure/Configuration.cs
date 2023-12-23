@@ -22,7 +22,7 @@ public static class Configuration
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
                 opts.UseInMemoryDatabase("BlogDatabase");
             else
-                opts.UseNpgsql(configuration.GetConnectionString("BlogDatabase")!);
+                opts.UseNpgsql(configuration.GetConnectionString("BlogDatabase")!, cfg => cfg.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromMinutes(1), errorCodesToAdd: null));
 
             opts.LogTo(Console.WriteLine,
                       new[] { DbLoggerCategory.Database.Command.Name },
@@ -34,7 +34,7 @@ public static class Configuration
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
                 opts.UseInMemoryDatabase("IdentityDatabase");
             else
-                opts.UseNpgsql(configuration.GetConnectionString("IdentityDatabase")!);
+                opts.UseNpgsql(configuration.GetConnectionString("IdentityDatabase")!, cfg => cfg.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromMinutes(1), errorCodesToAdd: null));
         }, ServiceLifetime.Transient);
 
         if (!configuration.GetValue<bool>("UseInMemoryDatabase"))
