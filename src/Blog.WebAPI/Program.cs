@@ -57,7 +57,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 //SeedData.EnsureSeedContent(app.Services);
-await SeedData.EnsureSeedIdentity(app.Services);
+//await SeedData.EnsureSeedIdentity(app.Services);
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -73,7 +73,6 @@ app.UseCors(opts =>
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllerRoute("api", "api/{controller}/{action}/");
-
 
 
 app.Run();
