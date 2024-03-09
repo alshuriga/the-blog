@@ -2,7 +2,6 @@ using Blog.API.Filters;
 using Blog.Application;
 using Blog.Application.Models;
 using Blog.Infrastructure;
-using Blog.Infrastructure.DataSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -56,8 +55,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-//SeedData.EnsureSeedContent(app.Services);
-//await SeedData.EnsureSeedIdentity(app.Services);
+
 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -1,11 +1,11 @@
 ﻿using Blog.Infrastructure.Data;
-using Blog.IntegrationTests.WebAPI.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MiniBlog.Infrastructure.Data;
+using Blog.Infrastructure.Helpers;
 
 namespace Blog.IntegrationTests.WebAPI
 {
@@ -36,7 +36,9 @@ namespace Blog.IntegrationTests.WebAPI
 
                 var dbService = provider.GetRequiredService<BlogEFContext>();
 
-                dbService.EnsureCreatedAndSeeded();
+                provider
+                    .EnsureDataCreatedAndSeeded()
+                    .EnsureIdentityCreatedAndSeeded();
 
             });
 

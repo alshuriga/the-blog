@@ -27,5 +27,9 @@
     <ProjectReference Include="..\Blog.WebAPI\Blog.WebAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mocks\" />
+  </ItemGroup>
+
 
 </Project>
