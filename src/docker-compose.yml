@@ -11,7 +11,7 @@ services:
       - "8000:8000"
     depends_on:
       # - db
-      - redis_image
+      - the-blog_redis_image
     environment:
       ASPNETCORE_ENVIRONMENT: "Docker"     
       ConnectionStrings__BlogDatabase: ${PSQL_CONN}
@@ -40,5 +40,5 @@ services:
     ports: 
        - "5006:80"
     depends_on:
-       - api
+       - the-blog_api
     restart: always
