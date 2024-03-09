@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  the-blog_api:
-    container_name: the-blog_api
+  api:
+    container_name: api
 
     build:
       context: .
@@ -11,7 +11,7 @@ services:
       - "8000:8000"
     depends_on:
       # - db
-      - the-blog_redis_image
+      - redis_image
     environment:
       ASPNETCORE_ENVIRONMENT: "Docker"     
       ConnectionStrings__BlogDatabase: ${PSQL_CONN}
@@ -26,13 +26,13 @@ services:
   #     ACCEPT_EULA: "Y"    
   #   restart: always
 
-  the-blog_redis_image:
-    container_name: the-blog_redis
+  redis_image:
+    container_name: redis
     image: "redis:latest"
     restart: always
 
-  the-blog_ui:
-    container_name: the-blog_ui
+  ui:
+    container_name: ui
 
     build:
        context: ./Blog.Frontend
@@ -40,5 +40,5 @@ services:
     ports: 
        - "5006:80"
     depends_on:
-       - the-blog_api
+       - api
     restart: always
