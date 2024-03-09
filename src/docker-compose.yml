@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  api:
+  the-blog_api:
     container_name: the-blog_api
 
     build:
@@ -26,12 +26,12 @@ services:
   #     ACCEPT_EULA: "Y"    
   #   restart: always
 
-  redis_image:
+  the-blog_redis_image:
     container_name: the-blog_redis
     image: "redis:latest"
     restart: always
 
-  ui:
+  the-blog_ui:
     container_name: the-blog_ui
 
     build:
