@@ -41,4 +41,4 @@ The project has been structured following the principles of Clean Architecture a
 
 ## Demo
 
-Check out the live demo of The-Blog hosted at [https://the-blog.alshuriga.ink/](https://the-blog.alshuriga.ink/).
+Check out the live demo of The-Blog hosted at [https://the-blog.alshuriga.fyi/](https://the-blog.alshuriga.fyi/).
